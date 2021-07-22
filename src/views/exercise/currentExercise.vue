@@ -1010,7 +1010,7 @@ export default {
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         if(isGCJ==true){
           console.log("GCJ is enabled for blue")
-          const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
+          const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
           wide = converted_coord.lng - this.mapinfo.leftTopLng
           heie = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
