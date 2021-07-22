@@ -353,7 +353,7 @@ import {basePort,baseURL,wsPath,fullBaseURL,isGCJ} from '../../globle'
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 
 /**
- * @typedef {Object} mgLoc
+ * @typedef {Object} Coord
  * @property {number} lat
  * @property {number} lng
  * /
@@ -362,7 +362,7 @@ import {basePort,baseURL,wsPath,fullBaseURL,isGCJ} from '../../globle'
  * 
  * @param {number} wgLon
  * @param {number} wgLat
- * @returns {mgLoc} Object
+ * @returns {Coord} Object
  */
 function transformFromWGSToGCJ(wgLon, wgLat) {
   // We are always in the Fucking China
@@ -423,6 +423,20 @@ function transformFromWGSToGCJ(wgLon, wgLat) {
 
   return transform(wgLon, wgLat)
 }
+/**
+ * GPS coord dd.mmmmmm to dd.dddddd
+ * 
+ * @param {number} dm
+ * @returns {number}
+ *  */
+function dmToDd(dm){
+  const d = floor(dm)
+  const m = dm - d
+  const decimal_d = m /60
+  const dd = d + decimal_d
+  return dd
+}
+
 export default {
   data () {
     return {
@@ -650,16 +664,13 @@ export default {
       // 移动信息
       // this.getDataByNum(redata.num)
       if (redata.mark === '1') {
-        // this.getDataByNum(redata.num)
-        // console.log('newdata', this.newdata)
+        redata.lng = dmToDd(redata.lng)
+        redata.lat = dmToDd(redata.lat)
         console.log('位置移动')
         console.log('士兵列表', this.soldierlist)
-        // this.getExerciseData()
+        //!Red Start
         for (let i = 0; i < this.soldierlist.red.length; i++) {
-          console.log('this.soldierlist.red[i].id', this.soldierlist.red[i].id)
-          console.log('redata.num', redata.num)
           if (this.soldierlist.red[i].id === redata.num) {
-            console.log('找到', redata.num)
             if (this.soldierlist.red[i].lastReportTime === null) {
               msrc = redata.num + '号上线'
               console.log('msrc', msrc)
@@ -667,21 +678,12 @@ export default {
               active.content = msrc
               active.timestamp = time
               active.color = '#0bbd87'
-              /* active = {
-                content: msrc,
-                timestamp: time,
-                size: 'large',
-                color: '#0bbd87'
-              } */
+
               console.log(active)
               this.activities.unshift(active)
               console.log('activities', this.activities)
-              // this.soldierlist.red[i] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
-              // this.soldierlist.red[i].lastReportTime = redata.time
             } else {
-              console.log(redata.num + '移动信息')
               if(isGCJ==true){
                 const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
                 msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
@@ -698,13 +700,12 @@ export default {
               console.log('active', active)
               this.activities.unshift(active)
               console.log('activities', this.activities)
-              // this.soldierlist.red[i] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
-              // this.soldierlist.red[i].lastReportTime = redata.time
             }
           }
         }
+        //! Red End
+        //? Blue Start
         for (let j = 0; j < this.soldierlist.blue.length; j++) {
           if (this.soldierlist.blue[j].id === redata.num) {
             if (this.soldierlist.blue[j].lastReportTime === null) {
@@ -714,17 +715,10 @@ export default {
               active.content = msrc
               active.timestamp = time
               active.color = '#0bbd87'
-              /* active = {
-                content: msrc,
-                timestamp: time,
-                size: 'large',
-                color: '#0bbd87'
-              } */
+
               console.log('active', active)
               this.activities.unshift(active)
               console.log('activities', this.activities)
-              // this.soldierlist.blue[j] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
             } else {
               if(isGCJ==true){
@@ -743,15 +737,11 @@ export default {
               console.log('active', active)
               this.activities.unshift(active)
               console.log('activites', this.activities)
-              // this.soldierlist.blue[j] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
-              // this.soldierlist.red[i].lastReportTime = redata.time
             }
           }
         }
-        // this.getExerciseData()
-        // this.toPosition()
+        //? Blue End
       } else if (redata.mark === '0') {
         console.log('击杀')
         this.getDataByNum(redata.shooteeNum)
