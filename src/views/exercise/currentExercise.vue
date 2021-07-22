@@ -685,7 +685,7 @@ export default {
               if(isGCJ==true){
                 const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
                 msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
-                msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
+                const msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
                 this.$message(msrc_wgs)
               } else{
                 msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
