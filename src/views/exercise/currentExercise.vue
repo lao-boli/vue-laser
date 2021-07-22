@@ -430,9 +430,9 @@ function transformFromWGSToGCJ(wgLon, wgLat) {
  * @returns {number}
  *  */
 function dmToDd(dm){
-  const d = floor(dm)
+  const d = Math.floor(dm)
   const m = dm - d
-  const decimal_d = m /60
+  const decimal_d = (m /60) * 100
   const dd = d + decimal_d
   return dd
 }
