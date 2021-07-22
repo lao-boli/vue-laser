@@ -983,8 +983,8 @@ export default {
       let wide = 0
       let heie = 0
       for (let i = 0; i < this.soldierlist.red.length; i++) {
-        console.log("GCJ is enabled")
         if(isGCJ==true){
+          console.log("GCJ is enabled for Red")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
           widb = converted_coord.lng - this.mapinfo.leftTopLng
           heib = converted_coord.lat - this.mapinfo.rightDownLat
