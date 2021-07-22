@@ -685,6 +685,8 @@ export default {
               if(isGCJ==true){
                 const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
                 msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
+                msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
+                this.$message(msrc_wgs)
               } else{
                 msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
               }
@@ -728,6 +730,8 @@ export default {
               if(isGCJ==true){
                 const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
                 msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
+                msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
+                this.$message(msrc_wgs)
               } else{
                 msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
               }
@@ -984,7 +988,7 @@ export default {
       let heie = 0
       for (let i = 0; i < this.soldierlist.red.length; i++) {
         if(isGCJ==true){
-          console.log("GCJ is enabled for Red")
+          // console.log("GCJ is enabled for Red")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
           widb = converted_coord.lng - this.mapinfo.leftTopLng
           heib = converted_coord.lat - this.mapinfo.rightDownLat
@@ -1009,7 +1013,7 @@ export default {
       }
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         if(isGCJ==true){
-          console.log("GCJ is enabled for blue")
+          // console.log("GCJ is enabled for blue")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
           wide = converted_coord.lng - this.mapinfo.leftTopLng
           heie = converted_coord.lat - this.mapinfo.rightDownLat
