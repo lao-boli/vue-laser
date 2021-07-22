@@ -348,7 +348,81 @@ import RecordRTC from 'recordrtc'
 import { getSeekableBlob } from './ebml.util'
 import BMF from 'browser-md5-file'
 import ReconnectingWebSocket from 'reconnecting-websocket'
-import {basePort,baseURL,wsPath,fullBaseURL} from '../../globle'
+import {basePort,baseURL,wsPath,fullBaseURL,isGCJ} from '../../globle'
+
+// Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
+
+/**
+ * @typedef {Object} mgLoc
+ * @property {number} lat
+ * @property {number} lng
+ * /
+
+/**
+ * 
+ * @param {number} wgLon
+ * @param {number} wgLat
+ * @returns {mgLoc} Object
+ */
+function transformFromWGSToGCJ(wgLon, wgLat) {
+  // We are always in the Fucking China
+  // const PI
+  const PI = 3.14159265358979324
+  // Krasovsky 1940
+  // a = 6378245.0, 1/f = 298.3
+  // b = a * (1 - f)
+  // ee = (a^2 - b^2) / a^2
+  const a = 6378245.0
+  const ee = 0.00669342162296594323
+
+  function transformLat(x, y) {
+    let ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x))
+
+    ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0
+    ret += (20.0 * Math.sin(y * PI) + 40.0 * Math.sin(y / 3.0 * PI)) * 2.0 / 3.0
+    ret += (160.0 * Math.sin(y / 12.0 * PI) + 320 * Math.sin(y * PI / 30.0)) * 2.0 / 3.0
+    return ret
+  }
+
+  function transformLon(x, y) {
+    let ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x))
+
+    ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0
+    ret += (20.0 * Math.sin(x * PI) + 40.0 * Math.sin(x / 3.0 * PI)) * 2.0 / 3.0
+    ret += (150.0 * Math.sin(x / 12.0 * PI) + 300.0 * Math.sin(x / 30.0 * PI)) * 2.0 / 3.0
+    return ret
+  }
+
+  // World Geodetic System ==> Mars Geodetic System
+  function transform(wgLon, wgLat) {
+    let mgLoc = {}
+    // if (!isInChina([wgLon, wgLat], chinaBorderData)) {
+    //   mgLoc = {
+    //     lat: wgLat,
+    //     lng: wgLon
+    //   }
+    //   return mgLoc
+    // }
+    let dLat = transformLat(wgLon - 105.0, wgLat - 35.0)
+    let dLon = transformLon(wgLon - 105.0, wgLat - 35.0)
+    let radLat = wgLat / 180.0 * PI
+    let magic = Math.sin(radLat)
+
+    magic = 1 - ee * magic * magic
+
+    let sqrtMagic = Math.sqrt(magic)
+
+    dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * PI)
+    dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * PI)
+    mgLoc = {
+      lat: wgLat + dLat,
+      lng: wgLon + dLon
+    }
+    return mgLoc
+  }
+
+  return transform(wgLon, wgLat)
+}
 export default {
   data () {
     return {
@@ -370,30 +444,7 @@ export default {
         // rightDownLat: 25.426669
       },
       // 时间线
-      activities: [// {
-      //   content: '蓝队7号击中红队2号的2部',
-      //   timestamp: '2021-05-14-22:41:10',
-      //   size: 'large',
-      //   type: 'warning',
-      //   icon: 'el-icon-s-help'
-      // }, {
-      //   content: '蓝队6号击中红队1号的2部',
-      //   timestamp: '2021-05-14-22:41:4',
-      //   size: 'large',
-      //   type: 'warning',
-      //   icon: 'el-icon-s-help'
-      // }, {
-      //   content: '红队1号击中蓝队6号的1部',
-      //   timestamp: '2021-05-14-22:40:45',
-      //   size: 'large',
-      //   type: 'warning',
-      //   icon: 'el-icon-s-help'
-      // }, {
-      //   content: '7号上线',
-      //   timestamp: '2021-05-14-22:40:10',
-      //   color: '#0bbd87'
-        // }
-      ],
+      activities: [],
       // 红方
       red: {
         normal: 0,
@@ -416,60 +467,8 @@ export default {
       batchCharging: 0,
       // 士兵列表
       soldierlist: {
-        red: [
-          /* {
-            id: 1,
-            name: '张三',
-            name2: 'zhangsan',
-            wepon: '步枪',
-            hp: 100,
-            ammunition: 26,
-            status: '正常',
-            pos: [118.999827, 25.426769]
-          },
-          {
-            id: 2,
-            name: '李四',
-            name2: 'lisi',
-            wepon: '步枪',
-            hp: 100,
-            ammunition: 0,
-            status: '离线',
-            pos: [118.999927, 25.427739]
-          } */
-        ],
-        blue: [
-          /* {
-            id: 3,
-            name: '王五',
-            name2: 'wangwu',
-            wepon: '步枪',
-            hp: 50,
-            ammunition: 30,
-            status: '中伤',
-            pos: [118.999930, 25.427929]
-          },
-          {
-            id: 4,
-            name: '老六',
-            name2: 'laoliu',
-            wepon: '步枪',
-            hp: 0,
-            ammunition: 0,
-            status: '死亡',
-            pos: [119.000030, 25.428979]
-          },
-          {
-            id: 5,
-            name: '茄子',
-            name2: 'qiezi',
-            wepon: 'awm',
-            hp: 100,
-            ammunition: 0,
-            status: '正常',
-            pos: [119.000230, 25.430000]
-          } */
-        ]
+        red: [],
+        blue: []
       },
       // 判伤对话框
       injuryVisible: false,
@@ -683,18 +682,17 @@ export default {
               // this.soldierlist.red[i].lastReportTime = redata.time
             } else {
               console.log(redata.num + '移动信息')
-              msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '}'
+              if(isGCJ==true){
+                const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
+                msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
+              } else{
+                msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
+              }
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
               active.timestamp = time
               active.type = 'primary'
-              /* active = {
-                content: `${redata.num}号移动至{${redata.lng},${redata.lat}}`,
-                timestamp: time,
-                size: 'large',
-                type: 'primary'
-              } */
               console.log('active', active)
               this.activities.unshift(active)
               console.log('activities', this.activities)
@@ -727,18 +725,17 @@ export default {
               // this.toPosition()
               this.getExerciseData()
             } else {
-              msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '}'
+              if(isGCJ==true){
+                const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
+                msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
+              } else{
+                msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
+              }
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
               active.timestamp = time
               active.typr = 'primary'
-              /* active = {
-                content: `${redata.num}号移动至{${redata.lng},${redata.lat}}`,
-                timestamp: time,
-                size: 'large',
-                type: 'primary'
-              } */
               console.log('active', active)
               this.activities.unshift(active)
               console.log('activites', this.activities)
@@ -981,8 +978,19 @@ export default {
       console.log(wida)
       var heia = this.mapinfo.leftTopLat - this.mapinfo.rightDownLat
       console.log(heia)
+      let widb = 0
+      let heib = 0
+      let wide = 0
+      let heie = 0
       for (let i = 0; i < this.soldierlist.red.length; i++) {
-        var widb = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
+        if(isGCJ==true){
+          const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
+          widb = converted_coord.lng - this.mapinfo.leftTopLng
+          heib = converted_coord.lat - this.mapinfo.rightDownLat
+        } else{
+          widb = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
+          heib = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
+        }
         console.log(widb)
         var widc = widb / wida
         widc = widc * 0.6
@@ -991,7 +999,6 @@ export default {
         var wid = Number(widc * 100).toFixed(4)
         wid += '%'
         console.log(wid)
-        var heib = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
         var heic = heib / heia
         var hei = Number(heic * 100).toFixed(4)
         hei += '%'
@@ -1000,14 +1007,22 @@ export default {
         this.reds.push(str)
       }
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
-        var wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
+        if(isGCJ==true){
+          const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
+          wide = converted_coord.lng - this.mapinfo.leftTopLng
+          heie = converted_coord.lat - this.mapinfo.rightDownLat
+        } else{
+          wide = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
+          heie = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
+        }
+        // var wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
         var widf = wide / wida
         widf = widf * 0.6
         widf += 0.2
         var wid2 = Number(widf * 100).toFixed(4)
         wid2 += '%'
         console.log(wid2)
-        var heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
+        // var heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         var heif = heie / heia
         var hei2 = Number(heif * 100).toFixed(4)
         hei2 += '%'
