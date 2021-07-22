@@ -983,6 +983,7 @@ export default {
       let wide = 0
       let heie = 0
       for (let i = 0; i < this.soldierlist.red.length; i++) {
+        console.log("GCJ is enabled")
         if(isGCJ==true){
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
           widb = converted_coord.lng - this.mapinfo.leftTopLng
@@ -1008,12 +1009,13 @@ export default {
       }
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         if(isGCJ==true){
+          console.log("GCJ is enabled for blue")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
           wide = converted_coord.lng - this.mapinfo.leftTopLng
           heie = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
-          wide = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
-          heie = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
+          wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
+          heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         }
         // var wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
         var widf = wide / wida
