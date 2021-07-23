@@ -981,6 +981,7 @@ export default {
       let heib = 0
       let wide = 0
       let heie = 0
+      //! Red Start
       for (let i = 0; i < this.soldierlist.red.length; i++) {
         if(isGCJ==true){
           // console.log("GCJ is enabled for Red")
@@ -998,14 +999,15 @@ export default {
         console.log(widc)
         var wid = Number(widc * 100).toFixed(4)
         wid += '%'
-        console.log(wid)
         var heic = heib / heia
         var hei = Number(heic * 100).toFixed(4)
         hei += '%'
-        console.log(hei)
         var str = `position: absolute; left: ${wid}; top: ${hei};`
+        console.log("red", str)
         this.reds.push(str)
       }
+      //! Red End
+      //? Blue Start
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         if(isGCJ==true){
           // console.log("GCJ is enabled for blue")
@@ -1022,15 +1024,17 @@ export default {
         widf += 0.2
         var wid2 = Number(widf * 100).toFixed(4)
         wid2 += '%'
-        console.log(wid2)
+        // console.log(wid2)
         // var heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         var heif = heie / heia
         var hei2 = Number(heif * 100).toFixed(4)
         hei2 += '%'
-        console.log(hei2)
+        // console.log(hei2)
         var str2 = `position: absolute; left: ${wid2}; top: ${hei2};`
+        console.log("blue",str)
         this.blues.push(str2)
       }
+      //? Blue Start
     },
     // 打开录屏提示框
     recordStart () {
