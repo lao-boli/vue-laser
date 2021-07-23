@@ -774,14 +774,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              if(isGCJ==true){
-                const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
-                msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
-                const msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
-                console.log(msrc_wgs)
-              } else{
-                msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
-              }
+              msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '}'
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
@@ -1036,10 +1029,8 @@ export default {
         map.left_top_lat=this.mapinfo.leftTopLat
         map.right_down_lng=this.mapinfo.rightDownLng
         map.right_down_lat=this.mapinfo.rightDownLat
-        map.target_lng_wgs=this.soldierlist.red[i].lng
-        map.target_lat_wgs=this.soldierlist.red[i].lat
-        map.target_lng_gcj=converted_coord.lng
-        map.target_lat_gcj=converted_coord.lat
+        map.target_lng=this.soldierlist.red[i].lng
+        map.target_lat=this.soldierlist.red[i].lat
         map.width_map=width_map
         map.height_map=height_map
         map.height_diff=height_diff
@@ -1056,8 +1047,8 @@ export default {
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         let width_diff = 0
         let height_diff = 0
-        width_diff = converted_coord.lng - this.mapinfo.leftTopLng
-        height_diff = converted_coord.lat - this.mapinfo.rightDownLat
+        width_diff = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
+        height_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         let ratio_width = width_diff / width_map
         ratio_width = ratio_width * 0.6
         ratio_width += 0.2
@@ -1071,10 +1062,8 @@ export default {
         map.left_top_lat=this.mapinfo.leftTopLat
         map.right_down_lng=this.mapinfo.rightDownLng
         map.right_down_lat=this.mapinfo.rightDownLat
-        map.target_lng_wgs=this.soldierlist.blue[j].lng
-        map.target_lat_wgs=this.soldierlist.blue[j].lat
-        map.target_lng_gcj=converted_coord.lng
-        map.target_lat_gcj=converted_coord.lat
+        map.target_lng=this.soldierlist.blue[j].lng
+        map.target_lat=this.soldierlist.blue[j].lat
         map.width_map=width_map
         map.height_map=height_map
         map.height_diff=height_diff
