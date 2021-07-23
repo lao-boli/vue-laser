@@ -979,6 +979,9 @@ export default {
       for (let i = 0; i < this.soldierlist.red.length; i++) {
         let width_diff = 0
         let height_diff = 0
+        // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
+        this.soldierlist.red[i].lng=dmToDd(this.soldierlist.red[i].lng)
+        this.soldierlist.red[i].lat=dmToDd(this.soldierlist.red[i].lat)
         const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
         if(isGCJ==true){
           width_diff = converted_coord.lng - this.mapinfo.leftTopLng
@@ -1023,6 +1026,9 @@ export default {
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         let width_diff = 0
         let height_diff = 0
+        // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
+        this.soldierlist.blue[j].lng=dmToDd(this.soldierlist.blue[j].lng)
+        this.soldierlist.blue[j].lat=dmToDd(this.soldierlist.blue[j].lat)
         const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
         if(isGCJ==true){
           // console.log("GCJ is enabled for blue")
