@@ -352,11 +352,12 @@ import {basePort,baseURL,wsPath,fullBaseURL,isGCJ} from '../../globle'
 
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 
+
 /**
  * @typedef {Object} Coord
  * @property {number} lat
  * @property {number} lng
- * /
+ */
 
 /**
  * 
@@ -436,6 +437,34 @@ function dmToDd(dm){
   const decimal_d = (m /60) * 100
   const dd = d + decimal_d
   return dd
+}
+
+class CoordSet{
+  lat
+  lng
+  ddmm = {
+    lat,
+    lng
+  }
+  wgs = {
+    lat,
+    lng
+  }
+  gsj = {
+    lat,
+    lng
+  }
+  constructor(ddmm_latitude,ddmm_longitude){
+    this.lat=ddmm_latitude
+    this.lng=ddmm_longitude
+    this.ddmm.lat=ddmm_latitude
+    this.ddmm.lng=ddmm_longitude
+    this.wgs.lat = dmToDd(ddmm_latitude)
+    this.wgs.lng = dmToDd(ddmm_longitude)
+    const converted_coord = transformFromWGSToGCJ(this.wgs.lng,this.wgs.lat)
+    this.gsj.lat = converted_coord.lat
+    this.gsj.lng = converted_coord.lng
+  }
 }
 
 export default {
@@ -564,16 +593,15 @@ export default {
       } else {
         //* Convert Coord for http api
         res.data.forEach((data)=>{
-            const coord = {}
-            coord.ddmm = {}
-            coord.ddmm.lat = data.lat
-            coord.ddmm.lng = data.lng
-            data.lat=dmToDd(data.lat)
-            data.lng=dmToDd(data.lng)
-            coord.dddd = {}
-            coord.dddd.lat = data.lat
-            coord.dddd.lng = data.lng
-            console.log("Recv Coord",coord)
+          const coord = new CoordSet(data.lat,data.lng)
+          console.log("Recv Coord", coord)
+          if (isGCJ == true){
+            data.lat = coord.gsj.lat
+            data.lng = coord.gsj.lng
+          } else {
+            data.lat = coord.wgs.lat
+            data.lng = coord.wgs.lng
+          }
           })
         //* End
         for (let i = 0; i < res.data.length; i++) {
@@ -683,8 +711,15 @@ export default {
       if (redata.mark === '1') {
         console.log('Before Modify Location')
         console.log(redata)
-        redata.lng = dmToDd(redata.lng)
-        redata.lat = dmToDd(redata.lat)
+        const coord = new CoordSet(redata.lat,redata.lng)
+        console.log("Recv Coord",coord)
+        if(isGCJ==true){
+          redata.lat = coord.gsj.lat
+          redata.lng = coord.gsj.lng
+        } else {
+          redata.lat = coord.wgs.lat
+          redata.lng = coord.wgs.lng
+        }
         console.log('After Modify Location')
         console.log(redata)
         console.log('士兵列表', this.soldierlist)
@@ -692,7 +727,7 @@ export default {
         for (let i = 0; i < this.soldierlist.red.length; i++) {
           if (this.soldierlist.red[i].id === redata.num) {
             if (this.soldierlist.red[i].lastReportTime === null) {
-              msrc = redata.num + '号上线' + `坐标为 {${redata.lng}, ${redata.lat}} (WGS degrees)`
+              msrc = redata.num + '号上线' + `坐标为 {${redata.lng}, ${redata.lat}}`
               const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
               console.log("GCJ is", converted_coord)
               this.$message.success(msrc)
@@ -705,14 +740,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              if(isGCJ==true){
-                const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
-                msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '} (GCJ坐标)'
-                const msrc_wgs = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
-                console.log(msrc_wgs)
-              } else{
-                msrc = redata.num + '号移动至{' + redata.lng + ',' + redata.lat + '} (WGS)坐标'
-              }
+              msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '}'
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
@@ -986,17 +1014,8 @@ export default {
       for (let i = 0; i < this.soldierlist.red.length; i++) {
         let width_diff = 0
         let height_diff = 0
-        // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
-        // this.soldierlist.red[i].lng=dmToDd(this.soldierlist.red[i].lng)
-        // this.soldierlist.red[i].lat=dmToDd(this.soldierlist.red[i].lat)
-        const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
-        if(isGCJ==true){
-          width_diff = converted_coord.lng - this.mapinfo.leftTopLng
-          height_diff = converted_coord.lat - this.mapinfo.rightDownLat
-        } else{
-          width_diff = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
-          height_diff = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
-        }
+        width_diff = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
+        height_diff = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
         // width_map is the width of map
         // width_diff is difference between actual coord to leftTop
         // ratio_width is the ratio diff/total
@@ -1033,20 +1052,8 @@ export default {
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         let width_diff = 0
         let height_diff = 0
-        // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
-        // this.soldierlist.blue[j].lng=dmToDd(this.soldierlist.blue[j].lng)
-        // this.soldierlist.blue[j].lat=dmToDd(this.soldierlist.blue[j].lat)
-        // const target_lng = dmToDd(this.soldierlist.blue[j].lng)
-        // const target_lat = dmToDd(this.soldierlist.blue[j].lat)
-        const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
-        if(isGCJ==true){
-          // console.log("GCJ is enabled for blue")
-          width_diff = converted_coord.lng - this.mapinfo.leftTopLng
-          height_diff = converted_coord.lat - this.mapinfo.rightDownLat
-        } else{
-          width_diff = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
-          height_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
-        }
+        width_diff = converted_coord.lng - this.mapinfo.leftTopLng
+        height_diff = converted_coord.lat - this.mapinfo.rightDownLat
         let ratio_width = width_diff / width_map
         ratio_width = ratio_width * 0.6
         ratio_width += 0.2
