@@ -979,8 +979,8 @@ export default {
       for (let i = 0; i < this.soldierlist.red.length; i++) {
         let width_diff = 0
         let height_diff = 0
+        const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
         if(isGCJ==true){
-          const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
           width_diff = converted_coord.lng - this.mapinfo.leftTopLng
           height_diff = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
@@ -999,6 +999,14 @@ export default {
         const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
         //* for debug
         const map={}
+        map.left_top_lng=this.mapinfo.leftTopLng
+        map.left_top_lat=this.mapinfo.leftTopLat
+        map.right_down_lng=this.mapinfo.rightDownLng
+        map.right_down_lat=this.mapinfo.rightDownLat
+        map.target_lng_wgs=this.soldierlist.red[i].lng
+        map.target_lat_wgs=this.soldierlist.red[i].lat
+        map.target_lng_gcj=converted_coord.lng
+        map.target_lat_gcj=converted_coord.lat
         map.width_map=width_map
         map.height_map=height_map
         map.height_diff=height_diff
@@ -1015,14 +1023,14 @@ export default {
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
         let width_diff = 0
         let height_diff = 0
+        const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
         if(isGCJ==true){
           // console.log("GCJ is enabled for blue")
-          const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
           width_diff = converted_coord.lng - this.mapinfo.leftTopLng
           height_diff = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
           width_diff = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
-          width_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
+          height_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         }
         let ratio_width = width_diff / width_map
         ratio_width = ratio_width * 0.6
@@ -1033,6 +1041,14 @@ export default {
         const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
         //* for debug
         const map={}
+        map.left_top_lng=this.mapinfo.leftTopLng
+        map.left_top_lat=this.mapinfo.leftTopLat
+        map.right_down_lng=this.mapinfo.rightDownLng
+        map.right_down_lat=this.mapinfo.rightDownLat
+        map.target_lng_wgs=this.soldierlist.blue[j].lng
+        map.target_lat_wgs=this.soldierlist.blue[j].lat
+        map.target_lng_gcj=converted_coord.lng
+        map.target_lat_gcj=converted_coord.lat
         map.width_map=width_map
         map.height_map=height_map
         map.height_diff=height_diff
