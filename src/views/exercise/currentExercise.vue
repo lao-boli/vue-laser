@@ -973,66 +973,76 @@ export default {
     toPosition () {
       this.reds = []
       this.blues = []
-      var wida = this.mapinfo.rightDownLng - this.mapinfo.leftTopLng
-      console.log(wida)
-      var heia = this.mapinfo.leftTopLat - this.mapinfo.rightDownLat
-      console.log(heia)
-      let widb = 0
-      let heib = 0
-      let wide = 0
-      let heie = 0
+      const width_map = this.mapinfo.rightDownLng - this.mapinfo.leftTopLng
+      const height_map = this.mapinfo.leftTopLat - this.mapinfo.rightDownLat
       //! Red Start
       for (let i = 0; i < this.soldierlist.red.length; i++) {
+        let width_diff = 0
+        let height_diff = 0
         if(isGCJ==true){
-          // console.log("GCJ is enabled for Red")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
-          widb = converted_coord.lng - this.mapinfo.leftTopLng
-          heib = converted_coord.lat - this.mapinfo.rightDownLat
+          width_diff = converted_coord.lng - this.mapinfo.leftTopLng
+          height_diff = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
-          widb = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
-          heib = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
+          width_diff = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
+          height_diff = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
         }
-        console.log(widb)
-        var widc = widb / wida
-        widc = widc * 0.6
-        widc += 0.2
-        console.log(widc)
-        var wid = Number(widc * 100).toFixed(4)
-        wid += '%'
-        var heic = heib / heia
-        var hei = Number(heic * 100).toFixed(4)
-        hei += '%'
-        var str = `position: absolute; left: ${wid}; top: ${hei};`
-        console.log("red", str)
+        // width_map is the width of map
+        // width_diff is difference between actual coord to leftTop
+        // ratio_width is the ratio diff/total
+        let ratio_width = width_diff / width_map
+        ratio_width = ratio_width * 0.6
+        ratio_width += 0.2
+        const ratio_width_pct = Number(ratio_width * 100).toFixed(4)
+        const ratio_height = height_diff / height_map
+        const ratio_height_pct = Number(ratio_height * 100).toFixed(4)
+        const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
+        //* for debug
+        const map={}
+        map.width_map=width_map
+        map.height_map=height_map
+        map.height_diff=height_diff
+        map.width_diff=width_diff
+        map.ratio_width = width_diff / width_map
+        map.ratio_width_mod=ratio_width
+        map.ratio_height=ratio_height
+        //* endmap
+        console.log("red", str, map)
         this.reds.push(str)
       }
       //! Red End
       //? Blue Start
       for (let j = 0; j < this.soldierlist.blue.length; j++) {
+        let width_diff = 0
+        let height_diff = 0
         if(isGCJ==true){
           // console.log("GCJ is enabled for blue")
           const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
-          wide = converted_coord.lng - this.mapinfo.leftTopLng
-          heie = converted_coord.lat - this.mapinfo.rightDownLat
+          width_diff = converted_coord.lng - this.mapinfo.leftTopLng
+          height_diff = converted_coord.lat - this.mapinfo.rightDownLat
         } else{
-          wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
-          heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
+          width_diff = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
+          width_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
         }
-        // var wide = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
-        var widf = wide / wida
-        widf = widf * 0.6
-        widf += 0.2
-        var wid2 = Number(widf * 100).toFixed(4)
-        wid2 += '%'
-        // console.log(wid2)
-        // var heie = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
-        var heif = heie / heia
-        var hei2 = Number(heif * 100).toFixed(4)
-        hei2 += '%'
-        // console.log(hei2)
-        var str2 = `position: absolute; left: ${wid2}; top: ${hei2};`
-        console.log("blue",str)
-        this.blues.push(str2)
+        let ratio_width = width_diff / width_map
+        ratio_width = ratio_width * 0.6
+        ratio_width += 0.2
+        const ratio_width_pct = Number(ratio_width * 100).toFixed(4)
+        const ratio_height = height_diff / height_map
+        const ratio_height_pct = Number(ratio_height * 100).toFixed(4)
+        const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
+        //* for debug
+        const map={}
+        map.width_map=width_map
+        map.height_map=height_map
+        map.height_diff=height_diff
+        map.width_diff=width_diff
+        map.ratio_width = width_diff / width_map
+        map.ratio_width_mod=ratio_width
+        map.ratio_height=ratio_height
+        //* endmap
+        console.log("blue", str, map)
+        this.blues.push(str)
       }
       //? Blue Start
     },
