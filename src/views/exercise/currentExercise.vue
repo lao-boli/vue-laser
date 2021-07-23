@@ -676,8 +676,9 @@ export default {
         for (let i = 0; i < this.soldierlist.red.length; i++) {
           if (this.soldierlist.red[i].id === redata.num) {
             if (this.soldierlist.red[i].lastReportTime === null) {
-              msrc = redata.num + '号上线'
-              console.log('msrc', msrc)
+              msrc = redata.num + '号上线' + `坐标为 {${redata.lng}, ${redata.lat}} (WGS degrees)`
+              const converted_coord=transformFromWGSToGCJ(redata.lng,redata.lat)
+              console.log("GCJ is", converted_coord)
               this.$message.success(msrc)
               active.content = msrc
               active.timestamp = time
