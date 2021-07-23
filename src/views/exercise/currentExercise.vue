@@ -592,17 +592,21 @@ export default {
         this.$message.error('获取演习信息失败')
       } else {
         //* Convert Coord for http api
-        res.data.forEach((data)=>{
-          const coord = new CoordSet(data.lat,data.lng)
-          console.log("Recv Coord", coord)
-          if (isGCJ == true){
-            data.lat = coord.gsj.lat
-            data.lng = coord.gsj.lng
-          } else {
-            data.lat = coord.wgs.lat
-            data.lng = coord.wgs.lng
-          }
-          })
+        try{
+          res.data.forEach((data)=>{
+            const coord = new CoordSet(data.lat,data.lng)
+            console.log("Recv Coord", coord)
+            if (isGCJ == true){
+              data.lat = coord.gsj.lat
+              data.lng = coord.gsj.lng
+            } else {
+              data.lat = coord.wgs.lat
+              data.lng = coord.wgs.lng
+            }
+            })
+        } catch(err) {
+          console.log(err)
+        }
         //* End
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].team === 'red') {
