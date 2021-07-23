@@ -3,6 +3,7 @@ public/
 dist/
 
 nohup.out
+target
 # Logs
 logs
 *.log

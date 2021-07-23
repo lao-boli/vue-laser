@@ -424,8 +424,9 @@ function transformFromWGSToGCJ(wgLon, wgLat) {
   return transform(wgLon, wgLat)
 }
 /**
- * GPS coord dd.mmmmmm to dd.dddddd
+ * GPS coord dd.mmmmmm to dd.dddddd 
  * 
+ * it's dd.mmmmmm not ddmm.mmmm
  * @param {number} dm
  * @returns {number}
  *  */
@@ -648,7 +649,7 @@ export default {
     },
     websocketonmessage (e) { // 数据接收
       const redata = JSON.parse(e.data)
-      console.log(redata)
+      // console.log(redata)
       var aData = new Date()
       var time = aData.getFullYear() + '-' + (aData.getMonth() + 1) + '-' + aData.getDate() + '-' + aData.getHours() + ':' + aData.getMinutes() + ':' + aData.getSeconds()
       console.log(time)
@@ -664,9 +665,12 @@ export default {
       // 移动信息
       // this.getDataByNum(redata.num)
       if (redata.mark === '1') {
+        console.log('Before Modify Location')
+        console.log(redata)
         redata.lng = dmToDd(redata.lng)
         redata.lat = dmToDd(redata.lat)
-        console.log('位置移动')
+        console.log('After Modify Location')
+        console.log(redata)
         console.log('士兵列表', this.soldierlist)
         //!Red Start
         for (let i = 0; i < this.soldierlist.red.length; i++) {
@@ -1165,15 +1169,6 @@ export default {
           contentType: false,
           async: false
         })
-        /* const { data: res } = await this.$http.post('record/upload', formData)
-          console.log(res)
-          if (res.code !== 200) {
-            this.$message.error('上传回放视频失败')
-            console.log('上传回放视频失败')
-          } else {
-            this.$$message.success('上传回放视频成功')
-            console.log('上传回放视频成功')
-          } */
       }
       this.$message({
         showClose: true,
