@@ -558,12 +558,27 @@ export default {
       this.soldierlist.red = []
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get('newvest/newlist')
-      console.log('ExerciseData', res)
       if (res.code !== 200) {
+        console.log(res)
         this.$message.error('获取演习信息失败')
       } else {
+        //* Convert Coord for http api
+        res.data.forEach((data)=>{
+            const coord = {}
+            coord.ddmm = {}
+            coord.ddmm.lat = data.lat
+            coord.ddmm.lng = data.lng
+            data.lat=dmToDd(data.lat)
+            data.lng=dmToDd(data.lng)
+            coord.dddd = {}
+            coord.dddd.lat = data.lat
+            coord.dddd.lng = data.lng
+            console.log("Recv Coord",coord)
+          })
+        //* End
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].team === 'red') {
+            console.log("Team Red",res.data[i])
             this.soldierlist.red.push(res.data[i])
             if (res.data[i].lastReportTime !== null) {
               this.red.normal += 1
@@ -578,6 +593,7 @@ export default {
               }
             }
           } else if (res.data[i].team === 'blue') {
+            console.log("Team Blue",res.data[i])
             this.soldierlist.blue.push(res.data[i])
             if (res.data[i].lastReportTime !== null) {
               this.blue.normal += 1
@@ -763,8 +779,6 @@ export default {
               }
               this.activities.unshift(active)
               console.log(this.activities)
-              // this.soldierlist.red[i] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
             } else {
               this.$message.error(`蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`)
@@ -777,8 +791,6 @@ export default {
               }
               this.activities.unshift(active)
               console.log(this.activities)
-              // this.soldierlist.red[i] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
             }
           }
@@ -796,7 +808,6 @@ export default {
               }
               this.activities.unshift(active)
               console.log(this.activities)
-              // this.soldierlist.blue[j] = this.newdata
               this.getExerciseData()
             } else {
               this.$message.error(`红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`)
@@ -809,14 +820,10 @@ export default {
               }
               this.activities.unshift(active)
               console.log(this.activities)
-              // this.soldierlist.blue[j] = this.newdata
-              // this.toPosition()
               this.getExerciseData()
             }
           }
         }
-        // this.getExerciseData()
-        // this.toPosition()
       } else {
         console.log('error')
       }
@@ -980,8 +987,8 @@ export default {
         let width_diff = 0
         let height_diff = 0
         // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
-        this.soldierlist.red[i].lng=dmToDd(this.soldierlist.red[i].lng)
-        this.soldierlist.red[i].lat=dmToDd(this.soldierlist.red[i].lat)
+        // this.soldierlist.red[i].lng=dmToDd(this.soldierlist.red[i].lng)
+        // this.soldierlist.red[i].lat=dmToDd(this.soldierlist.red[i].lat)
         const converted_coord = transformFromWGSToGCJ(this.soldierlist.red[i].lng, this.soldierlist.red[i].lat)
         if(isGCJ==true){
           width_diff = converted_coord.lng - this.mapinfo.leftTopLng
@@ -1027,8 +1034,10 @@ export default {
         let width_diff = 0
         let height_diff = 0
         // this.soldierlist.red[i].lng is still dd.mmmm, need to convert to dd.dddd
-        this.soldierlist.blue[j].lng=dmToDd(this.soldierlist.blue[j].lng)
-        this.soldierlist.blue[j].lat=dmToDd(this.soldierlist.blue[j].lat)
+        // this.soldierlist.blue[j].lng=dmToDd(this.soldierlist.blue[j].lng)
+        // this.soldierlist.blue[j].lat=dmToDd(this.soldierlist.blue[j].lat)
+        // const target_lng = dmToDd(this.soldierlist.blue[j].lng)
+        // const target_lat = dmToDd(this.soldierlist.blue[j].lat)
         const converted_coord = transformFromWGSToGCJ(this.soldierlist.blue[j].lng, this.soldierlist.blue[j].lat)
         if(isGCJ==true){
           // console.log("GCJ is enabled for blue")
