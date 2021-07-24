@@ -443,16 +443,16 @@ class CoordSet{
   lat
   lng
   ddmm = {
-    lat,
-    lng
+    lat : 0,
+    lng : 0
   }
   wgs = {
-    lat,
-    lng
+    lat : 0,
+    lng : 0
   }
   gsj = {
-    lat,
-    lng
+    lat : 0,
+    lng : 0
   }
   constructor(ddmm_latitude,ddmm_longitude){
     this.lat=ddmm_latitude
@@ -605,7 +605,7 @@ export default {
             }
             })
         } catch(err) {
-          console.log(err)
+          console.warn(err)
         }
         //* End
         for (let i = 0; i < res.data.length; i++) {
@@ -715,14 +715,18 @@ export default {
       if (redata.mark === '1') {
         console.log('Before Modify Location')
         console.log(redata)
-        const coord = new CoordSet(redata.lat,redata.lng)
-        console.log("Recv Coord",coord)
-        if(isGCJ==true){
-          redata.lat = coord.gsj.lat
-          redata.lng = coord.gsj.lng
-        } else {
-          redata.lat = coord.wgs.lat
-          redata.lng = coord.wgs.lng
+        try{
+          const coord = new CoordSet(redata.lat,redata.lng)
+          console.log("Recv Coord",coord)
+          if(isGCJ==true){
+            redata.lat = coord.gsj.lat
+            redata.lng = coord.gsj.lng
+          } else {
+            redata.lat = coord.wgs.lat
+            redata.lng = coord.wgs.lng
+          }
+        } catch (err){
+          console.warn(err)
         }
         console.log('After Modify Location')
         console.log(redata)
