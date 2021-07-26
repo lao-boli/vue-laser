@@ -745,7 +745,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              msrc = `redata.num 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
+              msrc = `${redata.num} 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
@@ -775,7 +775,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              msrc = `redata.num 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
+              msrc = `${redata.num} 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
