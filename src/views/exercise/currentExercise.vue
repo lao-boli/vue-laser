@@ -751,9 +751,9 @@ export default {
               active.content = msrc
               active.timestamp = time
               active.type = 'primary'
-              console.log('active', active)
+              // console.log('active', active)
               this.activities.unshift(active)
-              console.log('activities', this.activities)
+              // console.log('activities', this.activities)
               this.getExerciseData()
             }
           }
@@ -763,19 +763,19 @@ export default {
         for (let j = 0; j < this.soldierlist.blue.length; j++) {
           if (this.soldierlist.blue[j].id === redata.num) {
             if (this.soldierlist.blue[j].lastReportTime === null) {
-              msrc = redata.num + '号上线' + `坐标为 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
+              msrc = redata.num + '号上线' + `坐标为 (${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)})`
               console.log('msrc', msrc)
               this.$message.success(msrc)
               active.content = msrc
               active.timestamp = time
               active.color = '#0bbd87'
 
-              console.log('active', active)
+              // console.log('active', active)
               this.activities.unshift(active)
-              console.log('activities', this.activities)
+              // console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              msrc = `${redata.num} 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
+              msrc = `${redata.num} 号移动至 (${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)})`
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
