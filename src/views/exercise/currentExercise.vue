@@ -603,6 +603,7 @@ export default {
           console.warn(err)
         }
         //* End
+        //! Red Start
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].team === 'red') {
             console.log("Team Red",res.data[i])
@@ -619,6 +620,8 @@ export default {
                 this.red.dead += 1
               }
             }
+          //! Red End
+          //? Blue Start
           } else if (res.data[i].team === 'blue') {
             console.log("Team Blue",res.data[i])
             this.soldierlist.blue.push(res.data[i])
@@ -635,6 +638,7 @@ export default {
               }
             }
           }
+          //? Blue End
         }
         this.toPosition()
       }
@@ -730,7 +734,7 @@ export default {
         for (let i = 0; i < this.soldierlist.red.length; i++) {
           if (this.soldierlist.red[i].id === redata.num) {
             if (this.soldierlist.red[i].lastReportTime === null) {
-              msrc = redata.num + '号上线' + `坐标为 {${redata.lng}, ${redata.lat}}`
+              msrc = redata.num + '号上线' + `坐标为 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               this.$message.success(msrc)
               active.content = msrc
               active.timestamp = time
@@ -741,7 +745,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '}'
+              msrc = `redata.num 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
@@ -759,7 +763,7 @@ export default {
         for (let j = 0; j < this.soldierlist.blue.length; j++) {
           if (this.soldierlist.blue[j].id === redata.num) {
             if (this.soldierlist.blue[j].lastReportTime === null) {
-              msrc = redata.num + '号上线'
+              msrc = redata.num + '号上线' + `坐标为 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               console.log('msrc', msrc)
               this.$message.success(msrc)
               active.content = msrc
@@ -771,7 +775,7 @@ export default {
               console.log('activities', this.activities)
               this.getExerciseData()
             } else {
-              msrc = redata.num + '号移动至{' + converted_coord.lng + ',' + converted_coord.lat + '}'
+              msrc = `redata.num 号移动至 {${(redata.lng).toFixed(3)}, ${(redata.lat).toFixed(3)}}`
               console.log('msrc', msrc)
               this.$message(msrc)
               active.content = msrc
@@ -1072,7 +1076,7 @@ export default {
         console.log("blue", str, map)
         this.blues.push(str)
       }
-      //? Blue Start
+      //? Blue End
     },
     // 打开录屏提示框
     recordStart () {
