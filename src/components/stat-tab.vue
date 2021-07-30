@@ -66,15 +66,13 @@
 
 /**
  * I'm a happy stat tab, dispaly soldier list
- * @param {objcet} soldierListData
+ * @param {array} soldierListData
  * @param {string} team
  */
 export default {
   name:"StatTab",
   data(){
     return{
-      soldierListData:this.soldierListData,
-      team: this.team,
       /**
        * Used to get the correct Chinese text display
        * @type {string}
@@ -84,7 +82,7 @@ export default {
   },
   props:{
     soldierListData:{
-      type:Object
+      type:Array
     },
     team:{
       type:String

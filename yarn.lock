@@ -5059,6 +5059,11 @@ launch-editor@^2.2.1:
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
+leaflet@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npm.taobao.org/leaflet/download/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
+  integrity sha1-ENaEkW7f4b9B1oijuXEnwDIqKhk=
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.nlark.com/lines-and-columns/download/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"

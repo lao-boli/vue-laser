@@ -1,4 +1,6 @@
-const baseURL=document.location.hostname
+// const baseURL=document.location.hostname
+// for debug
+const baseURL="nyan.one"
 const basePort = 9528
 const wsPath = "shootwebsocket"
 const fullBaseURL= `http://${baseURL}:${basePort}/`

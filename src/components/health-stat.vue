@@ -45,8 +45,6 @@ export default {
   name: "HealthStat",
   data (){
     return{
-      healthStat:this.healthStat,
-      team: this.team,
       /**
        * Used to get the correct Chinese text display
        * @type {string}

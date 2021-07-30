@@ -32,7 +32,6 @@
 
 
 <script lang="ts">
-import ElementUI from "element-ui";
 import HealthStat from "./health-stat.vue";
 
 /**
@@ -51,19 +50,24 @@ export default {
   },
   data() {
     return {
-      activities: this.activities,
-      redHealthStat: this.healthStats[0],
-      blueHealthStat: this.healthStats[1],
+      // redHealthStat: this.healthStats[0],
+      // blueHealthStat: this.healthStats[1],
     };
   },
   props: {
     activities: {
-      type: Object,
+      type: Array,
     },
     // First Elem in Array is red
     // Second Elem in Array is Blue
-    healthStats: {
-      type: Array,
+    // healthStats: {
+    //   type: Array,
+    // },
+    redHealthStat:{
+      type: Object
+    },
+    blueHealthStat:{
+      type: Object
     },
   },
 };
