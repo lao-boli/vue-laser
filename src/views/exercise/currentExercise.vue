@@ -1074,10 +1074,9 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .title {
   margin: 10px;
-  //padding: 15px;
   border-bottom: 1px solid #606266;
 }
 .img_continar {

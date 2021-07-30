@@ -94,7 +94,7 @@ export default {
 }
 
 </script>
-<style lang="less" scoped>
+<style scoped>
 .login_container {
   margin: 0;
   padding: 0;
@@ -123,7 +123,6 @@ export default {
   padding: 0 20px;
   box-sizing: border-box;
 }
-//标题
 .container{
   width: 60%;
   height:10%;
@@ -144,30 +143,7 @@ export default {
   -webkit-animation: annimate 3.5s linear infinite;
   animation: annimate 3.5s linear infinite;
 }
-/*span:nth-child(1){
-  animation-delay: 0s;
-}
-span:nth-child(2){
-  animation-delay: 0.5s;
-}
-span:nth-child(3){
-  animation-delay: 1s;
-}
-span:nth-child(4){
-  animation-delay: 1.5s;
-}
-span:nth-child(5){
-  animation-delay: 2s;
-}
-span:nth-child(6){
-  animation-delay: 2.5s;
-}
-span:nth-child(7){
-  animation-delay: 3s;
-}
-span:nth-child(8){
-  animation-delay: 3.5s;
-}*/
+
 @keyframes annimate {
   0%,100%{
     width: 68.031px;
