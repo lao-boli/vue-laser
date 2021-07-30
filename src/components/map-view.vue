@@ -12,8 +12,11 @@
 
     <l-map :zoom="zoom" :center="center">
       <l-image-overlay :bounds="rect.bounds" :url="rect.url"></l-image-overlay>
+
+      <!-- lStyle is deprecated and is going to be removed in the next major version -->
       <l-rectangle :bounds="rect.bounds" :l-style="rect.style"></l-rectangle>
-      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+      <!-- Do not use OpenStreetMap Online tile -->
+      <!-- <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer> -->
       <l-marker
         v-for="(marker, index) in markers"
         :class="marker.color"
@@ -150,7 +153,7 @@ export default {
     L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
     this.$nextTick(() => {
       console.log("markersRef",this.$refs.markersRef)
-      // this.markerObjects = this.$refs.markersRef.map(ref => ref.mapObject);
+      this.markerObjects = this.$refs.markersRef.map(ref => ref.mapObject);
     });
   },
 
