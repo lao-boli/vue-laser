@@ -1,0 +1,11 @@
+const remoteURL = "nyan.one"
+const localURL = document.location.hostname
+// It's a fucking CONST
+let baseURL = document.location.hostname
+// for debug
+const basePort = 9528
+const wsPath = "shootwebsocket"
+const fullBaseURL= `http://${baseURL}:${basePort}/`
+const isGCJ = true
+
+export {basePort,baseURL,wsPath,fullBaseURL,isGCJ}

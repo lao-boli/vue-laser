@@ -23,7 +23,8 @@
       <l-image-overlay :bounds="rect.bounds" :url="rect.url"></l-image-overlay>
 
       <!-- lStyle is deprecated and is going to be removed in the next major version -->
-      <l-rectangle :bounds="rect.bounds" :l-style="rect.style"></l-rectangle>
+      <!-- Overlay on map. Don't think it's necessary -->
+      <!-- <l-rectangle :bounds="rect.bounds" :l-style="rect.style"></l-rectangle> -->
       <!-- Do not use OpenStreetMap Online tile -->
       <!-- <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer> -->
       <l-marker
