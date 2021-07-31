@@ -1,11 +1,10 @@
-src/globle.js
-.env
 .DS_Store
 node_modules
 /dist
 
-
 # local env files
+src/globle.js
+.env
 .env.local
 .env.*.local
 

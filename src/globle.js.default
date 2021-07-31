@@ -1,3 +1,14 @@
+/**
+*
+!!!!important!!!!
+rename src/globle.js.default to src/globle.js to run! 
+*/
+
+
+// I know I should use .env to Manage Environment Variable. 
+// But I'm just lazy
+// I know node js has it's own env
+
 const remoteURL = "nyan.one"
 const localURL = document.location.hostname
 // It's a fucking CONST
