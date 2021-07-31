@@ -1,5 +1,9 @@
 # vue-laser-ts
 
+!!!!important!!!!
+
+rename src/globle.js.default to src/globle.js to run! 
+
 ## Project setup
 ```
 yarn install

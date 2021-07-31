@@ -1,4 +1,4 @@
-globle.js
+src/globle.js
 .env
 .DS_Store
 node_modules
