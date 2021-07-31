@@ -1,9 +1,19 @@
 <template>
   <div class="container" style="height: 500px; width: 100%">
-    <!-- <ul>
+    <!-- Debug list
+    <ul>
       <li
-        v-for="(marker, index) in markers"
-        :key="index"
+        v-for="marker in markers.red"
+        :key="marker.id"
+      >
+        {{ marker.id + "\t" + marker.position.lat + "," + marker.position.lng }}
+      </li>
+    </ul>
+
+    <ul>
+      <li
+        v-for="marker in markers.blue"
+        :key="marker.id"
       >
         {{ marker.id + "\t" + marker.position.lat + "," + marker.position.lng }}
       </li>
@@ -17,21 +27,35 @@
       <!-- Do not use OpenStreetMap Online tile -->
       <!-- <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer> -->
       <l-marker
-        v-for="(marker, index) in markers"
-        :class="marker.color"
-        :icon="defaultIcon"
-        :key="index"
-        ref="markersRef"
+        v-for="marker in markers.red"
+        :key="marker.id"
         :lat-lng="marker.position"
       >
-        <l-tooltip :content="marker.id" />
+        <l-icon :icon-anchor="staticAnchor"
+                class-name="red-icon">
+                <div class-name="icon-caption">{{marker.id}}</div>
+        </l-icon>
+        <l-tooltip :content="positionToString(marker.position)" />
       </l-marker>
+
+      <l-marker
+        v-for="marker in markers.blue"
+        :key="marker.id"
+        :lat-lng="marker.position"
+      >
+        <l-icon :icon-anchor="staticAnchor"
+                class-name="blue-icon">
+                <div class-name="icon-caption">{{marker.id}}</div>
+        </l-icon>
+        <l-tooltip :content="positionToString(marker.position)" />
+      </l-marker>
+
     </l-map>
   </div>
 </template>
 
 <script lang="ts">
-import { LMap, LTileLayer, LMarker, LTooltip, LPopup, LRectangle,LImageOverlay } from "vue2-leaflet";
+import { LMap, LTileLayer, LMarker, LTooltip, LPopup, LRectangle,LImageOverlay,LIcon } from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -88,7 +112,8 @@ export default {
     "l-tooltip": LTooltip,
     "l-popup": LPopup,
     "l-rectangle":LRectangle,
-    "l-image-overlay":LImageOverlay
+    "l-image-overlay":LImageOverlay,
+    "l-icon":LIcon
   },
   data() {
     return {
@@ -109,8 +134,11 @@ export default {
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      markers: this.redList.map(conversion).concat(this.blueList.map(conversion)),
-      markerObjects: null
+      markers: {
+        red: this.redList.map(conversion),
+        blue: this.redList.map(conversion)
+      },
+      // markerObjects: null
     };
   },
   props:{
@@ -145,15 +173,48 @@ export default {
 
   methods: {
     updateMarkers(redList:Solider[],blueList:Solider[]){
-     this.markers = redList.map(conversion).concat(blueList.map(conversion))
+    //  this.markers = redList.map(conversion).concat(blueList.map(conversion))
+    this.markers.red = redList.map(conversion)
+    this.markers.blue = blueList.map(conversion)
      console.log("this.marker",this.markers)
+    },
+    positionToString(position:{lat:number,lng:number}){
+      return position.lat.toFixed(4) + "," + position.lng.toFixed(4)
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+/* I know I should use scss but I'm lazy */
 li {
   cursor: pointer;
+}
+
+
+.red-icon {
+  /* red is #F56C6C */
+  padding: 10px;
+  box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  background-color: #F56C6C;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  color: white;
+  clip-path: circle(18px at center);
+}
+
+.blue-icon {
+  /*#409EFF*/
+  padding: 10px;
+  box-shadow: 5px 3px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  background-color: #409EFF;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  color: white;
+  clip-path: circle(18px at center);
 }
 </style>

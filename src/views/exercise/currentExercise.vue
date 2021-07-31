@@ -426,7 +426,6 @@ export default {
       } else {
         this.newdata = res.data
         console.log("更新个人数据成功")
-        // this.toPosition()
       }
     },
     // 实时获取击杀数据
