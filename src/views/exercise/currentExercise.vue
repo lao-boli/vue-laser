@@ -348,28 +348,20 @@ export default {
       this.soldierlist.red = []
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get("newvest/newlist")
-      if (res.code !== 200) {
-        console.log(res)
-        this.$message.error("获取演习信息失败")
-      } else {
+      try {
         //* Convert Coord for http api
-        try {
-          res.data.forEach((data) => {
-            const coord = new CoordSet(data.lat, data.lng)
-            console.log("Recv Coord", coord)
-            if (isGCJ == true) {
-              data.lat = coord.gsj.lat
-              data.lng = coord.gsj.lng
-            } else {
-              data.lat = coord.wgs.lat
-              data.lng = coord.wgs.lng
-            }
-          })
-        } catch (err) {
-          console.warn(err)
-        }
+        res.data.forEach((data) => {
+          const coord = new CoordSet(data.lat, data.lng)
+          console.log("Recv Coord", coord)
+          if (isGCJ == true) {
+            data.lat = coord.gsj.lat
+            data.lng = coord.gsj.lng
+          } else {
+            data.lat = coord.wgs.lat
+            data.lng = coord.wgs.lng
+          }
+        })
         //* End
-
         res.data.forEach((data) => {
           const testHp = (hp: number) => {
             if (hp < 100 && hp >= 70) {
@@ -396,6 +388,9 @@ export default {
           const cond = testHp(data.hp)
           this[team][cond]++
         })
+        this.toPosition()
+      } catch (err) {
+        console.error(err)
       }
     },
     // 获取地图数据
@@ -470,7 +465,6 @@ export default {
         aData.getMinutes() +
         ":" +
         aData.getSeconds()
-      console.log(time)
       let active: Active = {
         content: "",
         timestamp: "",
@@ -483,8 +477,6 @@ export default {
       // 移动信息
       // this.getDataByNum(redata.num)
       if (redata.mark === "1") {
-        console.log("Before Modify Location")
-        console.log(redata)
         try {
           const coord = new CoordSet(redata.lat, redata.lng)
           console.log("Recv Coord", coord)
@@ -498,36 +490,34 @@ export default {
         } catch (err) {
           console.warn(err)
         }
-        console.log("After Modify Location")
-        console.log(redata)
-        console.log("士兵列表", this.soldierlist)
 
         // Move Alarm
         const teams = ["red", "blue"]
         teams.forEach((team) => {
           this.soldierlist[team].forEach((solider) => {
-            if (solider.lastReportTime === null) {
-              msrc =
-                redata.num +
-                "号上线" +
-                `坐标为 {${redata.lng.toFixed(3)}, ${redata.lat.toFixed(3)}}`
-              this.$message.success(msrc)
-              active.color = "#0bbd87"
-              // console.log(active)
-            } else {
-              msrc = `${redata.num} 号移动至 {${redata.lng.toFixed(
-                3
-              )}, ${redata.lat.toFixed(3)}}`
-              console.log("msrc", msrc)
-              this.$message(msrc)
-              active.type = "primary"
-              // console.log('active', active)
-              // console.log('activities', this.activities)
+            if(solider.id == redata.num){
+              if (solider.lastReportTime === null) {
+                msrc =
+                  redata.num +
+                  "号上线" +
+                  `坐标为 (${redata.lng.toFixed(3)}, ${redata.lat.toFixed(3)})`
+                this.$message.success(msrc)
+                active.color = "#0bbd87"
+                // console.log(active)
+              } else {
+                msrc = `${redata.num} 号移动至 (${redata.lng.toFixed(
+                  3
+                )}, ${redata.lat.toFixed(3)})`
+                this.$message(msrc)
+                active.type = "primary"
+                // console.log('active', active)
+                // console.log('activities', this.activities)
+              }
+              active.content = msrc
+              active.timestamp = time
+              this.activities.unshift(active)
+              this.getExerciseData()
             }
-            active.content = msrc
-            active.timestamp = time
-            this.activities.unshift(active)
-            this.getExerciseData()
           })
         })
       } else if (redata.mark === "0") {
@@ -754,78 +744,7 @@ export default {
       obj.dispatchEvent(ev)
     },
     toPosition() {
-      this.reds = []
-      this.blues = []
-      const width_map = this.mapinfo.rightDownLng - this.mapinfo.leftTopLng
-      const height_map = this.mapinfo.leftTopLat - this.mapinfo.rightDownLat
-      //! Red Start
-      for (let i = 0; i < this.soldierlist.red.length; i++) {
-        let width_diff = 0
-        let height_diff = 0
-        width_diff = this.soldierlist.red[i].lng - this.mapinfo.leftTopLng
-        height_diff = this.soldierlist.red[i].lat - this.mapinfo.rightDownLat
-        // width_map is the width of map
-        // width_diff is difference between actual coord to leftTop
-        // ratio_width is the ratio diff/total
-        let ratio_width = width_diff / width_map
-        ratio_width = ratio_width * 0.6
-        ratio_width += 0.2
-        const ratio_width_pct = Number(ratio_width * 100).toFixed(4)
-        const ratio_height = height_diff / height_map
-        const ratio_height_pct = Number(ratio_height * 100).toFixed(4)
-        const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
-        //* for debug
-        const map: MapDebug = {
-          left_top_lng: this.mapinfo.leftTopLng,
-          left_top_lat: this.mapinfo.leftTopLat,
-          right_down_lng: this.mapinfo.rightDownLng,
-          right_down_lat: this.mapinfo.rightDownLat,
-          target_lng: this.soldierlist.red[i].lng,
-          target_lat: this.soldierlist.red[i].lat,
-          width_map: width_map,
-          height_map: height_map,
-          height_diff: height_diff,
-          width_diff: width_diff,
-          ratio_width: width_diff / width_map,
-          ratio_width_mod: ratio_width,
-          ratio_height: ratio_height,
-        }
-        //* endmap
-        console.log("red", str, map)
-        this.reds.push(str)
-      }
-      //! Red End
-      //? Blue Start
-      for (let j = 0; j < this.soldierlist.blue.length; j++) {
-        let width_diff = 0
-        let height_diff = 0
-        width_diff = this.soldierlist.blue[j].lng - this.mapinfo.leftTopLng
-        height_diff = this.soldierlist.blue[j].lat - this.mapinfo.rightDownLat
-        let ratio_width = width_diff / width_map
-        ratio_width = ratio_width * 0.6
-        ratio_width += 0.2
-        const ratio_width_pct = Number(ratio_width * 100).toFixed(4)
-        const ratio_height = height_diff / height_map
-        const ratio_height_pct = Number(ratio_height * 100).toFixed(4)
-        const str = `position: absolute; left: ${ratio_width_pct}%; top: ${ratio_height_pct}%;`
-        //* for debug
-        // const map={}
-        // map.left_top_lng=this.mapinfo.leftTopLng
-        // map.left_top_lat=this.mapinfo.leftTopLat
-        // map.right_down_lng=this.mapinfo.rightDownLng
-        // map.right_down_lat=this.mapinfo.rightDownLat
-        // map.target_lng=this.soldierlist.blue[j].lng
-        // map.target_lat=this.soldierlist.blue[j].lat
-        // map.width_map=width_map
-        // map.height_map=height_map
-        // map.height_diff=height_diff
-        // map.width_diff=width_diff
-        // map.ratio_width = width_diff / width_map
-        // map.ratio_width_mod=ratio_width
-        // map.ratio_height=ratio_height
-        //* endmap
-      }
-      //? Blue End
+      this.$refs.mapViewInstance.updateMarkers(this.soldierlist.red,this.soldierlist.blue)
     },
     // 打开录屏提示框
     recordStart() {

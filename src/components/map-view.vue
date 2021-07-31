@@ -4,9 +4,8 @@
       <li
         v-for="(marker, index) in markers"
         :key="index"
-        @click="displayTooltip(index);"
       >
-        {{ marker.name }}
+        {{ marker.id + "\t" + marker.position.lat + "," + marker.position.lng }}
       </li>
     </ul> -->
 
@@ -20,6 +19,7 @@
       <l-marker
         v-for="(marker, index) in markers"
         :class="marker.color"
+        :icon="defaultIcon"
         :key="index"
         ref="markersRef"
         :lat-lng="marker.position"
@@ -35,24 +35,7 @@ import { LMap, LTileLayer, LMarker, LTooltip, LPopup, LRectangle,LImageOverlay }
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
-
-
-// markers: [
-//   { Id: 1, name: "Oslo", position: { lat: 59.923043, lng: 10.752839 } },
-//   {
-//     Id: 2,
-//     name: "Stockholm",
-//     position: { lat: 59.339025, lng: 18.065818 }
-//   },
-//   {
-//     Id: 3,
-//     name: "Copenhagen",
-//     position: { lat: 55.675507, lng: 12.574227 }
-//   },
-//   { Id: 4, name: "Berlin", position: { lat: 52.521248, lng: 13.399038 } },
-//   { Id: 5, name: "Paris", position: { lat: 48.856127, lng: 2.346525 } }
-// ]
+// L.Icon.Default = defaultDivIcon
 
 interface Marker {
   id: number,
@@ -109,6 +92,10 @@ export default {
   },
   data() {
     return {
+      // these icons init in mounted method
+      defaultIcon:null,
+      redIcon:null,
+      blueIcon:null,
       zoom: 15,
       center: {
         lat: (this.leftTopLat+this.rightDownLat)/2, 
@@ -150,25 +137,22 @@ export default {
     }
   },
   mounted: function() {
-    L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
-    this.$nextTick(() => {
-      console.log("markersRef",this.$refs.markersRef)
-      this.markerObjects = this.$refs.markersRef.map(ref => ref.mapObject);
-    });
+    // L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
+    this.defaultIcon = L.divIcon({className: "default-div-icon"})
+    this.blueIcon = L.divIcon({className: "blue-icon"})
+    this.redIcon = L.divIcon({className: "red-icon"})
   },
 
   methods: {
-    displayTooltip(selectedIndex) {
-      for (let markerObject of this.markerObjects) {
-        markerObject.closeTooltip();
-      }
-      this.markerObjects[selectedIndex].toggleTooltip();
-    },
+    updateMarkers(redList:Solider[],blueList:Solider[]){
+     this.markers = redList.map(conversion).concat(blueList.map(conversion))
+     console.log("this.marker",this.markers)
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
 li {
   cursor: pointer;
 }
