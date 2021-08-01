@@ -34,7 +34,7 @@
         :key="marker.id"
         :lat-lng="marker.position"
       >
-        <l-icon :icon-anchor="staticAnchor" class-name="red-icon">
+        <l-icon class-name="red-icon">
           <div class-name="icon-caption">{{ marker.id }}</div>
         </l-icon>
         <l-tooltip :content="positionToString(marker.position)" />
@@ -46,7 +46,7 @@
         :key="marker.id"
         :lat-lng="marker.position"
       >
-        <l-icon :icon-anchor="staticAnchor" class-name="blue-icon">
+        <l-icon class-name="blue-icon">
           <div class-name="icon-caption">{{ marker.id }}</div>
         </l-icon>
         <l-tooltip :content="positionToString(marker.position)" />
@@ -68,8 +68,16 @@ import {
 } from "vue2-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
+delete L.Icon.Default.prototype._getIconUrl;
 
-// L.Icon.Default = defaultDivIcon
+// fix icon display
+// from https://github.com/Leaflet/Leaflet/issues/6822
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 
 interface Marker {
   id: number
@@ -149,7 +157,7 @@ export default {
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       markers: {
         red: this.redList.map(conversion),
-        blue: this.redList.map(conversion),
+        blue: this.blueList.map(conversion),
       },
       // markerObjects: null
     }
@@ -178,18 +186,16 @@ export default {
     },
   },
   mounted: function () {
-    // L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
-    this.defaultIcon = L.divIcon({ className: "default-div-icon" })
-    this.blueIcon = L.divIcon({ className: "blue-icon" })
-    this.redIcon = L.divIcon({ className: "red-icon" })
+    // this.defaultIcon = L.divIcon({ className: "default-div-icon" })
+    // this.blueIcon = L.divIcon({ className: "blue-icon" })
+    // this.redIcon = L.divIcon({ className: "red-icon" })
   },
 
   methods: {
     updateMarkers(redList: Solider[], blueList: Solider[]) {
-      //  this.markers = redList.map(conversion).concat(blueList.map(conversion))
+      console.log("this.marker", this.markers)
       this.markers.red = redList.map(conversion)
       this.markers.blue = blueList.map(conversion)
-      console.log("this.marker", this.markers)
     },
     positionToString(position: { lat: number; lng: number }) {
       return position.lat.toFixed(4) + "," + position.lng.toFixed(4)
@@ -199,10 +205,7 @@ export default {
 </script>
 
 <style>
-/* I know I should use scss but I'm lazy */
-li {
-  cursor: pointer;
-}
+/* I know I should use SCSS but I'm lazy */
 
 .red-icon {
   /* red is #F56C6C */

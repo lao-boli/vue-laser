@@ -388,8 +388,7 @@ export default {
         })
         this.toPosition()
       } catch (err) {
-        this.$message.error("连接服务器失败")
-        console.error(err)
+        console.warn(err)
       }
     },
     // 获取地图数据
@@ -407,7 +406,7 @@ export default {
       } else {
         this.mapinfo = res.data
         this.imgsrc = fullBaseURL + "picture/" + res.data.path
-        console.log(this.mapinfo)
+        // console.log(this.mapinfo)
         // this.$refs.mapViewInstance.forceUpdate()
       }
     },
@@ -674,13 +673,13 @@ export default {
     //   this.injureId = id
     //   this.injuryVisible = true
     // },
-    // handleClose(done) {
-    //   this.$confirm("确认关闭？")
-    //     .then((_) => {
-    //       done()
-    //     })
-    //     .catch((_) => {})
-    // },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          done()
+        })
+        .catch((_) => {})
+    },
     // // 充弹对话框
     // async chargebullet() {
     //   console.log(typeof this.Charging)
