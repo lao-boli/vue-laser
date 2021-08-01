@@ -43,15 +43,17 @@
           >
         </el-col>
       </el-row>
-      <map-view v-if="mapinfo.leftTopLat!==null"
-                :leftTopLat="mapinfo.leftTopLat"
-                :leftTopLng="mapinfo.leftTopLng"
-                :rightDownLat="mapinfo.rightDownLat"
-                :rightDownLng="mapinfo.rightDownLng"
-                :mapUrl="imgsrc"
-                :redList="soldierlist.red"
-                :blueList="soldierlist.blue"
-                ref="mapViewInstance">
+      <map-view
+        v-if="mapinfo.leftTopLat !== null"
+        :leftTopLat="mapinfo.leftTopLat"
+        :leftTopLng="mapinfo.leftTopLng"
+        :rightDownLat="mapinfo.rightDownLat"
+        :rightDownLng="mapinfo.rightDownLng"
+        :mapUrl="imgsrc"
+        :redList="soldierlist.red"
+        :blueList="soldierlist.blue"
+        ref="mapViewInstance"
+      >
       </map-view>
 
       <scroll-tab
@@ -157,7 +159,6 @@ import { getSeekableBlob } from "./ebml.util"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
 import { basePort, baseURL, wsPath, fullBaseURL, isGCJ } from "../../globle"
-import { data } from "jquery"
 import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
@@ -201,15 +202,14 @@ interface healthStatData {
 }
 
 interface mapInfo {
-  id:string,
-  leftTopLat:number,
-  leftTopLng:number,
-  rightDownLat:number,
-  rightDownLng:number,
-  name:string,
-  path:string
+  id: string
+  leftTopLat: number
+  leftTopLng: number
+  rightDownLat: number
+  rightDownLng: number
+  name: string
+  path: string
 }
-
 
 export default {
   components: {
@@ -227,19 +227,15 @@ export default {
       video: null,
       videoStart: false,
       recorder: null,
-      imgsrc: "", // require('../../assets/map/test1.png'),
+      imgsrc: "", 
       // mapinfo should be GSJ dddd
       mapinfo: {
-        id:null,
-        // leftTopLat:24.615813224417753,
-        // leftTopLng:118.05268520891983,
-        // rightDownLat:24.582037426224876,
-        // rightDownLng:118.13222722692171,
-        leftTopLat:null,
-        leftTopLng:null,
-        rightDownLat:null,
-        rightDownLng:null,
-        name:null
+        id: null,
+        leftTopLat: null,
+        leftTopLng: null,
+        rightDownLat: null,
+        rightDownLng: null,
+        name: null,
       },
       // 时间线
       activities: [],
@@ -380,7 +376,6 @@ export default {
           // Type 'String' cannot be used as an index type.
           // use small "string" and the compiler won't complaint
           // Always use small type in typescript
-          // I think it can
           this.soldierlist[team].push(data)
           if (data.lastReportTime !== null) {
             this[team].normal++
@@ -390,6 +385,7 @@ export default {
         })
         this.toPosition()
       } catch (err) {
+        this.$message.error("连接服务器失败")
         console.error(err)
       }
     },
@@ -424,8 +420,7 @@ export default {
       if (res.code !== 200) {
         this.$message.error("更新个人数据失败")
       } else {
-        this.newdata = res.data
-        console.log("更新个人数据成功")
+        // this.newdata = res.data
       }
     },
     // 实时获取击杀数据
@@ -490,23 +485,23 @@ export default {
           console.warn(err)
         }
 
-        // Move Alarm
+        // Move Prompt
         const teams = ["red", "blue"]
         teams.forEach((team) => {
           this.soldierlist[team].forEach((solider) => {
-            if(solider.id == redata.num){
+            if (solider.id == redata.num) {
               if (solider.lastReportTime === null) {
                 msrc =
                   redata.num +
                   "号上线" +
-                  `坐标为 (${redata.lng.toFixed(3)}, ${redata.lat.toFixed(3)})`
+                  `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(3)})`
                 this.$message.success(msrc)
                 active.color = "#0bbd87"
                 // console.log(active)
               } else {
-                msrc = `${redata.num} 号移动至 (${redata.lng.toFixed(
-                  3
-                )}, ${redata.lat.toFixed(3)})`
+                msrc = `${redata.num} 号移动至 (${
+                  redata.lat.toFixed(3)}, 
+                  ${redata.lng.toFixed(3)})`
                 this.$message(msrc)
                 active.type = "primary"
                 // console.log('active', active)
@@ -616,96 +611,97 @@ export default {
         this.getExerciseData()
       }
     },
-    // 判死
-    async deathSentence(id) {
-      try {
-        console.log(id)
-        const { data: res } = await this.$http.get("newvest/newdie", {
-          params: {
-            vestNum: id,
-          },
-        })
-        console.log(res)
-        if (res.code !== 200) {
-          throw new Error(res.code)
-        } else {
-          this.$message.success("判定死亡成功")
-          this.getExerciseData()
-        }
-      } catch (err) {
-        this.$message.error("判定死亡失败")
-        this.getExerciseData()
-      }
-    },
-    // 判伤
-    async judgementOfInjury() {
-      try {
-        if (this.radio1 === "轻伤") {
-          this.radio2 = 1
-        } else {
-          this.radio2 = 2
-        }
-        const { data: res } = await this.$http.get("newvest/newinjure", {
-          params: {
-            injure: this.radio2,
-            vestNum: this.injureId,
-          },
-        })
-        console.log(res)
-        if (res.code !== 200) {
-          throw new Error(res.code)
-        } else {
-          this.$message.success("判定受伤成功")
-          this.getExerciseData()
-        }
-      } catch (err) {
-        this.$message.error("判定受伤失败")
-        this.getExerciseData()
-      }
-      this.injuryVisible = false
-    },
-    // 充弹
-    charge(id) {
-      console.log(id)
-      this.chargeId = id
-      this.chargeVisible = true
-    },
-    // 判伤对话框
-    injury(id) {
-      this.injureId = id
-      this.injuryVisible = true
-    },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
-    // 充弹对话框
-    async chargebullet() {
-      console.log(typeof this.Charging)
-      console.log(typeof this.chargeId)
-      try {
-        const { data: res } = await this.$http.get("newvest/newloadone", {
-          params: {
-            ammoNum: Number.parseInt(this.Charging),
-            vestNum: this.chargeId,
-          },
-        })
-        console.log(res)
-        if (res.code !== 200) {
-          throw new Error(res.code)
-        } else {
-          this.$message.success(`给${this.chargeId}号充弹成功`)
-          this.getExerciseData()
-          this.Charging = 0
-          this.chargeVisible = false
-        }
-      } catch (err) {
-        this.$message.error(`给${this.chargeId}号充弹失败`)
-      }
-    },
+    // We don't need these function for now
+    // // 判死
+    // async deathSentence(id) {
+    //   try {
+    //     console.log(id)
+    //     const { data: res } = await this.$http.get("newvest/newdie", {
+    //       params: {
+    //         vestNum: id,
+    //       },
+    //     })
+    //     console.log(res)
+    //     if (res.code !== 200) {
+    //       throw new Error(res.code)
+    //     } else {
+    //       this.$message.success("判定死亡成功")
+    //       this.getExerciseData()
+    //     }
+    //   } catch (err) {
+    //     this.$message.error("判定死亡失败")
+    //     this.getExerciseData()
+    //   }
+    // },
+    // // 判伤
+    // async judgementOfInjury() {
+    //   try {
+    //     if (this.radio1 === "轻伤") {
+    //       this.radio2 = 1
+    //     } else {
+    //       this.radio2 = 2
+    //     }
+    //     const { data: res } = await this.$http.get("newvest/newinjure", {
+    //       params: {
+    //         injure: this.radio2,
+    //         vestNum: this.injureId,
+    //       },
+    //     })
+    //     console.log(res)
+    //     if (res.code !== 200) {
+    //       throw new Error(res.code)
+    //     } else {
+    //       this.$message.success("判定受伤成功")
+    //       this.getExerciseData()
+    //     }
+    //   } catch (err) {
+    //     this.$message.error("判定受伤失败")
+    //     this.getExerciseData()
+    //   }
+    //   this.injuryVisible = false
+    // },
+    // // 充弹
+    // charge(id) {
+    //   console.log(id)
+    //   this.chargeId = id
+    //   this.chargeVisible = true
+    // },
+    // // 判伤对话框
+    // injury(id) {
+    //   this.injureId = id
+    //   this.injuryVisible = true
+    // },
+    // handleClose(done) {
+    //   this.$confirm("确认关闭？")
+    //     .then((_) => {
+    //       done()
+    //     })
+    //     .catch((_) => {})
+    // },
+    // // 充弹对话框
+    // async chargebullet() {
+    //   console.log(typeof this.Charging)
+    //   console.log(typeof this.chargeId)
+    //   try {
+    //     const { data: res } = await this.$http.get("newvest/newloadone", {
+    //       params: {
+    //         ammoNum: Number.parseInt(this.Charging),
+    //         vestNum: this.chargeId,
+    //       },
+    //     })
+    //     console.log(res)
+    //     if (res.code !== 200) {
+    //       throw new Error(res.code)
+    //     } else {
+    //       this.$message.success(`给${this.chargeId}号充弹成功`)
+    //       this.getExerciseData()
+    //       this.Charging = 0
+    //       this.chargeVisible = false
+    //     }
+    //   } catch (err) {
+    //     this.$message.error(`给${this.chargeId}号充弹失败`)
+    //   }
+    // },
     onClickDownDaily() {
       var title = this.currentExerciseName
       var str = ""
@@ -743,7 +739,10 @@ export default {
       obj.dispatchEvent(ev)
     },
     toPosition() {
-      this.$refs.mapViewInstance.updateMarkers(this.soldierlist.red,this.soldierlist.blue)
+      this.$refs.mapViewInstance.updateMarkers(
+        this.soldierlist.red,
+        this.soldierlist.blue
+      )
     },
     // 打开录屏提示框
     recordStart() {

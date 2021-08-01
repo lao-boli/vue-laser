@@ -4,3 +4,4 @@
 [0m2021.07.31 13:23:23 WARN  no build tool detected in workspace 'C:\Users\cross\Desktop\vue-laser-ts'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
 7ŒŽ 31, 2021 5:11:48 ŒßŒã org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
 INFO: Unsupported notification method: $/setTrace
+[0m2021.07.31 17:39:35 INFO  shutting down Metals[0m
