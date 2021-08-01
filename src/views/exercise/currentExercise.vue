@@ -159,6 +159,9 @@ import { getSeekableBlob } from "./ebml.util"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
 import { basePort, baseURL, wsPath, fullBaseURL, isGCJ } from "../../globle"
+// See stopRecordingCallback() method below
+// I don't think We need jQuery anymore but I'm lazy to fix it.
+import * as $ from "jquery"
 import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
@@ -595,23 +598,23 @@ export default {
       console.log("断开连接", e)
       this.websock.close()
     },
+    // ! We don't need these function for now
     // 批量充弹
-    async batchCharge() {
-      console.log(this.batchCharging)
-      const { data: res } = await this.$http.get("newvest/newloadall", {
-        params: {
-          ammoNum: this.batchCharging,
-        },
-      })
-      console.log(res)
-      if (res.code !== 200) {
-        this.$message.error("批量充弹失败")
-      } else {
-        this.$message.success("批量充弹成功")
-        this.getExerciseData()
-      }
-    },
-    // We don't need these function for now
+    // async batchCharge() {
+    //   console.log(this.batchCharging)
+    //   const { data: res } = await this.$http.get("newvest/newloadall", {
+    //     params: {
+    //       ammoNum: this.batchCharging,
+    //     },
+    //   })
+    //   console.log(res)
+    //   if (res.code !== 200) {
+    //     this.$message.error("批量充弹失败")
+    //   } else {
+    //     this.$message.success("批量充弹成功")
+    //     this.getExerciseData()
+    //   }
+    // },
     // // 判死
     // async deathSentence(id) {
     //   try {
@@ -902,7 +905,7 @@ export default {
         videoData.append("size", fileSize)
         videoData.append("chunks", totalSlice.toString())
         videoData.append("chunk", i.toString())
-        // @ts-ignore: IDK why he's still using jQuery for a simple HTTP POST
+        // IDK why he's still using jQuery for a simple HTTP POST
         // But I don't want to touch this part
         $.ajax({
           url: fullBaseURL + "newrecord/upload",

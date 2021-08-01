@@ -140,4 +140,4 @@ class CoordSet {
   }
 }
 
-export {CoordSet,Coord}
+export { CoordSet, Coord }
