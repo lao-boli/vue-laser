@@ -196,6 +196,7 @@ interface Active {
 }
 
 interface healthStatData {
+  full: number
   normal: number
   outline: number
   minorWound: number
@@ -250,6 +251,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
+        full: 0
       },
       // 蓝方
       blue: {
@@ -259,6 +261,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
+        full: 0
       },
       // 充弹数据
       batchCharging: 0,
@@ -335,6 +338,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
+        full: 0
       }
       this.blue = {
         normal: 0,
@@ -343,6 +347,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
+        full: 0
       }
       this.soldierlist.red = []
       this.soldierlist.blue = []
@@ -363,7 +368,9 @@ export default {
         //* End
         res.data.forEach((data) => {
           const testHp = (hp: number) => {
-            if (hp < 100 && hp >= 70) {
+            if (hp == 100){
+              return "full"
+            } else if (hp < 100 && hp >= 70) {
               return "minorWound"
             } else if (hp < 70 && hp >= 40) {
               return "slander"

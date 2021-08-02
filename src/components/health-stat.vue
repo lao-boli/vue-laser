@@ -14,7 +14,8 @@
         <!-- 内层盒子——内容区 -->
         <div class="con">
           <p>{{ team_text }}</p>
-          <p>正常：{{ healthStat.normal }}</p>
+          <p>上线：{{ healthStat.normal }}</p>
+          <p>未受伤: {{ healthStat.full }}</p>
           <p>轻伤：{{ healthStat.minorWound }}</p>
           <p>中伤：{{ healthStat.slander }}</p>
           <p>重伤：{{ healthStat.seriousInjury }}</p>
