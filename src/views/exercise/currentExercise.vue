@@ -597,82 +597,6 @@ export default {
       console.log("断开连接", e)
       this.websock.close()
     },
-    // ! We don't need these function for now
-    // 批量充弹
-    // async batchCharge() {
-    //   console.log(this.batchCharging)
-    //   const { data: res } = await this.$http.get("newvest/newloadall", {
-    //     params: {
-    //       ammoNum: this.batchCharging,
-    //     },
-    //   })
-    //   console.log(res)
-    //   if (res.code !== 200) {
-    //     this.$message.error("批量充弹失败")
-    //   } else {
-    //     this.$message.success("批量充弹成功")
-    //     this.getExerciseData()
-    //   }
-    // },
-    // // 判死
-    // async deathSentence(id) {
-    //   try {
-    //     console.log(id)
-    //     const { data: res } = await this.$http.get("newvest/newdie", {
-    //       params: {
-    //         vestNum: id,
-    //       },
-    //     })
-    //     console.log(res)
-    //     if (res.code !== 200) {
-    //       throw new Error(res.code)
-    //     } else {
-    //       this.$message.success("判定死亡成功")
-    //       this.getExerciseData()
-    //     }
-    //   } catch (err) {
-    //     this.$message.error("判定死亡失败")
-    //     this.getExerciseData()
-    //   }
-    // },
-    // // 判伤
-    // async judgementOfInjury() {
-    //   try {
-    //     if (this.radio1 === "轻伤") {
-    //       this.radio2 = 1
-    //     } else {
-    //       this.radio2 = 2
-    //     }
-    //     const { data: res } = await this.$http.get("newvest/newinjure", {
-    //       params: {
-    //         injure: this.radio2,
-    //         vestNum: this.injureId,
-    //       },
-    //     })
-    //     console.log(res)
-    //     if (res.code !== 200) {
-    //       throw new Error(res.code)
-    //     } else {
-    //       this.$message.success("判定受伤成功")
-    //       this.getExerciseData()
-    //     }
-    //   } catch (err) {
-    //     this.$message.error("判定受伤失败")
-    //     this.getExerciseData()
-    //   }
-    //   this.injuryVisible = false
-    // },
-    // // 充弹
-    // charge(id) {
-    //   console.log(id)
-    //   this.chargeId = id
-    //   this.chargeVisible = true
-    // },
-    // // 判伤对话框
-    // injury(id) {
-    //   this.injureId = id
-    //   this.injuryVisible = true
-    // },
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then((_) => {
@@ -680,30 +604,6 @@ export default {
         })
         .catch((_) => {})
     },
-    // // 充弹对话框
-    // async chargebullet() {
-    //   console.log(typeof this.Charging)
-    //   console.log(typeof this.chargeId)
-    //   try {
-    //     const { data: res } = await this.$http.get("newvest/newloadone", {
-    //       params: {
-    //         ammoNum: Number.parseInt(this.Charging),
-    //         vestNum: this.chargeId,
-    //       },
-    //     })
-    //     console.log(res)
-    //     if (res.code !== 200) {
-    //       throw new Error(res.code)
-    //     } else {
-    //       this.$message.success(`给${this.chargeId}号充弹成功`)
-    //       this.getExerciseData()
-    //       this.Charging = 0
-    //       this.chargeVisible = false
-    //     }
-    //   } catch (err) {
-    //     this.$message.error(`给${this.chargeId}号充弹失败`)
-    //   }
-    // },
     onClickDownDaily() {
       var title = this.currentExerciseName
       var str = ""
