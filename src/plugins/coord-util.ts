@@ -4,18 +4,19 @@ interface Coord {
 }
 
 // default lat and lng is ddmm
+// You shouldn't modify any of its properties after constructing it. 
 class CoordSet {
-  lat
-  lng
-  ddmm = {
+  lat // dd.mm
+  lng // dd.mm
+  ddmm:Coord = {
     lat: 0,
     lng: 0,
   }
-  wgs = {
+  wgs:Coord = {
     lat: 0,
     lng: 0,
   }
-  gsj = {
+  gsj:Coord = {
     lat: 0,
     lng: 0,
   }
@@ -87,7 +88,7 @@ class CoordSet {
         3.0
       return ret
     }
-    function transformLon(x, y) {
+    function transformLon(x:number, y:number) {
       let ret =
         300.0 +
         x +
@@ -110,7 +111,7 @@ class CoordSet {
       return ret
     }
     // World Geodetic System ==> Mars Geodetic System
-    function transform(wgLon, wgLat) {
+    function transform(wgLon:number, wgLat:number) {
       let mgLoc: Coord = {
         lat: 0,
         lng: 0,
