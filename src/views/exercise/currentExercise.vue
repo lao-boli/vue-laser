@@ -155,7 +155,9 @@
 <script lang="ts">
 import RecordRTC from "recordrtc"
 // import md5 from 'js-md5'
-import { getSeekableBlob } from "./ebml.util"
+// import 
+import { getSeekableBlob } from "ebml"
+// import { getSeekableBlob } from "./ebml.util"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
 import { basePort, baseURL, wsPath, fullBaseURL, isGCJ } from "../../globle"
@@ -513,8 +515,6 @@ export default {
                   ${redata.lng.toFixed(3)})`
                 this.$message(msrc)
                 active.type = "primary"
-                // console.log('active', active)
-                // console.log('activities', this.activities)
               }
               active.content = msrc
               active.timestamp = time
@@ -525,6 +525,9 @@ export default {
         })
       } else if (redata.mark === "0") {
         console.log("击杀")
+
+        /* TODO Need to rewrite this part.
+           Too fucking tedious */
         this.getDataByNum(redata.shooteeNum)
         for (let i = 0; i < this.soldierlist.red.length; i++) {
           if (this.soldierlist.red[i].id === redata.shooteeNum) {
@@ -559,6 +562,7 @@ export default {
             }
           }
         }
+        // TODO Fix this part as well
         for (let j = 0; j < this.soldierlist.blue.length; j++) {
           if (this.soldierlist.blue[j].id === redata.shooteeNum) {
             if (this.soldierlist.blue[j].hp > 34) {
