@@ -15,24 +15,15 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    indent: [
-      "warn",
-      2,
-    ],
-    quotes: [
-      "warn",
-      "double",
-    ],
-    semi: [
-      "warn",
-      "never",
-    ],
+    indent: ["warn", 2],
+    quotes: ["warn", "double"],
+    semi: ["warn", "never"],
+    camelcase: "off",
     "array-bracket-spacing": ["warn", "never"],
     "brace-style": ["warn", "1tbs"],
     "linebreak-style": ["off", "unix"],
     "@typescript-eslint/ban-ts-comment": "off",
     "no-trailing-spaces": "warn",
-    camelcase: "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
     "no-plusplus": "off",
