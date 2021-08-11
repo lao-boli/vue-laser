@@ -157,7 +157,6 @@ import RecordRTC from "recordrtc"
 // import md5 from 'js-md5'
 // import 
 import { getSeekableBlob } from "ebml"
-// import { getSeekableBlob } from "./ebml.util"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
 import { basePort, baseURL, wsPath, fullBaseURL, isGCJ } from "../../globle"
@@ -215,6 +214,22 @@ interface mapInfo {
   rightDownLng: number
   name: string
   path: string
+}
+
+// ? This is a high Cyclomatic Complexity function
+// ? But I think this is a good code, better than for loop
+const testHp = (hp: number) => {
+  if (hp <= 0){
+    return "dead"
+  } else if (hp < 40) {
+    return "seriousInjury"
+  } else if (hp < 70) {
+    return "slander"
+  } else if (hp < 100) {
+    return "minorWound"
+  } else if (hp >= 100) {
+    return "full"
+  }
 }
 
 export default {
@@ -307,8 +322,6 @@ export default {
         // @ts-ignore: We have the get DisplayMedia
         !navigator.mediaDevices.getDisplayMedia
       ) {
-        //const error = 'Your browser does NOT support the getDisplayMedia API.'
-        //this.window.alert(error)
         throw new Error(
           "Your browser does NOT support the getDisplayMedia API."
         )
@@ -319,8 +332,6 @@ export default {
       this.$message.error("错误，请检查浏览器是否设置正确。录屏功能将被禁用。")
       this.recordVisible = false
     }
-    // this.getExerciseData()
-    // this.toPosition()
   },
   mounted() {
     this.video = document.querySelector("video")
@@ -369,19 +380,6 @@ export default {
         })
         //* End
         res.data.forEach((data) => {
-          const testHp = (hp: number) => {
-            if (hp == 100){
-              return "full"
-            } else if (hp < 100 && hp >= 70) {
-              return "minorWound"
-            } else if (hp < 70 && hp >= 40) {
-              return "slander"
-            } else if (hp < 40 && hp > 0) {
-              return "seriousInjury"
-            } else if (hp <= 0) {
-              return "dead"
-            }
-          }
           // team is a string
           // value is red or blue
           const team: "red" | "blue" = data.team
@@ -415,8 +413,6 @@ export default {
       } else {
         this.mapinfo = res.data
         this.imgsrc = fullBaseURL + "picture/" + res.data.path
-        // console.log(this.mapinfo)
-        // this.$refs.mapViewInstance.forceUpdate()
       }
     },
     // 根据马甲编号获取数据
@@ -453,6 +449,8 @@ export default {
       // 连接建立失败重连
       this.initWebSocket()
     },
+    // TODO Refactor this method
+    // ! Refactor this function to reduce its Cognitive Complexity
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
@@ -480,6 +478,7 @@ export default {
       }
       let msrc = ""
       // 移动信息
+      // TODO Refactor
       // this.getDataByNum(redata.num)
       if (redata.mark === "1") {
         try {
@@ -495,7 +494,6 @@ export default {
         } catch (err) {
           console.warn(err)
         }
-
         // Move Prompt
         const teams = ["red", "blue"]
         teams.forEach((team) => {
@@ -526,8 +524,8 @@ export default {
       } else if (redata.mark === "0") {
         console.log("击杀")
 
-        /* TODO Need to rewrite this part.
-           Too fucking tedious */
+        // TODO Refactor
+        // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
         this.getDataByNum(redata.shooteeNum)
         for (let i = 0; i < this.soldierlist.red.length; i++) {
           if (this.soldierlist.red[i].id === redata.shooteeNum) {
@@ -562,7 +560,8 @@ export default {
             }
           }
         }
-        // TODO Fix this part as well
+        // TODO Refactor
+        // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
         for (let j = 0; j < this.soldierlist.blue.length; j++) {
           if (this.soldierlist.blue[j].id === redata.shooteeNum) {
             if (this.soldierlist.blue[j].hp > 34) {
@@ -610,10 +609,6 @@ export default {
     },
     handleClose(done) {
       this.$confirm("确认关闭？")
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
     },
     onClickDownDaily() {
       var title = this.currentExerciseName
@@ -664,18 +659,10 @@ export default {
     // 录屏必要函数
     invokeGetDisplayMedia(success, error) {
       let displaymediastreamconstraints = {
-        video: {
-          displaySurface: "monitor", // monitor, window, application, browser
-          logicalSurface: true,
-          cursor: "always", // never, always, motion
-        },
+        video: true
       }
       // above constraints are NOT supported YET
       // that's why overridnig them
-      displaymediastreamconstraints = {
-        // @ts-ignore: IDK what that is but it works so yes
-        video: true,
-      }
 
       // @ts-ignore: We have the property
       if (navigator.mediaDevices.getDisplayMedia) {
@@ -703,7 +690,6 @@ export default {
           },
           function (error) {
             console.error(error)
-            //alert('Unable to capture your screen. Please check console logs.\n' + error)
           }
         )
       } catch (err) {
@@ -841,6 +827,8 @@ export default {
       this.blueTotalData = []
       const { data: res } = await this.$http.get("newrecord/recordlist")
       console.log(res)
+      // TODO Refactor (Maybe?)
+      // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
       for (let i = 0; i < res.data.length; i++) {
         if (res.data[i].team === "blue") {
           this.blueTotalData.push(res.data[i])
@@ -896,8 +884,6 @@ export default {
         } else {
           this.stopRecording()
         }
-        // window.sessionStorage.setItem('activePath', '/exerciseReplay')
-        // this.$router.push('/exerciseReplay')
       }
     },
   },
