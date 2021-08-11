@@ -1,4 +1,3 @@
-  
 <template>
   <el-container class="home_container">
     <el-header>
@@ -93,31 +92,31 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 是否折叠
       isCollapse: false,
-      activePath: ''
+      activePath: "",
     }
   },
-  created () {
-    this.activePath = window.sessionStorage.getItem('activePath')
+  created() {
+    this.activePath = window.sessionStorage.getItem("activePath")
   },
   methods: {
-    logout () {
+    logout() {
       window.sessionStorage.clear()
-      this.$router.push('/login')
+      this.$router.push("/login")
     },
-    toggleCollapse () {
+    toggleCollapse() {
       // 点击按钮折叠菜单
       this.isCollapse = !this.isCollapse
     },
-    saveNavState (activePath) {
+    saveNavState(activePath) {
       // 保存链接的激活状态
-      window.sessionStorage.setItem('activePath', activePath)
+      window.sessionStorage.setItem("activePath", activePath)
       this.activePath = activePath
-    }
-  }
+    },
+  },
 }
 </script>
 

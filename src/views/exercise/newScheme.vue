@@ -111,62 +111,62 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       form: {
-        name: '',
-        mapId: '',
+        name: "",
+        mapId: "",
         blueTeamList: [{
           age: 0,
           equipment: 0,
-          gender: '',
+          gender: "",
           id: 0,
-          name: '',
-          unit: ''
+          name: "",
+          unit: "",
         }],
         mode: 0,
         redTeamList: [{
           age: 0,
           equipment: 0,
-          gender: '',
+          gender: "",
           id: 0,
-          name: '',
-          unit: ''
-        }]
+          name: "",
+          unit: "",
+        }],
       },
-      mapList: [{ name: '嘉兴小区' }, { name: '万达广场' }, { name: '万达广场' }, { name: '万达广场' }, { name: '万达广场' }, { name: '万达广场' }, { name: '万达广场' }, { name: '万达广场' }],
+      mapList: [{ name: "嘉兴小区" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }],
       bluedata: [],
       reddata: [],
       // 表单验证规则
       rules: {
         name: [
-          { required: true, message: '请输入地图名称', trigger: 'blur' }
+          { required: true, message: "请输入地图名称", trigger: "blur" },
         ],
         mapId: [
-          { required: true, message: '请选择演习地图', trigger: 'blur' }
+          { required: true, message: "请选择演习地图", trigger: "blur" },
         ],
         mode: [
-          { required: true, message: '请选择要进行的模式', trigger: 'blur' }
-        ]
-      }
+          { required: true, message: "请选择要进行的模式", trigger: "blur" },
+        ],
+      },
     }
   },
-  created () {
+  created() {
     this.getMapList()
   },
   methods: {
     // 查询所有地图
-    async getMapList () {
-      const { data: res } = await this.$http.get('map/query')
+    async getMapList() {
+      const { data: res } = await this.$http.get("map/query")
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('获取地图列表失败')
+        this.$message.error("获取地图列表失败")
       } else {
         this.mapList = res.data
-        this.$message.success('获取地图列表成功')
+        this.$message.success("获取地图列表成功")
       }
     },
-    async onSubmit () {
+    async onSubmit() {
       console.log(this.form)
       // for (let i = 0; i < this.bluedata.length; i++) {
       //   const num = this.bluedata[i][0].split('-')
@@ -190,44 +190,44 @@ export default {
       // this.form.redVestWeapon = this.form.redVestWeapon.slice(0, this.form.redVestWeapon.length - 1)
       // // console.log(this.form.redVestNumStr)
       // // console.log(this.form.redVestWeapon)
-      const { data: res } = await this.$http.post('newbattle/newset', this.form)
+      const { data: res } = await this.$http.post("newbattle/newset", this.form)
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('方案创建失败')
+        this.$message.error("方案创建失败")
       } else {
-        this.$message.success('方案创建成功')
-        this.$router.push('/schemeManagement')
+        this.$message.success("方案创建成功")
+        this.$router.push("/schemeManagement")
       }
     },
     // 新增红色马甲
-    addnewred () {
+    addnewred() {
       this.form.redTeamList.push({
         age: 0,
         equipment: 0,
-        gender: '',
+        gender: "",
         id: 0,
-        name: '',
-        unit: ''
+        name: "",
+        unit: "",
       })
     },
-    deletered () {
+    deletered() {
       this.form.redTeamList.pop()
     },
     // 新增蓝色马甲
-    addnewblue () {
+    addnewblue() {
       this.form.blueTeamList.push({
         age: 0,
         equipment: 0,
-        gender: '',
+        gender: "",
         id: 0,
-        name: '',
-        unit: ''
+        name: "",
+        unit: "",
       })
     },
-    deleteblue () {
+    deleteblue() {
       this.form.blueTeamList.pop()
-    }
-  }
+    },
+  },
 }
 </script>
 

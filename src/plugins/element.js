@@ -1,11 +1,11 @@
-import Vue from 'vue'
+import Vue from "vue"
 import {
   Button, Form, FormItem, Input, Message,
   Container, Header, Aside, Main, Menu, Submenu, MenuItem,
   Breadcrumb, BreadcrumbItem, Card, Row, Col, Table, TableColumn,
   Pagination, Dialog, MessageBox, Select,
-  Option, Alert, Upload, Timeline, TimelineItem, Dropdown, DropdownMenu, DropdownItem, Radio, RadioGroup, RadioButton
-} from 'element-ui'
+  Option, Alert, Upload, Timeline, TimelineItem, Dropdown, DropdownMenu, DropdownItem, Radio, RadioGroup, RadioButton,
+} from "element-ui"
 
 Vue.use(Button)
 Vue.use(Form)

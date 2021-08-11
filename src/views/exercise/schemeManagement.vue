@@ -69,109 +69,109 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       // 获取用户列表的参数对象
       queeryInfo: {
-        name: '',
+        name: "",
         // 当前页数
         page: 1,
         // 当前每页条数
-        pageSize: 5
+        pageSize: 5,
       },
       schemeList: [
         {
-          blueVestNumStr: '6,7,8,9,10,16,17,18,19,20',
-          blueVestWeapon: '步枪,步枪,步枪,步枪,步枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪',
-          id: 'c4cb6af9ec544080a6d881804bbeb563',
-          mapId: '7bdfaf61ef894940af383dd64349e1fe',
-          mapName: '万达广场',
+          blueVestNumStr: "6,7,8,9,10,16,17,18,19,20",
+          blueVestWeapon: "步枪,步枪,步枪,步枪,步枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪",
+          id: "c4cb6af9ec544080a6d881804bbeb563",
+          mapId: "7bdfaf61ef894940af383dd64349e1fe",
+          mapName: "万达广场",
           mode: null,
-          name: 'test2',
-          redVestNumStr: '1,2,3,4,5,11,12,13,14,15',
-          redVestWeapon: '步枪,步枪,步枪,步枪,步枪,手枪,手枪,手枪,手枪,手枪'
+          name: "test2",
+          redVestNumStr: "1,2,3,4,5,11,12,13,14,15",
+          redVestWeapon: "步枪,步枪,步枪,步枪,步枪,手枪,手枪,手枪,手枪,手枪",
         },
         {
-          name: '测试2',
-          map: '嘉兴小区',
-          r_date: '1-5',
-          b_date: '6-10'
-        }
+          name: "测试2",
+          map: "嘉兴小区",
+          r_date: "1-5",
+          b_date: "6-10",
+        },
       ],
-      total: 2
+      total: 2,
     }
   },
-  created () {
+  created() {
     this.getUserList()
   },
   methods: {
-    async getUserList () {
-      const { data: res } = await this.$http.post('newbattle/set/newquerylist', this.queeryInfo)
+    async getUserList() {
+      const { data: res } = await this.$http.post("newbattle/set/newquerylist", this.queeryInfo)
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('获取方案列表失败')
+        this.$message.error("获取方案列表失败")
       } else {
-        this.$message.success('获取方案列表成功')
+        this.$message.success("获取方案列表成功")
         this.schemeList = res.data.list
         this.total = res.data.total
       }
     },
-    async start (row) {
+    async start(row) {
       console.log(row.id)
       console.log(row.mapId)
-      const { data: res } = await this.$http.get('newbattle/newstart', {
+      const { data: res } = await this.$http.get("newbattle/newstart", {
         params: {
-          id: row.id
-        }
+          id: row.id,
+        },
       })
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('开启对局失败')
+        this.$message.error("开启对局失败")
       } else {
-        window.sessionStorage.setItem('activePath', '/currentExercise')
-        window.sessionStorage.setItem('mapId', row.mapId)
-        this.$router.push('/currentExercise')
+        window.sessionStorage.setItem("activePath", "/currentExercise")
+        window.sessionStorage.setItem("mapId", row.mapId)
+        this.$router.push("/currentExercise")
       }
       // window.sessionStorage.setItem('activePath', '/currentExercise')
       // this.$router.push('/currentExercise')
     },
-    async resume_load (row) {
+    async resume_load(row) {
       console.log(row.id)
       console.log(row.mapId)
-      window.sessionStorage.setItem('activePath', '/currentExercise')
-      window.sessionStorage.setItem('mapId', row.mapId)
-      this.$router.push('/currentExercise')
+      window.sessionStorage.setItem("activePath", "/currentExercise")
+      window.sessionStorage.setItem("mapId", row.mapId)
+      this.$router.push("/currentExercise")
       // window.sessionStorage.setItem('activePath', '/currentExercise')
       // this.$router.push('/currentExercise')
     },
-    async removeSchemeById (uid) {
+    async removeSchemeById(uid) {
       console.log(uid)
-      const { data: res } = await this.$http.get('newbattle/set/newdelete', {
+      const { data: res } = await this.$http.get("newbattle/set/newdelete", {
         params: {
-          id: uid
-        }
+          id: uid,
+        },
       })
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('删除方案失败')
+        this.$message.error("删除方案失败")
       } else {
-        this.$message.success('删除方案成功')
+        this.$message.success("删除方案成功")
         this.getUserList()
       }
     },
     // 监听pagesize改变的事件
-    handleSizeChange (newSize) {
+    handleSizeChange(newSize) {
       // console.log(newSize)
       this.queeryInfo.pageSize = newSize
       this.getUserList()
     },
     // 监听页码值改变的事件
-    handleCurrentChange (newPage) {
+    handleCurrentChange(newPage) {
       // console.log(newPage)
       this.queeryInfo.page = newPage
       this.getUserList()
-    }
-  }
+    },
+  },
 }
 </script>
 

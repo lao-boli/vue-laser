@@ -23,76 +23,76 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       formList: [],
       formInline: {
-        com: '',
-        baudRate: 9600
+        com: "",
+        baudRate: 9600,
       },
       portInfo: [],
       // 连接或断开
-      link: false
+      link: false,
     }
   },
-  created () {
+  created() {
     this.getPortList()
     this.getPortInfo()
     // this.onCancel()
   },
   methods: {
     // 获取所有可用串口
-    async getPortList () {
-      const { data: res } = await this.$http.get('serialPort/list')
+    async getPortList() {
+      const { data: res } = await this.$http.get("serialPort/list")
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('获取串口列表失败')
+        this.$message.error("获取串口列表失败")
       } else if (res.code === 200) {
         this.formList = res.data
         console.log(this.formList)
-        this.$message.success('获取串口列表成功')
+        this.$message.success("获取串口列表成功")
       }
     },
     // 获取所有串口信息
-    async getPortInfo () {
-      const { data: res } = await this.$http.get('serialPort/getnew')
+    async getPortInfo() {
+      const { data: res } = await this.$http.get("serialPort/getnew")
       console.log(res)
     },
     // 连接
-    async onSubmit () {
-      const { data: res } = await this.$http.get('serialPort/open', {
+    async onSubmit() {
+      const { data: res } = await this.$http.get("serialPort/open", {
         params: {
           baudRate: this.formInline.baudRate,
-          portName: this.formInline.com
-        }
+          portName: this.formInline.com,
+        },
       })
       console.log(res)
       if (res.code !== 200) {
         if (res.code === 400002) {
-          this.$message.info('该串口已是开启状态')
+          this.$message.info("该串口已是开启状态")
           this.link = !this.link
         } else {
-          this.$message.error('连接指定端口设备失败')
+          this.$message.error("连接指定端口设备失败")
         }
       } else if (res.code === 200) {
         this.$message.success(res.msg)
         this.link = !this.link
-        console.log('submit!')
+        console.log("submit!")
       }
     },
     // 断开连接
-    async onCancel () {
-      const { data: res } = await this.$http.get('serialPort/close')
+    async onCancel() {
+      const { data: res } = await this.$http.get("serialPort/close")
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('关闭串口失败')
+        this.$message.error("关闭串口失败")
       } else if (res.code === 200) {
-        this.$message.success('关闭串口成功')
+        this.$message.success("关闭串口成功")
         this.link = !this.link
-        console.log('cancel')
+        console.log("cancel")
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

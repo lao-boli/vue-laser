@@ -57,81 +57,80 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       form: {
-        name: '',
-        path: 'd:/',
-        leftTopLng: '',
-        leftTopLat: '',
-        rightDownLng: '',
-        rightDownLat: '',
-        remark: '',
-        time: ''
+        name: "",
+        path: "d:/",
+        leftTopLng: "",
+        leftTopLat: "",
+        rightDownLng: "",
+        rightDownLat: "",
+        remark: "",
+        time: "",
       },
       fileList: [],
       pic: new FormData(),
       // 图片预览
-      dialogImageUrl: '',
+      dialogImageUrl: "",
       dialogVisible: false,
       // 表单验证
       rules: {
         name: [
-          { required: true, message: '请输入地图名称', trigger: 'blur' }
+          { required: true, message: "请输入地图名称", trigger: "blur" },
         ],
         leftTopLng: [
-          { required: true, message: '请输入左上角经度', trigger: 'blur' }
+          { required: true, message: "请输入左上角经度", trigger: "blur" },
         ],
         leftTopLat: [
-          { required: true, message: '请输入左上角纬度', trigger: 'blur' }
+          { required: true, message: "请输入左上角纬度", trigger: "blur" },
         ],
         rightDownLng: [
-          { required: true, message: '请输入右下角经度', trigger: 'blur' }
+          { required: true, message: "请输入右下角经度", trigger: "blur" },
         ],
         rightDownLat: [
-          { required: true, message: '请输入右下角纬度', trigger: 'blur' }
+          { required: true, message: "请输入右下角纬度", trigger: "blur" },
         ],
         pic: [
-          { required: true, message: '请选择要上传的地图', trigger: 'blur' }
-        ]
-      }
+          { required: true, message: "请选择要上传的地图", trigger: "blur" },
+        ],
+      },
     }
   },
   methods: {
-    async onSubmit () {
-      console.log('submit!')
+    async onSubmit() {
+      console.log("submit!")
       console.log(this.form)
       console.log(this.pic)
       const time2 = new Date()
-      this.form.time = time2.getFullYear() + '-' + (time2.getMonth() + 1) + '-' + time2.getDate()
+      this.form.time = `${time2.getFullYear()}-${time2.getMonth() + 1}-${time2.getDate()}`
       const image = new FormData()
-      image.append('CreateMapRequest', JSON.stringify(this.form))
-      image.append('map', this.pic)
+      image.append("CreateMapRequest", JSON.stringify(this.form))
+      image.append("map", this.pic)
       console.log(image)
-      const { data: res } = await this.$http.post('map', image, { headers: { 'Content-Type': 'multipart/form-data' } }
-      )
+      const { data: res } = await this.$http.post("map", image, { headers: { "Content-Type": "multipart/form-data" } })
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('创建地图失败')
+        this.$message.error("创建地图失败")
       } else if (res.code === 200) {
-        this.$message.success('创建地图成功')
-        this.$router.push('/mapManagement')
+        this.$message.success("创建地图成功")
+        this.$router.push("/mapManagement")
       }
     },
-    handleRemove (file, fileList) {
+    handleRemove(file, fileList) {
       console.log(file, fileList)
     },
-    handlePreview (file) {
+    handlePreview(file) {
       console.log(file)
     },
-    handleChange (file, fileList) {
+    handleChange(file, fileList) {
       console.log(file, fileList)
       this.pic = file.raw
     },
-    resetForm () {
+    resetForm() {
       this.$refs.form.resetFields()
-    }
-  }
+    },
+  },
 }
 </script>
 

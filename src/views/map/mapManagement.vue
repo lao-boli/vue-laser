@@ -62,41 +62,44 @@
 </template>
 
 <script>
-import {basePort,baseURL,wsPath,fullBaseURL} from '../../globle'
+import {
+  basePort, baseURL, wsPath, fullBaseURL,
+} from "../../globle"
+
 export default {
-  data () {
+  data() {
     return {
       // 获取用户列表的参数对象
       queeryInfo: {
-        name: '',
+        name: "",
         // 当前页数
         page: 1,
         // 当前每页条数
-        pageSize: 5
+        pageSize: 5,
       },
       total: 2,
       // 地图列表
-      mapList: [{ name: '嘉兴小区' }, { name: '万达广场' }],
-      imgsrc: fullBaseURL+'picture/',
-      viewDialogVisible: false
+      mapList: [{ name: "嘉兴小区" }, { name: "万达广场" }],
+      imgsrc: `${fullBaseURL}picture/`,
+      viewDialogVisible: false,
     }
   },
-  created () {
+  created() {
     this.getUserList()
   },
   methods: {
-    async getUserList () {
-      const { data: res } = await this.$http.post('map/querylist', this.queeryInfo)
+    async getUserList() {
+      const { data: res } = await this.$http.post("map/querylist", this.queeryInfo)
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('获取地图列表失败')
+        this.$message.error("获取地图列表失败")
       } else if (res.code === 200) {
         this.mapList = res.data.list
         this.total = res.data.total
-        this.$message.success('获取地图列表成功')
+        this.$message.success("获取地图列表成功")
       }
     },
-    showViewDialog (id) {
+    showViewDialog(id) {
       console.log(id)
       for (let i = 0; i < this.mapList.length; i++) {
         if (this.mapList[i].id === id) {
@@ -106,45 +109,45 @@ export default {
       }
       this.viewDialogVisible = true
     },
-    async removeUserById (uid) {
+    async removeUserById(uid) {
       // this.mapList.splice(id, 1)
       console.log(uid)
-      const { data: res } = await this.$http.delete('map/' + uid)
+      const { data: res } = await this.$http.delete(`map/${uid}`)
       console.log(res)
       if (res.code !== 200) {
-        this.$message.error('删除地图失败')
+        this.$message.error("删除地图失败")
       } else if (res.code === 200) {
-        this.$message.success('删除地图成功')
+        this.$message.success("删除地图成功")
         this.getUserList()
       }
     },
     // 监听pagesize改变的事件
-    handleSizeChange (newSize) {
+    handleSizeChange(newSize) {
       // console.log(newSize)
       this.queeryInfo.pageSize = newSize
       this.getUserList()
     },
     // 监听页码值改变的事件
-    handleCurrentChange (newPage) {
+    handleCurrentChange(newPage) {
       // console.log(newPage)
       this.queeryInfo.page = newPage
       this.getUserList()
     },
     // 预览关闭
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          this.imgsrc = fullBaseURL+'picture/'
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then((_) => {
+          this.imgsrc = `${fullBaseURL}picture/`
           done()
         })
-        .catch(_ => {})
+        .catch((_) => {})
     },
     // 确认预览
-    confirmView () {
+    confirmView() {
       this.viewDialogVisible = false
-      this.imgsrc = fullBaseURL+'picture/'
-    }
-  }
+      this.imgsrc = `${fullBaseURL}picture/`
+    },
+  },
 }
 </script>
 

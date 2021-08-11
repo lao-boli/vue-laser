@@ -155,18 +155,20 @@
 <script lang="ts">
 import RecordRTC from "recordrtc"
 // import md5 from 'js-md5'
-// import 
+// import
 import { getSeekableBlob } from "ebml"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
-import { basePort, baseURL, wsPath, fullBaseURL, isGCJ } from "../../globle"
+import * as $ from "jquery"
+import {
+  basePort, baseURL, wsPath, fullBaseURL, isGCJ,
+} from "../../globle"
 // See stopRecordingCallback() method below
 // I don't think We need jQuery anymore but I'm lazy to fix it.
-import * as $ from "jquery"
 import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
-import { Coord, CoordSet } from "../../plugins/coord-util"
+import { Coord, CoordSet } from "../../plugins/coord-util.js"
 
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 
@@ -219,17 +221,26 @@ interface mapInfo {
 // ? This is a high Cyclomatic Complexity function
 // ? But I think this is a good code, better than for loop
 const testHp = (hp: number) => {
-  if (hp <= 0){
+  if (hp <= 0) {
     return "dead"
-  } else if (hp < 40) {
+  }
+
+  if (hp < 40) {
     return "seriousInjury"
-  } else if (hp < 70) {
+  }
+
+  if (hp < 70) {
     return "slander"
-  } else if (hp < 100) {
+  }
+
+  if (hp < 100) {
     return "minorWound"
-  } else if (hp >= 100) {
+  }
+
+  if (hp >= 100) {
     return "full"
   }
+  return "unknown"
 }
 
 export default {
@@ -248,7 +259,7 @@ export default {
       video: null,
       videoStart: false,
       recorder: null,
-      imgsrc: "", 
+      imgsrc: "",
       // mapinfo should be GSJ dddd
       mapinfo: {
         id: null,
@@ -268,7 +279,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
-        full: 0
+        full: 0,
       },
       // 蓝方
       blue: {
@@ -278,7 +289,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
-        full: 0
+        full: 0,
       },
       // 充弹数据
       batchCharging: 0,
@@ -318,12 +329,12 @@ export default {
     try {
       if (
         // @ts-ignore: We have the get DisplayMedia
-        !navigator.getDisplayMedia &&
+        !navigator.getDisplayMedia
         // @ts-ignore: We have the get DisplayMedia
-        !navigator.mediaDevices.getDisplayMedia
+        && !navigator.mediaDevices.getDisplayMedia
       ) {
         throw new Error(
-          "Your browser does NOT support the getDisplayMedia API."
+          "Your browser does NOT support the getDisplayMedia API.",
         )
       }
     } catch (err) {
@@ -351,7 +362,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
-        full: 0
+        full: 0,
       }
       this.blue = {
         normal: 0,
@@ -360,7 +371,7 @@ export default {
         slander: 0,
         seriousInjury: 0,
         dead: 0,
-        full: 0
+        full: 0,
       }
       this.soldierlist.red = []
       this.soldierlist.blue = []
@@ -370,7 +381,7 @@ export default {
         res.data.forEach((data) => {
           const coord = new CoordSet(data.lat, data.lng)
           console.log("Recv Coord", coord)
-          if (isGCJ == true) {
+          if (isGCJ) {
             data.lat = coord.gsj.lat
             data.lng = coord.gsj.lng
           } else {
@@ -382,7 +393,7 @@ export default {
         res.data.forEach((data) => {
           // team is a string
           // value is red or blue
-          const team: "red" | "blue" = data.team
+          const { team } = data
           // Type 'String' cannot be used as an index type.
           // use small "string" and the compiler won't complaint
           // Always use small type in typescript
@@ -412,7 +423,7 @@ export default {
         this.$message.error("获取地图信息失败")
       } else {
         this.mapinfo = res.data
-        this.imgsrc = fullBaseURL + "picture/" + res.data.path
+        this.imgsrc = `${fullBaseURL}picture/${res.data.path}`
       }
     },
     // 根据马甲编号获取数据
@@ -455,19 +466,18 @@ export default {
       // 数据接收
       const redata = JSON.parse(e.data)
       // console.log(redata)
-      var aData = new Date()
-      var time =
-        aData.getFullYear() +
-        "-" +
-        (aData.getMonth() + 1) +
-        "-" +
-        aData.getDate() +
-        "-" +
-        aData.getHours() +
-        ":" +
-        aData.getMinutes() +
-        ":" +
-        aData.getSeconds()
+      const aData = new Date()
+      const time = `${aData.getFullYear()
+      }-${
+        aData.getMonth() + 1
+      }-${
+        aData.getDate()
+      }-${
+        aData.getHours()
+      }:${
+        aData.getMinutes()
+      }:${
+        aData.getSeconds()}`
       let active: Active = {
         content: "",
         timestamp: "",
@@ -484,7 +494,7 @@ export default {
         try {
           const coord = new CoordSet(redata.lat, redata.lng)
           console.log("Recv Coord", coord)
-          if (isGCJ == true) {
+          if (isGCJ) {
             redata.lat = coord.gsj.lat
             redata.lng = coord.gsj.lng
           } else {
@@ -498,12 +508,11 @@ export default {
         const teams = ["red", "blue"]
         teams.forEach((team) => {
           this.soldierlist[team].forEach((solider) => {
-            if (solider.id == redata.num) {
+            if (solider.id === redata.num) {
               if (solider.lastReportTime === null) {
-                msrc =
-                  redata.num +
-                  "号上线" +
-                  `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(3)})`
+                msrc = `${redata.num
+                }号上线`
+                  + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(3)})`
                 this.$message.success(msrc)
                 active.color = "#0bbd87"
                 // console.log(active)
@@ -531,7 +540,7 @@ export default {
           if (this.soldierlist.red[i].id === redata.shooteeNum) {
             if (this.soldierlist.red[i].hp > 34) {
               this.$message.warning(
-                `蓝队的${redata.shooterNum}号击中了红队${redata.shooteeNum}号的${redata.position}`
+                `蓝队的${redata.shooterNum}号击中了红队${redata.shooteeNum}号的${redata.position}`,
               )
               active = {
                 content: `蓝队的${redata.shooterNum}号击中了红队${redata.shooteeNum}号的${redata.position}`,
@@ -545,7 +554,7 @@ export default {
               this.getExerciseData()
             } else {
               this.$message.error(
-                `蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`
+                `蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`,
               )
               active = {
                 content: `蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`,
@@ -566,7 +575,7 @@ export default {
           if (this.soldierlist.blue[j].id === redata.shooteeNum) {
             if (this.soldierlist.blue[j].hp > 34) {
               this.$message.warning(
-                `红队的${redata.shooterNum}号击中了蓝队${redata.shooteeNum}号的${redata.position}`
+                `红队的${redata.shooterNum}号击中了蓝队${redata.shooteeNum}号的${redata.position}`,
               )
               active = {
                 content: `红队的${redata.shooterNum}号击中了蓝队${redata.shooteeNum}号的${redata.position}`,
@@ -580,7 +589,7 @@ export default {
               this.getExerciseData()
             } else {
               this.$message.error(
-                `红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`
+                `红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`,
               )
               active = {
                 content: `红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`,
@@ -611,22 +620,22 @@ export default {
       this.$confirm("确认关闭？")
     },
     onClickDownDaily() {
-      var title = this.currentExerciseName
-      var str = ""
+      const title = this.currentExerciseName
+      let str = ""
       this.activities.forEach((item) => {
-        str +=
-          "事件:" + item.content + "   " + "时间:" + item.timestamp + "\r\n"
+        str
+          += `事件:${item.content}  时间:${item.timestamp}\r\n`
       })
-      var allStr = title + "\r\n" + "\r\n" + str
-      var export_blob = new Blob([allStr])
-      var save_link = document.createElement("a")
+      const allStr = `${title}\r\n \r\n${str}`
+      const export_blob = new Blob([allStr])
+      const save_link = document.createElement("a")
       save_link.href = window.URL.createObjectURL(export_blob)
-      save_link.download = this.currentExerciseName + ".txt"
+      save_link.download = `${this.currentExerciseName}.txt`
       this.fakeClick(save_link)
       this.endVisible = false
     },
     fakeClick(obj) {
-      var ev = document.createEvent("MouseEvents")
+      const ev = document.createEvent("MouseEvents")
       ev.initMouseEvent(
         "click",
         true,
@@ -642,14 +651,14 @@ export default {
         false,
         false,
         0,
-        null
+        null,
       )
       obj.dispatchEvent(ev)
     },
     toPosition() {
       this.$refs.mapViewInstance.updateMarkers(
         this.soldierlist.red,
-        this.soldierlist.blue
+        this.soldierlist.blue,
       )
     },
     // 打开录屏提示框
@@ -658,8 +667,8 @@ export default {
     },
     // 录屏必要函数
     invokeGetDisplayMedia(success, error) {
-      let displaymediastreamconstraints = {
-        video: true
+      const displaymediastreamconstraints = {
+        video: true,
       }
       // above constraints are NOT supported YET
       // that's why overridnig them
@@ -688,9 +697,9 @@ export default {
             })
             callback(screen)
           },
-          function (error) {
+          (error) => {
             console.error(error)
-          }
+          },
         )
       } catch (err) {
         console.error(err)
@@ -700,36 +709,39 @@ export default {
     addStreamStopListener(stream, callback) {
       stream.addEventListener(
         "ended",
-        function () {
-          callback()
-          callback = function () {}
+        () => {
+          // Do nothing
+          // I don't know what this shit is doing though
         },
-        false
+        false,
       )
       stream.addEventListener(
         "inactive",
-        function () {
+        () => {
           callback()
-          callback = function () {}
+          callback = function () {
+            // Do nothing
+            // I don't know what this shit is doing though
+          }
         },
-        false
+        false,
       )
-      stream.getTracks().forEach(function (track) {
+      stream.getTracks().forEach((track) => {
         track.addEventListener(
           "ended",
-          function () {
-            callback()
-            callback = function () {}
+          () => {
+            // Do nothing
+            // I don't know what this shit is doing though
           },
-          false
+          false,
         )
         track.addEventListener(
           "inactive",
-          function () {
-            callback()
-            callback = function () {}
+          () => {
+            // Do nothing
+            // I don't know what this shit is doing though
           },
-          false
+          false,
         )
       })
     },
@@ -750,7 +762,6 @@ export default {
       })
     },
     stopRecordingCallback() {
-      this.video.src = this.video.srcObject = null
       this.video.src = URL.createObjectURL(this.recorder.getBlob())
       // this.download()
       this.recorder.screen.stop()
@@ -763,7 +774,7 @@ export default {
       const bmf = new BMF()
       const sliceSize = 5 * 1024 * 1024 // 每个文件切片大小定为5MB
       const fileSize = blob.size // 文件大小
-      const fileName = Date.now() + ".webm" // 文件名
+      const fileName = `${Date.now()}.webm` // 文件名
       console.log(fileName)
       console.log(fileSize)
       // 计算文件切片总数
@@ -792,7 +803,7 @@ export default {
           },
           (progress) => {
             console.log("progress number:", progress)
-          }
+          },
         )
         videoData.append("md5", this.my_md5)
         // console.log(this.$md5(blob))
@@ -804,7 +815,7 @@ export default {
         // IDK why he's still using jQuery for a simple HTTP POST
         // But I don't want to touch this part
         $.ajax({
-          url: fullBaseURL + "newrecord/upload",
+          url: `${fullBaseURL}newrecord/upload`,
           type: "POST",
           cache: false,
           data: videoData,
@@ -847,12 +858,12 @@ export default {
       console.log(this.recorder)
     },
     download() {
-      getSeekableBlob(this.recorder.getBlob(), function (seekableBlob) {
+      getSeekableBlob(this.recorder.getBlob(), (seekableBlob) => {
         const url = window.URL.createObjectURL(seekableBlob)
         const link = document.createElement("a")
         link.style.display = "none"
         link.href = url
-        const fileName = Date.now() + ".webm"
+        const fileName = `${Date.now()}.webm`
         link.setAttribute("download", fileName)
         document.body.appendChild(link)
         link.click()

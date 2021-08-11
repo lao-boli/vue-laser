@@ -42,35 +42,39 @@
 </template>
 <script>
 export default {
-  data () {
+  data() {
     return {
       loginForm: {
-        username: 'admin',
-        password: '123456'
+        username: "admin",
+        password: "123456",
       },
       // 验证规则
       loginFormRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3, max: 10, message: "长度在 3 到 10个字符", trigger: "blur",
+          },
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在 6 到 15个字符', trigger: 'blur' }
-        ]
-      }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6, max: 15, message: "长度在 6 到 15个字符", trigger: "blur",
+          },
+        ],
+      },
     }
   },
-  created () {
-    console.log('登录界面')
+  created() {
+    console.log("登录界面")
   },
   methods: {
     // 重置表单
-    resetLoginForm () {
+    resetLoginForm() {
       // console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
-    login () {
+    login() {
       // this.$refs.loginFormRef.validate(async (valid) => {
       //   console.log(valid)
       //   if (!valid) return
@@ -87,10 +91,10 @@ export default {
       //     this.$router.push('/home')
       //   }
       // })
-      window.sessionStorage.setItem('token', 'admin')
-      this.$router.push('/home')
-    }
-  }
+      window.sessionStorage.setItem("token", "admin")
+      this.$router.push("/home")
+    },
+  },
 }
 
 </script>

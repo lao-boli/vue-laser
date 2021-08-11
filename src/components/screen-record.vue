@@ -9,38 +9,39 @@
 </template>
 
 <script>
-import RecordRTC from 'recordrtc'
+import RecordRTC from "recordrtc"
+
 export default {
-  name: 'screenRecord',
-  data () {
+  name: "screenRecord",
+  data() {
     return {
       video: null,
       videoStart: false,
-      recorder: null
+      recorder: null,
     }
   },
-  created () {
+  created() {
     if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
-      const error = 'Your browser does NOT support the getDisplayMedia API.'
+      const error = "Your browser does NOT support the getDisplayMedia API."
       throw new Error(error)
     }
   },
-  mounted () {
-    this.video = document.querySelector('video')
+  mounted() {
+    this.video = document.querySelector("video")
   },
   methods: {
-    invokeGetDisplayMedia (success, error) {
+    invokeGetDisplayMedia(success, error) {
       let displaymediastreamconstraints = {
         video: {
-          displaySurface: 'monitor', // monitor, window, application, browser
+          displaySurface: "monitor", // monitor, window, application, browser
           logicalSurface: true,
-          cursor: 'always' // never, always, motion
-        }
+          cursor: "always", // never, always, motion
+        },
       }
       // above constraints are NOT supported YET
       // that's why overridnig them
       displaymediastreamconstraints = {
-        video: true
+        video: true,
       }
       if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices.getDisplayMedia(displaymediastreamconstraints).then(success).catch(error)
@@ -48,42 +49,42 @@ export default {
         navigator.getDisplayMedia(displaymediastreamconstraints).then(success).catch(error)
       }
     },
-    captureScreen (callback) {
+    captureScreen(callback) {
       this.invokeGetDisplayMedia((screen) => {
         this.addStreamStopListener(screen, () => {
           //
         })
         callback(screen)
-      }, function (error) {
+      }, (error) => {
         console.error(error)
-        alert('Unable to capture your screen. Please check console logs.\n' + error)
+        alert(`Unable to capture your screen. Please check console logs.\n${error}`)
       })
     },
-    addStreamStopListener (stream, callback) {
-      stream.addEventListener('ended', function () {
+    addStreamStopListener(stream, callback) {
+      stream.addEventListener("ended", () => {
         callback()
         callback = function () { }
       }, false)
-      stream.addEventListener('inactive', function () {
+      stream.addEventListener("inactive", () => {
         callback()
         callback = function () { }
       }, false)
-      stream.getTracks().forEach(function (track) {
-        track.addEventListener('ended', function () {
+      stream.getTracks().forEach((track) => {
+        track.addEventListener("ended", () => {
           callback()
           callback = function () { }
         }, false)
-        track.addEventListener('inactive', function () {
+        track.addEventListener("inactive", () => {
           callback()
           callback = function () { }
         }, false)
       })
     },
-    startRecording () {
-      this.captureScreen(screen => {
+    startRecording() {
+      this.captureScreen((screen) => {
         this.video.srcObject = screen
         this.recorder = RecordRTC(screen, {
-          type: 'video'
+          type: "video",
         })
         this.recorder.startRecording()
         // release screen on stopRecording
@@ -91,22 +92,21 @@ export default {
         this.videoStart = true
       })
     },
-    stopRecordingCallback () {
-      this.video.src = this.video.srcObject = null
+    stopRecordingCallback() {
       this.video.src = URL.createObjectURL(this.recorder.getBlob())
-      const downloadLink = document.createElement('a')
+      const downloadLink = document.createElement("a")
       downloadLink.href = URL.createObjectURL(this.recorder.getBlob())
-      downloadLink.download = '录屏.mp4'
+      downloadLink.download = "录屏.mp4"
       downloadLink.click()
       this.recorder.screen.stop()
       this.recorder.destroy()
       this.recorder = null
       this.videoStart = false
     },
-    stopRecording () {
+    stopRecording() {
       this.recorder.stopRecording(this.stopRecordingCallback)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -70,24 +70,24 @@
  * @param {string} team
  */
 export default {
-  name:"StatTab",
-  data(){
-    return{
+  name: "StatTab",
+  data() {
+    return {
       /**
        * Used to get the correct Chinese text display
        * @type {string}
        */
-      team_text: (this.team=="red") ? "红方" : "蓝方"
+      team_text: (this.team === "red") ? "红方" : "蓝方",
     }
   },
-  props:{
-    soldierListData:{
-      type:Array
+  props: {
+    soldierListData: {
+      type: Array,
     },
-    team:{
-      type:String
-    }
-  }
+    team: {
+      type: String,
+    },
+  },
 }
 </script>
 

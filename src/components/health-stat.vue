@@ -26,7 +26,6 @@
   </el-col>
 </template>
 
-
 <script lang="ts">
 // I can use the fucking TypeScript in Vue Yeah!!!!!!!
 
@@ -44,11 +43,11 @@ import { Col, Table } from "element-ui"
 /**
  * Team Health Stat
  * red/blue in currentExercise
- * 
+ *
 
  @param {string} team
  only allow "red" and "blue"
- 
+
  */
 export default {
   name: "HealthStat",
@@ -58,22 +57,20 @@ export default {
        * Used to get the correct Chinese text display
        * @type {string}
        */
-      team_text: this.team == "red" ? "红方" : "蓝方",
+      team_text: this.team === "red" ? "红方" : "蓝方",
     }
   },
   props: {
     healthStat: {
       type: Object,
-      default: () => {
-        return {
-          normal: 0,
-          outline: 0,
-          minorWound: 0,
-          slander: 0,
-          seriousInjury: 0,
-          dead: 0,
-        }
-      },
+      default: () => ({
+        normal: 0,
+        outline: 0,
+        minorWound: 0,
+        slander: 0,
+        seriousInjury: 0,
+        dead: 0,
+      }),
     },
     team: {
       type: String,
@@ -81,4 +78,3 @@ export default {
   },
 }
 </script>
-

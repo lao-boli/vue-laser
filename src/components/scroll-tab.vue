@@ -30,9 +30,8 @@
   </section>
 </template>
 
-
 <script lang="ts">
-import HealthStat from "./health-stat.vue";
+import HealthStat from "./health-stat.vue"
 
 /**
  * I'm a happy scroll tab, dispaly activities and health stats
@@ -52,7 +51,7 @@ export default {
     return {
       // redHealthStat: this.healthStats[0],
       // blueHealthStat: this.healthStats[1],
-    };
+    }
   },
   props: {
     activities: {
@@ -63,12 +62,12 @@ export default {
     // healthStats: {
     //   type: Array,
     // },
-    redHealthStat:{
-      type: Object
+    redHealthStat: {
+      type: Object,
     },
-    blueHealthStat:{
-      type: Object
+    blueHealthStat: {
+      type: Object,
     },
   },
-};
+}
 </script>

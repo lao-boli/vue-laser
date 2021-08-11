@@ -68,16 +68,16 @@ import {
 } from "vue2-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
-delete L.Icon.Default.prototype._getIconUrl;
+
+delete L.Icon.Default.prototype._getIconUrl
 
 // fix icon display
 // from https://github.com/Leaflet/Leaflet/issues/6822
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
-
+// L.Icon.Default.mergeOptions({
+//   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+//   iconUrl: require("leaflet/dist/images/marker-icon.png"),
+//   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+// })
 
 interface Marker {
   id: number
@@ -154,7 +154,7 @@ export default {
       },
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors",
       markers: {
         red: this.redList.map(conversion),
         blue: this.blueList.map(conversion),
@@ -185,7 +185,7 @@ export default {
       type: String,
     },
   },
-  mounted: function () {
+  mounted() {
     // this.defaultIcon = L.divIcon({ className: "default-div-icon" })
     // this.blueIcon = L.divIcon({ className: "blue-icon" })
     // this.redIcon = L.divIcon({ className: "red-icon" })
@@ -198,7 +198,7 @@ export default {
       this.markers.blue = blueList.map(conversion)
     },
     positionToString(position: { lat: number; lng: number }) {
-      return position.lat.toFixed(4) + "," + position.lng.toFixed(4)
+      return `${position.lat.toFixed(4)},${position.lng.toFixed(4)}`
     },
   },
 }
