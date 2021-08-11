@@ -4,7 +4,8 @@ dist
 .metals
 
 # local env files
-src/globle.js
+src/global.js
+src/global.ts
 .env
 .env.local
 .env.*.local

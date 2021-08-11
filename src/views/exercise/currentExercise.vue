@@ -162,7 +162,7 @@ import ReconnectingWebSocket from "reconnecting-websocket"
 import * as $ from "jquery"
 import {
   basePort, baseURL, wsPath, fullBaseURL, isGCJ,
-} from "../../globle"
+} from "../../global"
 // See stopRecordingCallback() method below
 // I don't think We need jQuery anymore but I'm lazy to fix it.
 import ScrollTab from "../../components/scroll-tab.vue"
@@ -198,7 +198,7 @@ interface Active {
   color?: string
 }
 
-interface healthStatData {
+interface HealthStatData {
   full: number
   normal: number
   outline: number
@@ -208,7 +208,7 @@ interface healthStatData {
   dead: number
 }
 
-interface mapInfo {
+interface MapInfo {
   id: string
   leftTopLat: number
   leftTopLng: number

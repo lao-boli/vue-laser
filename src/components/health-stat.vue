@@ -29,8 +29,6 @@
 <script lang="ts">
 // I can use the fucking TypeScript in Vue Yeah!!!!!!!
 
-import { Col, Table } from "element-ui"
-
 //   (property) healthStat: {
 //     normal: number;
 //     outline: number;

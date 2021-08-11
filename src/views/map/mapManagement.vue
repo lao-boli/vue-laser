@@ -64,7 +64,7 @@
 <script>
 import {
   basePort, baseURL, wsPath, fullBaseURL,
-} from "../../globle"
+} from "../../global"
 
 export default {
   data() {

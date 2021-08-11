@@ -1,5 +1,5 @@
 import Vue from "vue"
-import "./plugins/element.js"
+import "./plugins/element"
 import "element-ui/lib/theme-chalk/index.css"
 import "./assets/css/global.css"
 import axios from "axios"
@@ -9,7 +9,7 @@ import Qs from "qs"
 import Nprogress from "nprogress"
 import {
   basePort, baseURL, wsPath, fullBaseURL,
-} from "./globle.js"
+} from "./global"
 import router from "./router"
 import "nprogress/nprogress.css"
 // 引入css

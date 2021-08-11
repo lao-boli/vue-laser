@@ -109,17 +109,14 @@ interface Solider {
   team: string
 }
 
-const conversion = (solider: Solider) => {
-  const marker: Marker = {
-    id: solider.id,
-    color: solider.team,
-    position: {
-      lat: solider.lat,
-      lng: solider.lng,
-    },
-  }
-  return marker
-}
+const conversion = (solider: Solider): Marker => ({
+  id: solider.id,
+  color: solider.team,
+  position: {
+    lat: solider.lat,
+    lng: solider.lng,
+  },
+})
 
 export default {
   name: "MapView",

@@ -2,26 +2,34 @@
   <section class="scroll_continar">
     <el-row :gutter="20">
       <el-col :span="7" :offset="5">
-      <div style="height:220px;width:400px;background-color:#fff; border: 2px solid rgba(0,0,0,0.5)">
-      <!-- 这里的标签名称要和main.js文件中定义的组件名称保持一致 -->
-        <happy-scroll color="rgba(0,0,0,0.5)" size="6">
-        <!-- 内层盒子——内容区 -->
-          <div class="con">
-            <el-timeline>
-            <el-timeline-item
-            v-for="(activity, index) in activities"
-            :key="index"
-            :icon="activity.icon"
-            :type="activity.type"
-            :color="activity.color"
-            :size="activity.size"
-            :timestamp="activity.timestamp">
-            {{activity.content}}
-            </el-timeline-item>
-            </el-timeline>
-          </div>
-        </happy-scroll>
-      </div>
+        <div
+          style="
+            height: 220px;
+            width: 400px;
+            background-color: #fff;
+            border: 2px solid rgba(0, 0, 0, 0.5);
+          "
+        >
+          <!-- 这里的标签名称要和main.js文件中定义的组件名称保持一致 -->
+          <happy-scroll color="rgba(0,0,0,0.5)" size="6">
+            <!-- 内层盒子——内容区 -->
+            <div class="con">
+              <el-timeline>
+                <el-timeline-item
+                  v-for="(activity, index) in activities"
+                  :key="index"
+                  :icon="activity.icon"
+                  :type="activity.type"
+                  :color="activity.color"
+                  :size="activity.size"
+                  :timestamp="activity.timestamp"
+                >
+                  {{ activity.content }}
+                </el-timeline-item>
+              </el-timeline>
+            </div>
+          </happy-scroll>
+        </div>
       </el-col>
       <!-- colon (:) is short form of "v-bind:" -->
       <health-stat team="red" v-bind:healthStat="redHealthStat"></health-stat>

@@ -25,7 +25,7 @@ class CoordSet {
     lng: 0,
   }
 
-  constructor(ddmm_latitude, ddmm_longitude) {
+  constructor(ddmm_latitude:number, ddmm_longitude:number) {
     this.lat = ddmm_latitude
     this.lng = ddmm_longitude
     this.ddmm.lat = ddmm_latitude
