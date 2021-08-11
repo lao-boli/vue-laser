@@ -224,19 +224,15 @@ const testHp = (hp: number) => {
   if (hp <= 0) {
     return "dead"
   }
-
   if (hp < 40) {
     return "seriousInjury"
   }
-
   if (hp < 70) {
     return "slander"
   }
-
   if (hp < 100) {
     return "minorWound"
   }
-
   if (hp >= 100) {
     return "full"
   }
@@ -871,7 +867,7 @@ export default {
       })
     },
     // 结束演习
-    async clickEnd() {
+    async clickEnd(): Promise<void> {
       const { data: res } = await this.$http.get("newbattle/newend")
       if (res.code !== 200) {
         this.$message.error("结束演习失败")

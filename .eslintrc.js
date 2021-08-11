@@ -6,7 +6,8 @@ module.exports = {
   },
 
   extends: [
-    "airbnb-base",
+    // "airbnb-base",
+    "@vue/eslint-config-airbnb",
     "plugin:vue/essential",
     "@vue/typescript/recommended",
     "@vue/typescript",
@@ -33,11 +34,6 @@ module.exports = {
     "no-trailing-spaces": "warn",
     "comma-dangle": "warn",
     "no-plusplus": "off",
-    // Or just disable eslint-import
-    // Since vue modified webpack cannot
-    // be processed properly
-    "import/no-unresolved": "off",
-    "import/extensions": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
     "vue/no-unused-components": "warn",

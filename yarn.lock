@@ -1605,6 +1605,16 @@
   optionalDependencies:
     prettier "^1.18.2"
 
+"@vue/eslint-config-airbnb@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.nlark.com/@vue/eslint-config-airbnb/download/@vue/eslint-config-airbnb-5.3.0.tgz#896551d600816a06dff13fdd7d04fd5153379817"
+  integrity sha1-iWVR1gCBagbf8T/dfQT9UVM3mBc=
+  dependencies:
+    eslint-config-airbnb-base "^14.0.0"
+    eslint-import-resolver-node "^0.3.4"
+    eslint-import-resolver-webpack "^0.13.0"
+    eslint-plugin-import "^2.21.2"
+
 "@vue/eslint-config-typescript@^7.0.0":
   version "7.0.0"
   resolved "https://registry.nlark.com/@vue/eslint-config-typescript/download/@vue/eslint-config-typescript-7.0.0.tgz#220c70c2edf7a253e739298525f4d401b8ef0038"
@@ -3882,7 +3892,7 @@ escape-string-regexp@^4.0.0:
   resolved "https://registry.nlark.com/escape-string-regexp/download/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha1-FLqDpdNz49MR5a/KKc9b+tllvzQ=
 
-eslint-config-airbnb-base@^14.2.0, eslint-config-airbnb-base@^14.2.1:
+eslint-config-airbnb-base@^14.0.0, eslint-config-airbnb-base@^14.2.0, eslint-config-airbnb-base@^14.2.1:
   version "14.2.1"
   resolved "https://registry.nlark.com/eslint-config-airbnb-base/download/eslint-config-airbnb-base-14.2.1.tgz#8a2eb38455dc5a312550193b319cdaeef042cd1e"
   integrity sha1-ii6zhFXcWjElUBk7MZza7vBCzR4=
@@ -3909,7 +3919,7 @@ eslint-config-airbnb@^18.2.0, eslint-config-airbnb@^18.2.1:
     object.assign "^4.1.2"
     object.entries "^1.1.2"
 
-eslint-import-resolver-node@^0.3.5:
+eslint-import-resolver-node@^0.3.4, eslint-import-resolver-node@^0.3.5:
   version "0.3.5"
   resolved "https://registry.nlark.com/eslint-import-resolver-node/download/eslint-import-resolver-node-0.3.5.tgz#939bbb0f74e179e757ca87f7a4a890dabed18ac4"
   integrity sha1-k5u7D3TheedXyof3pKiQ2r7RisQ=
@@ -3928,7 +3938,7 @@ eslint-import-resolver-typescript@^2.4.0:
     resolve "^1.17.0"
     tsconfig-paths "^3.9.0"
 
-eslint-import-resolver-webpack@^0.13.1:
+eslint-import-resolver-webpack@^0.13.0, eslint-import-resolver-webpack@^0.13.1:
   version "0.13.1"
   resolved "https://registry.nlark.com/eslint-import-resolver-webpack/download/eslint-import-resolver-webpack-0.13.1.tgz#6d2fb928091daf2da46efa1e568055555b2de902"
   integrity sha1-bS+5KAkdry2kbvoeVoBVVVst6QI=
@@ -3964,7 +3974,7 @@ eslint-module-utils@^2.6.2:
     debug "^3.2.7"
     pkg-dir "^2.0.0"
 
-eslint-plugin-import@^2.24.0:
+eslint-plugin-import@^2.21.2, eslint-plugin-import@^2.24.0:
   version "2.24.0"
   resolved "https://registry.nlark.com/eslint-plugin-import/download/eslint-plugin-import-2.24.0.tgz?cache=0&sync_timestamp=1628458245337&other_urls=https%3A%2F%2Fregistry.nlark.com%2Feslint-plugin-import%2Fdownload%2Feslint-plugin-import-2.24.0.tgz#697ffd263e24da5e84e03b282f5fb62251777177"
   integrity sha1-aX/9Jj4k2l6E4DsoL1+2IlF3cXc=
