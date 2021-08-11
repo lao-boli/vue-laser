@@ -168,7 +168,7 @@ import {
 import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
-import { Coord, CoordSet } from "../../plugins/coord-util.js"
+import { Coord, CoordSet } from "@/plugins/coord-util"
 
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 

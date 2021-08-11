@@ -6,20 +6,15 @@ module.exports = {
   },
 
   extends: [
-    "eslint:recommended",
     "airbnb-base",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript",
     "plugin:vue/essential",
-    "@vue/typescript",
     "@vue/typescript/recommended",
+    "@vue/typescript",
   ],
   parserOptions: {
     ecmaVersion: 2020,
     parser: "@typescript-eslint/parser",
   },
-
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
@@ -38,8 +33,11 @@ module.exports = {
     "no-trailing-spaces": "warn",
     "comma-dangle": "warn",
     "no-plusplus": "off",
-    // "import/no-unresolved": "off",
-    // "import/extensions": "off",
+    // Or just disable eslint-import
+    // Since vue modified webpack cannot
+    // be processed properly
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
     "vue/no-unused-components": "warn",
