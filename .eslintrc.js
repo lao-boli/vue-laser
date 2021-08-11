@@ -1,17 +1,25 @@
 module.exports = {
   root: true,
+
   env: {
     node: true,
   },
+
   extends: [
     "eslint:recommended",
     "airbnb-base",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
     "plugin:vue/essential",
+    "@vue/typescript",
     "@vue/typescript/recommended",
   ],
   parserOptions: {
     ecmaVersion: 2020,
+    parser: "@typescript-eslint/parser",
   },
+
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
@@ -22,16 +30,18 @@ module.exports = {
     "array-bracket-spacing": ["warn", "never"],
     "brace-style": ["warn", "1tbs"],
     "linebreak-style": ["off", "unix"],
-    "@typescript-eslint/ban-ts-comment": "off",
-    "no-trailing-spaces": "warn",
-    "import/no-unresolved": "off",
-    "import/extensions": "off",
-    "no-plusplus": "off",
-    "no-param-reassign": "warn",
     "max-len": "warn",
-    "no-empty-function": "warn",
-    "@typescript-eslint/no-empty-function": "warn",
+    "object-curly-newline": "warn",
+    "no-param-reassign": "warn",
     "no-underscore-dangle": "warn",
+    "no-empty-function": "warn",
+    "no-trailing-spaces": "warn",
+    "comma-dangle": "warn",
+    "no-plusplus": "off",
+    // "import/no-unresolved": "off",
+    // "import/extensions": "off",
+    "@typescript-eslint/no-empty-function": "warn",
+    "@typescript-eslint/ban-ts-comment": "off",
     "vue/no-unused-components": "warn",
   },
 }

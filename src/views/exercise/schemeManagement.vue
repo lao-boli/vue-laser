@@ -4,52 +4,67 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/newScheme' }">演习</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/schemeManagement' }">方案管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/schemeManagement' }"
+        >方案管理</el-breadcrumb-item
+      >
     </el-breadcrumb>
     <!--卡片视图-->
     <el-card>
       <h3>方案管理</h3>
       <!--搜索与添加区域-->
       <el-row :gutter="20">
-        <el-col :span="7" >
-          <el-input placeholder="请输入内容" v-model="queeryInfo.name" clearable @clear="getUserList">
-            <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
+        <el-col :span="7">
+          <el-input
+            placeholder="请输入内容"
+            v-model="queeryInfo.name"
+            clearable
+            @clear="getUserList"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getUserList"
+            ></el-button>
           </el-input>
         </el-col>
       </el-row>
-      <el-table
-        :data="schemeList"
-        border
-        stripe
-        style="width: 80%">
+      <el-table :data="schemeList" border stripe style="width: 80%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column
-          prop="name"
-          label="方案名称"
-          width="180px">
+        <el-table-column prop="name" label="方案名称" width="180px">
         </el-table-column>
-        <el-table-column
-          prop="mapName"
-          label="地图名称"
-          width="180px">
+        <el-table-column prop="mapName" label="地图名称" width="180px">
         </el-table-column>
         <el-table-column
           prop="redTeamList.length"
           label="红方人数"
-          width="180px">
+          width="180px"
+        >
         </el-table-column>
         <el-table-column
           prop="blueTeamList.length"
           label="蓝方人数"
-          width="180px">
+          width="180px"
+        >
         </el-table-column>
         <el-table-column label="操作" width="500px">
           <template slot-scope="scope">
             <!--显示按钮-->
-            <el-button type="primary" size="mini" @click="start(scope.row)">开始演习</el-button>
-            <el-button type="success" size="mini" @click="resume_load(scope.row)">加载正在进行的演习</el-button>
+            <el-button type="primary" size="mini" @click="start(scope.row)"
+              >开始演习</el-button
+            >
+            <el-button
+              type="success"
+              size="mini"
+              @click="resume_load(scope.row)"
+              >加载正在进行的演习</el-button
+            >
             <!--删除按钮-->
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeSchemeById(scope.row.id)"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="removeSchemeById(scope.row.id)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,7 +76,8 @@
         :page-sizes="[1, 2, 5, 10]"
         :page-size="queeryInfo.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="total"
+      >
       </el-pagination>
     </el-card>
   </div>
@@ -82,7 +98,8 @@ export default {
       schemeList: [
         {
           blueVestNumStr: "6,7,8,9,10,16,17,18,19,20",
-          blueVestWeapon: "步枪,步枪,步枪,步枪,步枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪",
+          blueVestWeapon:
+            "步枪,步枪,步枪,步枪,步枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪,冲锋枪",
           id: "c4cb6af9ec544080a6d881804bbeb563",
           mapId: "7bdfaf61ef894940af383dd64349e1fe",
           mapName: "万达广场",
@@ -106,7 +123,10 @@ export default {
   },
   methods: {
     async getUserList() {
-      const { data: res } = await this.$http.post("newbattle/set/newquerylist", this.queeryInfo)
+      const { data: res } = await this.$http.post(
+        "newbattle/set/newquerylist",
+        this.queeryInfo,
+      )
       console.log(res)
       if (res.code !== 200) {
         this.$message.error("获取方案列表失败")
@@ -176,7 +196,7 @@ export default {
 </script>
 
 <style scoped>
-h3{
+h3 {
   margin: 10px;
   padding: 15px;
   border-bottom: 1px solid #606266;

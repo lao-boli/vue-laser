@@ -1,5 +1,4 @@
 import Vue from "vue"
-import App from "./App.vue"
 import "./plugins/element.js"
 import "element-ui/lib/theme-chalk/index.css"
 import "./assets/css/global.css"
@@ -15,6 +14,7 @@ import router from "./router"
 import "nprogress/nprogress.css"
 // 引入css
 import "vue-happy-scroll/docs/happy-scroll.css"
+import App from "./App.vue"
 
 axios.defaults.baseURL = `http://${baseURL}:${basePort}/`
 // 在reques拦截器中展示进度条

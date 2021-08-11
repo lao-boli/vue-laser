@@ -30,9 +30,9 @@ class CoordSet {
     this.lng = ddmm_longitude
     this.ddmm.lat = ddmm_latitude
     this.ddmm.lng = ddmm_longitude
-    this.wgs.lat = this.dmToDd(ddmm_latitude)
-    this.wgs.lng = this.dmToDd(ddmm_longitude)
-    const converted_coord = this.transformFromWGSToGCJ(
+    this.wgs.lat = CoordSet.dmToDd(ddmm_latitude)
+    this.wgs.lng = CoordSet.dmToDd(ddmm_longitude)
+    const converted_coord = CoordSet.transformFromWGSToGCJ(
       this.wgs.lng,
       this.wgs.lat,
     )
@@ -47,7 +47,7 @@ class CoordSet {
    * @param {number} dm
    * @returns {number}
    *  */
-  dmToDd(dm: number) {
+  static dmToDd(dm: number) {
     const d = Math.floor(dm)
     const m = dm - d
     const decimal_d = (m / 60) * 100
@@ -61,7 +61,7 @@ class CoordSet {
    * @param {number} wgLat
    * @returns {Coord} Object
    */
-  transformFromWGSToGCJ(wgLon: number, wgLat: number) {
+  static transformFromWGSToGCJ(wgLon: number, wgLat: number) {
     // We are always in the Fucking China
     // const PI
     const PI = 3.14159265358979324
@@ -113,18 +113,18 @@ class CoordSet {
       return ret
     }
     // World Geodetic System ==> Mars Geodetic System
-    function transform(wgLon:number, wgLat:number):Coord {
-      let dLat = transformLat(wgLon - 105.0, wgLat - 35.0)
-      let dLon = transformLon(wgLon - 105.0, wgLat - 35.0)
-      const radLat = (wgLat / 180.0) * PI
+    function transform(wg_Lng:number, wg_Lat:number):Coord {
+      let dLat = transformLat(wg_Lng - 105.0, wg_Lat - 35.0)
+      let dLon = transformLon(wg_Lng - 105.0, wg_Lat - 35.0)
+      const radLat = (wg_Lat / 180.0) * PI
       let magic = Math.sin(radLat)
       magic = 1 - ee * magic * magic
       const sqrtMagic = Math.sqrt(magic)
       dLat = (dLat * 180.0) / (((a * (1 - ee)) / (magic * sqrtMagic)) * PI)
       dLon = (dLon * 180.0) / ((a / sqrtMagic) * Math.cos(radLat) * PI)
       return {
-        lat: wgLat + dLat,
-        lng: wgLon + dLon,
+        lat: wg_Lat + dLat,
+        lng: wg_Lng + dLon,
       }
     }
     return transform(wgLon, wgLat)

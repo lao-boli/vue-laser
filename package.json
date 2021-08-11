@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve --disable-host-check",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint:quiet": "eslint --quiet \"{tests,src}/**/*.{js,vue}\"",
+    "lint:fix": "vue-cli-service lint --fix",
+    "lint:quiet": "eslint --quiet \"{tests,src}/**/*.{js,vue,ts}\"",
     "serve-no-lint": "vue-cli-service serve --disable-host-check  --skip-plugins @vue/cli-plugin-eslint"
   },
   "dependencies": {
@@ -44,10 +45,12 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-vue": "^7.16.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "typescript": "~4.1.5",
+    "typescript-eslint": "^0.0.1-alpha.0",
     "vue-template-compiler": "^2.6.11"
   }
 }

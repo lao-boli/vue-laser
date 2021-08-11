@@ -4,7 +4,9 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/newSchme' }">演习</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/newSchme' }">新建方案</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/newSchme' }"
+        >新建方案</el-breadcrumb-item
+      >
     </el-breadcrumb>
     <!--卡片视图-->
     <el-card>
@@ -14,11 +16,25 @@
           <el-input class="mapinput" v-model="form.name"></el-input>
         </el-form-item>
         <el-form-item label="演习地图:" prop="mapId">
-          <el-select v-model="form.mapId" placeholder="请选择演习地图" popper-class="down">
-            <el-option :label="item.name" :value="item.id" v-for="item in mapList" :key="item.id"></el-option>
+          <el-select
+            v-model="form.mapId"
+            placeholder="请选择演习地图"
+            popper-class="down"
+          >
+            <el-option
+              :label="item.name"
+              :value="item.id"
+              v-for="item in mapList"
+              :key="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="红方人员:" v-for="item in form.redTeamList" :key="item.index" required>
+        <el-form-item
+          label="红方人员:"
+          v-for="item in form.redTeamList"
+          :key="item.index"
+          required
+        >
           <el-col :span="3">
             <el-form-item>
               <el-input v-model="item.name" placeholder="如:张三"></el-input>
@@ -37,7 +53,7 @@
               <el-input v-model="item.id"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4" >
+          <el-col :span="4">
             <el-form-item label="年龄：">
               <el-input v-model="item.age"></el-input>
             </el-form-item>
@@ -57,7 +73,12 @@
           <el-button type="primary" @click="addnewred">新增</el-button>
           <el-button type="danger" @click="deletered">删除</el-button>
         </el-form-item>
-        <el-form-item label="蓝方人员:" v-for="item in form.blueTeamList" :key="item.index" required>
+        <el-form-item
+          label="蓝方人员:"
+          v-for="item in form.blueTeamList"
+          :key="item.index"
+          required
+        >
           <el-col :span="3">
             <el-form-item>
               <el-input v-model="item.name" placeholder="如:张三"></el-input>
@@ -116,35 +137,44 @@ export default {
       form: {
         name: "",
         mapId: "",
-        blueTeamList: [{
-          age: 0,
-          equipment: 0,
-          gender: "",
-          id: 0,
-          name: "",
-          unit: "",
-        }],
+        blueTeamList: [
+          {
+            age: 0,
+            equipment: 0,
+            gender: "",
+            id: 0,
+            name: "",
+            unit: "",
+          },
+        ],
         mode: 0,
-        redTeamList: [{
-          age: 0,
-          equipment: 0,
-          gender: "",
-          id: 0,
-          name: "",
-          unit: "",
-        }],
+        redTeamList: [
+          {
+            age: 0,
+            equipment: 0,
+            gender: "",
+            id: 0,
+            name: "",
+            unit: "",
+          },
+        ],
       },
-      mapList: [{ name: "嘉兴小区" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }, { name: "万达广场" }],
+      mapList: [
+        { name: "嘉兴小区" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+        { name: "万达广场" },
+      ],
       bluedata: [],
       reddata: [],
       // 表单验证规则
       rules: {
-        name: [
-          { required: true, message: "请输入地图名称", trigger: "blur" },
-        ],
-        mapId: [
-          { required: true, message: "请选择演习地图", trigger: "blur" },
-        ],
+        name: [{ required: true, message: "请输入地图名称", trigger: "blur" }],
+        mapId: [{ required: true, message: "请选择演习地图", trigger: "blur" }],
         mode: [
           { required: true, message: "请选择要进行的模式", trigger: "blur" },
         ],
@@ -168,28 +198,6 @@ export default {
     },
     async onSubmit() {
       console.log(this.form)
-      // for (let i = 0; i < this.bluedata.length; i++) {
-      //   const num = this.bluedata[i][0].split('-')
-      //   for (let k = parseInt(num[0]); k < parseInt(num[1]) + 1; k++) {
-      //     this.form.blueVestNumStr = this.form.blueVestNumStr + k.toString() + ','
-      //     this.form.blueVestWeapon = this.form.blueVestWeapon + this.bluedata[i][1] + ','
-      //   }
-      // }
-      // this.form.blueVestNumStr = this.form.blueVestNumStr.slice(0, this.form.blueVestNumStr.length - 1)
-      // this.form.blueVestWeapon = this.form.blueVestWeapon.slice(0, this.form.blueVestWeapon.length - 1)
-      // // console.log(this.form.blueVestNumStr)
-      // // console.log(this.form.blueVestWeapon)
-      // for (let j = 0; j < this.reddata.length; j++) {
-      //   const num2 = this.reddata[j][0].split('-')
-      //   for (let m = parseInt(num2[0]); m < parseInt(num2[1]) + 1; m++) {
-      //     this.form.redVestNumStr = this.form.redVestNumStr + m.toString() + ','
-      //     this.form.redVestWeapon = this.form.redVestWeapon + this.reddata[j][1] + ','
-      //   }
-      // }
-      // this.form.redVestNumStr = this.form.redVestNumStr.slice(0, this.form.redVestNumStr.length - 1)
-      // this.form.redVestWeapon = this.form.redVestWeapon.slice(0, this.form.redVestWeapon.length - 1)
-      // // console.log(this.form.redVestNumStr)
-      // // console.log(this.form.redVestWeapon)
       const { data: res } = await this.$http.post("newbattle/newset", this.form)
       console.log(res)
       if (res.code !== 200) {
@@ -232,22 +240,22 @@ export default {
 </script>
 
 <style scoped>
-h3{
+h3 {
   margin: 10px;
   padding: 15px;
   border-bottom: 1px solid #606266;
 }
-.mapinput{
-  width:50%
+.mapinput {
+  width: 50%;
 }
-.idinput1{
-  width:10%;
+.idinput1 {
+  width: 10%;
 }
-.idinput{
-  width:10%;
+.idinput {
+  width: 10%;
   margin-left: 10px;
 }
-.weponinput{
+.weponinput {
   width: 29%;
   margin-left: 10px;
 }

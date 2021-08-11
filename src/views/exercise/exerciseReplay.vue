@@ -4,48 +4,58 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/newScheme' }">演习</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/exerciseReplay' }">演习回放</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/exerciseReplay' }"
+        >演习回放</el-breadcrumb-item
+      >
     </el-breadcrumb>
     <!--卡片视图-->
     <el-card>
       <h3>演习回放</h3>
       <!--搜索与添加区域-->
       <el-row :gutter="20">
-        <el-col :span="7" >
-          <el-input placeholder="请输入内容" v-model="queryInfo.name" clearable @clear="getSchemeList">
-            <el-button slot="append" icon="el-icon-search" @click="getSchemeList"></el-button>
+        <el-col :span="7">
+          <el-input
+            placeholder="请输入内容"
+            v-model="queryInfo.name"
+            clearable
+            @clear="getSchemeList"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getSchemeList"
+            ></el-button>
           </el-input>
         </el-col>
       </el-row>
-      <el-table
-        :data="schemeList"
-        border
-        stripe
-        style="width: 80%">
+      <el-table :data="schemeList" border stripe style="width: 80%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column
-          prop="name"
-          label="方案名称"
-          width="180px">
+        <el-table-column prop="name" label="方案名称" width="180px">
         </el-table-column>
-        <el-table-column
-          prop="beginTime"
-          label="开始时间"
-          width="360px">
+        <el-table-column prop="beginTime" label="开始时间" width="360px">
         </el-table-column>
-        <el-table-column
-          prop="endTime"
-          label="结束时间"
-          width="360px">
+        <el-table-column prop="endTime" label="结束时间" width="360px">
         </el-table-column>
         <el-table-column label="操作" width="360px">
           <template slot-scope="scope">
             <!--显示按钮-->
-            <el-button type="primary" size="mini" @click="start(scope.row.id)">开始回放</el-button>
+            <el-button type="primary" size="mini" @click="start(scope.row.id)"
+              >开始回放</el-button
+            >
             <!--统计按钮-->
-            <el-button type="success" size="mini" @click="showTotalDialog(scope.row)">统计信息</el-button>
+            <el-button
+              type="success"
+              size="mini"
+              @click="showTotalDialog(scope.row)"
+              >统计信息</el-button
+            >
             <!--删除按钮-->
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeReplayById(scope.row.name)"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="removeReplayById(scope.row.name)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,94 +67,76 @@
         :page-sizes="[1, 2, 5, 10]"
         :page-size="queryInfo.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+        :total="total"
+      >
       </el-pagination>
       <!--开启回放-->
       <el-dialog
-      title="回放"
-      :visible.sync="replayVisible"
-      width="50%"
-      :before-close="handleClose">
-      <span>
-        <video class="replay" controls :autoplay="true" playsinline :muted="true" :src="replaypath" width="400" height="300"></video>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="replayVisible = false">取 消</el-button>
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="统计信息"
-      :visible.sync="totalVisible"
-      width="50%"
-      :before-close="handleClose">
-      <h3 class="red">红方</h3>
-      <el-table
-        :data="redTotalData"
-        style="width: 100%; margin-left: 10px; padding-left: 10px;"
-        class="total-red"
-        stripe>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          label="id"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="shoot"
-          label="击中数"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="beShooted"
-          label="被击中数"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="kill"
-          label="击杀数"
-          width="180">
-        </el-table-column>
-      </el-table>
-      <h3 class="blue">蓝方</h3>
-      <el-table
-        :data="blueTotalData"
-        style="width: 100%; margin-left: 10px; padding-left: 10px;"
-        class="total-blue"
-        stripe>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="id"
-          label="id"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="shoot"
-          label="击中数"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="beShooted"
-          label="被击中数"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="kill"
-          label="击杀数"
-          width="180">
-        </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="totalVisible = false">取 消</el-button>
-      </span>
-    </el-dialog>
+        title="回放"
+        :visible.sync="replayVisible"
+        width="50%"
+        :before-close="handleClose"
+      >
+        <span>
+          <video
+            class="replay"
+            controls
+            :autoplay="true"
+            playsinline
+            :muted="true"
+            :src="replaypath"
+            width="400"
+            height="300"
+          ></video>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="replayVisible = false">取 消</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="统计信息"
+        :visible.sync="totalVisible"
+        width="50%"
+        :before-close="handleClose"
+      >
+        <h3 class="red">红方</h3>
+        <el-table
+          :data="redTotalData"
+          style="width: 100%; margin-left: 10px; padding-left: 10px"
+          class="total-red"
+          stripe
+        >
+          <el-table-column prop="name" label="姓名" width="180">
+          </el-table-column>
+          <el-table-column prop="id" label="id" width="180"> </el-table-column>
+          <el-table-column prop="shoot" label="击中数" width="180">
+          </el-table-column>
+          <el-table-column prop="beShooted" label="被击中数" width="180">
+          </el-table-column>
+          <el-table-column prop="kill" label="击杀数" width="180">
+          </el-table-column>
+        </el-table>
+        <h3 class="blue">蓝方</h3>
+        <el-table
+          :data="blueTotalData"
+          style="width: 100%; margin-left: 10px; padding-left: 10px"
+          class="total-blue"
+          stripe
+        >
+          <el-table-column prop="name" label="姓名" width="180">
+          </el-table-column>
+          <el-table-column prop="id" label="id" width="180"> </el-table-column>
+          <el-table-column prop="shoot" label="击中数" width="180">
+          </el-table-column>
+          <el-table-column prop="beShooted" label="被击中数" width="180">
+          </el-table-column>
+          <el-table-column prop="kill" label="击杀数" width="180">
+          </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="totalVisible = false">取 消</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -193,7 +185,10 @@ export default {
   },
   methods: {
     async getSchemeList() {
-      const { data: res } = await this.$http.post("newrecord/querylist", this.queryInfo)
+      const { data: res } = await this.$http.post(
+        "newrecord/querylist",
+        this.queryInfo,
+      )
       console.log("返回数据", res)
       if (res.code !== 200) {
         this.$message.error("获取回放列表失败")
@@ -205,8 +200,6 @@ export default {
       }
     },
     start(uid) {
-      // window.sessionStorage.setItem('activePath', '/currentExercise')
-      // this.$router.push('/currentExercise')
       this.replaypath = `${fullBaseURL}newrecord/play`
       this.replayVisible = true
       this.replaypath = `${this.replaypath}?id=${uid}`
@@ -257,26 +250,26 @@ export default {
 </script>
 
 <style scoped>
-h3{
+h3 {
   margin: 10px;
   padding: 15px;
   border-bottom: 1px solid #606266;
 }
-.replay{
+.replay {
   position: relative;
   left: 50%;
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
 }
-.red{
+.red {
   margin: 10px;
   padding: 15px;
-  color: #F56C6C;
-  border-bottom: 1px solid #F56C6C;
+  color: #f56c6c;
+  border-bottom: 1px solid #f56c6c;
 }
-.blue{
+.blue {
   margin: 10px;
   padding: 15px;
-  color: #409EFF;
-  border-bottom: 1px solid #409EFF;
+  color: #409eff;
+  border-bottom: 1px solid #409eff;
 }
 </style>
