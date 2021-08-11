@@ -35,6 +35,7 @@ module.exports = {
     "no-plusplus": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "vue/no-unused-components": "warn",
   },
 }
