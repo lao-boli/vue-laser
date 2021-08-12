@@ -140,7 +140,6 @@ export default {
           this.imgsrc = `${fullBaseURL}picture/`
           done()
         })
-        .catch((_) => {})
     },
     // 确认预览
     confirmView() {
