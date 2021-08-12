@@ -239,6 +239,16 @@ const testHp = (hp: number) => {
   return "unknown"
 }
 
+const teamEnToZh = (tean_name_en: string) => {
+  if (tean_name_en === "red") {
+    return "红队"
+  }
+  if (tean_name_en === "blue") {
+    return "蓝队"
+  }
+  return "队伍"
+}
+
 export default {
   components: {
     "scroll-tab": ScrollTab,
@@ -461,19 +471,11 @@ export default {
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
-      // console.log(redata)
+      console.log(redata)
       const aData = new Date()
-      const time = `${aData.getFullYear()
-      }-${
+      const time = `${aData.getFullYear()}-${
         aData.getMonth() + 1
-      }-${
-        aData.getDate()
-      }-${
-        aData.getHours()
-      }:${
-        aData.getMinutes()
-      }:${
-        aData.getSeconds()}`
+      }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
       let active: Active = {
         content: "",
         timestamp: "",
@@ -483,12 +485,21 @@ export default {
         color: "",
       }
       let msrc = ""
+      enum MsgType {
+        Hit, // 0
+        Ping, // 1
+      }
+      const coord = new CoordSet(redata.lat, redata.lng)
+      const teams = ["red", "blue"]
+      const shooter = redata.shooterNum
+      const victim = redata.shooteeNum
+      const part_hit = redata.position
+      const victim_team = redata.shooteeTeam
+      const msg_mark = parseInt(redata.mark, 10)
       // 移动信息
       // TODO Refactor
-      // this.getDataByNum(redata.num)
-      if (redata.mark === "1") {
-        try {
-          const coord = new CoordSet(redata.lat, redata.lng)
+      switch (msg_mark) {
+        case MsgType.Ping:
           console.log("Recv Coord", coord)
           if (isGCJ) {
             redata.lat = coord.gsj.lat
@@ -497,111 +508,58 @@ export default {
             redata.lat = coord.wgs.lat
             redata.lng = coord.wgs.lng
           }
-        } catch (err) {
-          console.warn(err)
-        }
-        // Move Prompt
-        const teams = ["red", "blue"]
-        teams.forEach((team) => {
-          this.soldierlist[team].forEach((solider) => {
-            if (solider.id === redata.num) {
-              if (solider.lastReportTime === null) {
-                msrc = `${redata.num
-                }号上线`
-                  + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(3)})`
-                this.$message.success(msrc)
-                active.color = "#0bbd87"
-                // console.log(active)
-              } else {
-                msrc = `${redata.num} 号移动至 (${
-                  redata.lat.toFixed(3)}, 
+          // Move Prompt
+          teams.forEach((team) => {
+            this.soldierlist[team].forEach((solider) => {
+              if (solider.id === redata.num) {
+                if (solider.lastReportTime === null) {
+                  msrc = `${redata.num}号上线`
+                    + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
+                      3,
+                    )})`
+                  this.$message.success(msrc)
+                  active.color = "#0bbd87"
+                  // console.log(active)
+                } else {
+                  msrc = `${redata.num} 号移动至 (${redata.lat.toFixed(3)}, 
                   ${redata.lng.toFixed(3)})`
-                this.$message(msrc)
-                active.type = "primary"
+                  this.$message(msrc)
+                  active.type = "primary"
+                }
+                active.content = msrc
+                active.timestamp = time
+                this.activities.unshift(active)
+                this.getExerciseData()
               }
-              active.content = msrc
-              active.timestamp = time
-              this.activities.unshift(active)
-              this.getExerciseData()
-            }
+            })
           })
-        })
-      } else if (redata.mark === "0") {
-        console.log("击杀")
-
-        // TODO Refactor
-        // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
-        this.getDataByNum(redata.shooteeNum)
-        for (let i = 0; i < this.soldierlist.red.length; i++) {
-          if (this.soldierlist.red[i].id === redata.shooteeNum) {
-            if (this.soldierlist.red[i].hp > 34) {
-              this.$message.warning(
-                `蓝队的${redata.shooterNum}号击中了红队${redata.shooteeNum}号的${redata.position}`,
-              )
+          break
+        case MsgType.Hit:
+          // TODO Kill Prompt
+          // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
+          teams.forEach((shooter_team) => {
+            this.soldierlist[shooter_team].forEach((solider) => {
+              const msg_info = `${teamEnToZh(
+                shooter_team,
+              )}的${shooter}号击中了${victim_team}的${victim}号的${part_hit}`
+              if (solider.id === victim) {
+                this.$message.warning(msg_info)
+              }
               active = {
-                content: `蓝队的${redata.shooterNum}号击中了红队${redata.shooteeNum}号的${redata.position}`,
+                content: msg_info,
                 timestamp: time,
                 size: "large",
                 type: "warning",
                 icon: "el-icon-s-help",
               }
               this.activities.unshift(active)
-              console.log(this.activities)
               this.getExerciseData()
-            } else {
-              this.$message.error(
-                `蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`,
-              )
-              active = {
-                content: `蓝队的${redata.shooterNum}号击杀了红队的${redata.shooteeNum}号`,
-                timestamp: time,
-                size: "large",
-                type: "danger",
-                icon: "el-icon-close",
-              }
-              this.activities.unshift(active)
-              console.log(this.activities)
-              this.getExerciseData()
-            }
-          }
-        }
-        // TODO Refactor
-        // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
-        for (let j = 0; j < this.soldierlist.blue.length; j++) {
-          if (this.soldierlist.blue[j].id === redata.shooteeNum) {
-            if (this.soldierlist.blue[j].hp > 34) {
-              this.$message.warning(
-                `红队的${redata.shooterNum}号击中了蓝队${redata.shooteeNum}号的${redata.position}`,
-              )
-              active = {
-                content: `红队的${redata.shooterNum}号击中了蓝队${redata.shooteeNum}号的${redata.position}`,
-                timestamp: time,
-                size: "large",
-                type: "warning",
-                icon: "el-icon-s-help",
-              }
-              this.activities.unshift(active)
-              console.log(this.activities)
-              this.getExerciseData()
-            } else {
-              this.$message.error(
-                `红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`,
-              )
-              active = {
-                content: `红队的${redata.shooterNum}号击杀了蓝队的${redata.shooteeNum}号`,
-                timestamp: time,
-                size: "large",
-                type: "danger",
-                icon: "el-icon-close",
-              }
-              this.activities.unshift(active)
-              console.log(this.activities)
-              this.getExerciseData()
-            }
-          }
-        }
-      } else {
-        console.log("error")
+            })
+          })
+          break
+        default:
+          console.warn("MsgType Error")
+          break
       }
     },
     websocketsend(Data) {
@@ -619,8 +577,7 @@ export default {
       const title = this.currentExerciseName
       let str = ""
       this.activities.forEach((item) => {
-        str
-          += `事件:${item.content}  时间:${item.timestamp}\r\n`
+        str += `事件:${item.content}  时间:${item.timestamp}\r\n`
       })
       const allStr = `${title}\r\n \r\n${str}`
       const export_blob = new Blob([allStr])
@@ -714,11 +671,8 @@ export default {
       stream.addEventListener(
         "inactive",
         () => {
-          callback()
-          callback = function () {
-            // Do nothing
-            // I don't know what this shit is doing though
-          }
+          // Do nothing
+          // I don't know what this shit is doing though
         },
         false,
       )

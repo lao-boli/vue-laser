@@ -3,17 +3,30 @@
     <!--面包屑导航-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/setting' }">天线配置</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/setting' }"
+        >天线配置</el-breadcrumb-item
+      >
     </el-breadcrumb>
     <el-card>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item label="天线接口">
-          <el-select v-model="formInline.com" placeholder="天线接口" :disabled="link">
-            <el-option :label="item" :value="item" v-for="(item, index) in formList" :key="index"></el-option>
+          <el-select
+            v-model="formInline.com"
+            placeholder="天线接口"
+            :disabled="link"
+          >
+            <el-option
+              :label="item"
+              :value="item"
+              v-for="(item, index) in formList"
+              :key="index"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" v-if="link === false">连接</el-button>
+          <el-button type="primary" @click="onSubmit" v-if="link === false"
+            >连接</el-button
+          >
           <el-button type="danger" @click="onCancel" v-else>断开</el-button>
         </el-form-item>
       </el-form>
@@ -97,10 +110,10 @@ export default {
 </script>
 
 <style scoped>
-.el-select{
+.el-select {
   width: 200px;
 }
-.el-button--primary:focus{
-  background-color: #409EFF;
+.el-button--primary:focus {
+  background-color: #409eff;
 }
 </style>

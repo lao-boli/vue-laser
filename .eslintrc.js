@@ -8,9 +8,11 @@ module.exports = {
   extends: [
     "@vue/eslint-config-airbnb",
     "plugin:vue/essential",
+    // "./eslintrc/rules/crosstyan.rules.js",
+    "./eslintrc/crosstyan.override.eslint.js",
     "@vue/typescript",
     "@vue/typescript/recommended",
-    "./eslintrc/rules/crosstyan.rules.js",
+    "./eslintrc/crosstyan.ts.eslint.js",
   ],
   parserOptions: {
     ecmaVersion: 2020,
