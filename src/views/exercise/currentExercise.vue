@@ -577,13 +577,19 @@ export default {
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
-                const msg_info = `${teamEnToZh(
-                  shooter_team,
-                )}的${shooter}号击中了${teamEnToZh(
-                  victim_team,
-                )}的${victim}号的${part_hit}`
-                this.$message.warning(msg_info)
-                this.activities.unshift(newActive(msg_info, "warning"))
+                const active = (() => {
+                  const msg_info = `${teamEnToZh(
+                    shooter_team,
+                  )}的${shooter}号击中了${teamEnToZh(
+                    victim_team,
+                  )}的${victim}号的${part_hit}`
+                  if (shooter_team === victim_team) {
+                    return newActive(`友伤 ${msg_info}`, "danger")
+                  }
+                  return newActive(msg_info, "warning")
+                })()
+
+                this.activities.unshift(active)
                 this.getExerciseData()
               }
             })
