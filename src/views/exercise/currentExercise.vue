@@ -86,6 +86,7 @@
     </el-card>
 
     <!--演习结束对话框-->
+    <!--TODO Make it components-->
     <el-dialog
       title="战场实况"
       :visible.sync="endVisible"
@@ -170,8 +171,6 @@ import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
 import { Coord, CoordSet } from "@/plugins/coord-util"
 
-// Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
-
 interface MapDebug {
   left_top_lng: number
   left_top_lat: number
@@ -188,7 +187,7 @@ interface MapDebug {
   ratio_height: number
 }
 
-// IDK what this active means, maybe it's Websocket active
+// Active display beside HealthStats
 interface Active {
   content: string
   timestamp: string
@@ -223,7 +222,7 @@ enum Color {
 }
 
 // ? This is a high Cyclomatic Complexity function
-// ? But I think this is a good code, better than for loop
+// ? But I think this is a good code, better than for-loop
 const testHp = (hp: number) => {
   if (hp <= 0) {
     return "dead"
@@ -243,11 +242,11 @@ const testHp = (hp: number) => {
   return "unknown"
 }
 
-const teamEnToZh = (tean_name_en: string) => {
-  if (tean_name_en === "red") {
+const teamEnToZh = (team_en: string) => {
+  if (team_en === "red") {
     return "红队"
   }
-  if (tean_name_en === "blue") {
+  if (team_en === "blue") {
     return "蓝队"
   }
   return "队伍"
@@ -289,6 +288,24 @@ const convertObjToDddd = (data: {
     return { ...data, lat: coord.gsj.lat, lng: coord.gsj.lng }
   }
   return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
+}
+
+interface PingMsg {
+  mark: string
+  position: string
+  shooteeNum: string
+  shooteeTeam: string
+  shooterNum: string
+  shooterTeam: string
+  time: number
+}
+
+interface HitMsg {
+  lat: number
+  lng: number
+  mark: string
+  num: string
+  time: number
 }
 
 export default {
@@ -426,7 +443,22 @@ export default {
       try {
         // COMPLETE Rewrite this part to make it immutable
         // TODO Provide a type interface for res data
-        const modified: any[] = res.data.map(convertObjToDddd)
+        /*    lat: 24.563537
+              lng: 118.381233
+              mark: "1"
+              num: "123"
+              time: 1628773094161
+        */
+        /* {
+          "mark": "0",
+          "position": "右脚",
+          "shooteeNum": "456",
+          "shooteeTeam": "blue",
+          "shooterNum": "123",
+          "shooterTeam": "red",
+          "time": 1628774919894
+      } */
+        const modified: Record<string, string | number>[] = res.data.map(convertObjToDddd)
         modified.forEach((data) => {
           // team is a string
           // value is red or blue
@@ -438,7 +470,7 @@ export default {
           if (data.lastReportTime !== null) {
             this[team].normal++
           }
-          const cond = testHp(data.hp)
+          const cond = testHp(data.hp as number)
           this[team][cond]++
         })
         this.toPosition()
@@ -504,7 +536,6 @@ export default {
       this.parseRecvData(redata)
     },
     // COMPLETE Refactor this method
-    // TODO Write a method to tell whether this solider is dead
     // ! Refactor this function to reduce its Cognitive Complexity
     parseRecvData(in_data) {
       enum MsgType {
@@ -521,13 +552,7 @@ export default {
       const msg_mark = parseInt(in_data.mark, 10)
       console.log(in_data)
       // 移动信息
-      // TODO define a interface of redata
 
-      /*       lat: 24.563537
-            lng: 118.381233
-            mark: "1"
-            num: "123"
-            time: 1628773094161 */
       switch (msg_mark) {
         // Move Prompt
         case MsgType.Ping: {
@@ -535,6 +560,10 @@ export default {
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === soldierId) {
+                /* COMMENT It's not a pure function.
+                 * But it will return a Active instance
+                 */
+                // TODO Make it pure and move it out of this method
                 const active = (() => {
                   if (solider.lastReportTime === null) {
                     const msrc = `${soldierId}号上线`
@@ -554,6 +583,8 @@ export default {
                     ${redata.lng.toFixed(3)})`
                   return newActive(msrc)
                 })()
+                // ? END
+
                 this.$message.success(active.content)
                 this.activities.unshift(active)
                 this.getExerciseData()
@@ -562,21 +593,17 @@ export default {
           })
           break
         }
-        /* {
-          "mark": "0",
-          "position": "右脚",
-          "shooteeNum": "456",
-          "shooteeTeam": "blue",
-          "shooterNum": "123",
-          "shooterTeam": "red",
-          "time": 1628774919894
-      } */
+
         case MsgType.Hit: {
-          // TODO Kill Prompt
+          // TODO  Prompt when someone get killed
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
+                /* COMMENT It's not a pure function.
+                 * But it will return a Active instance
+                 */
+                // TODO Make it pure and move it out of this method
                 const active = (() => {
                   const msg_info = `${teamEnToZh(
                     shooter_team,
@@ -588,6 +615,7 @@ export default {
                   }
                   return newActive(msg_info, "warning")
                 })()
+                // ? END
 
                 this.activities.unshift(active)
                 this.getExerciseData()
@@ -662,7 +690,7 @@ export default {
         video: true,
       }
       // above constraints are NOT supported YET
-      // that's why overridnig them
+      // that's why overriding them
 
       // @ts-ignore: We have the property
       if (navigator.mediaDevices.getDisplayMedia) {
