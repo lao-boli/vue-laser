@@ -290,21 +290,21 @@ const convertObjToDddd = (data: {
   return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
 }
 
-interface PingMsg {
+type PingMsg = {
+  lat: number
+  lng: number
+  mark: string
+  num: string
+  time: number
+}
+
+type HitMsg = {
   mark: string
   position: string
   shooteeNum: string
   shooteeTeam: string
   shooterNum: string
   shooterTeam: string
-  time: number
-}
-
-interface HitMsg {
-  lat: number
-  lng: number
-  mark: string
-  num: string
   time: number
 }
 
@@ -442,22 +442,8 @@ export default {
       const { data: res } = await this.$http.get("newvest/newlist")
       try {
         // COMPLETE Rewrite this part to make it immutable
-        // TODO Provide a type interface for res data
-        /*    lat: 24.563537
-              lng: 118.381233
-              mark: "1"
-              num: "123"
-              time: 1628773094161
-        */
-        /* {
-          "mark": "0",
-          "position": "右脚",
-          "shooteeNum": "456",
-          "shooteeTeam": "blue",
-          "shooterNum": "123",
-          "shooterTeam": "red",
-          "time": 1628774919894
-      } */
+        // COMPLETE Provide a type interface for Ping and Msg
+        // TODO Provide an interface for res
         const modified: Record<string, string | number>[] = res.data.map(convertObjToDddd)
         modified.forEach((data) => {
           // team is a string
@@ -533,30 +519,24 @@ export default {
       // 数据接收
       const redata = JSON.parse(e.data)
       // console.log(redata)
-      this.parseRecvData(redata)
+      this.parseRecvData(redata as PingMsg | HitMsg)
     },
-    // COMPLETE Refactor this method
+    // TODO Refactor this method (again)
     // ! Refactor this function to reduce its Cognitive Complexity
-    parseRecvData(in_data) {
+    parseRecvData(in_data: PingMsg | HitMsg) {
       enum MsgType {
         Hit, // 0
         Ping, // 1
       }
       const teams = ["red", "blue"]
-      const soldierId = in_data.num
-      const shooter = in_data.shooterNum
-      const victim = in_data.shooteeNum
-      const part_hit = in_data.position
-      const shooter_team = in_data.shooterTeam
-      const victim_team = in_data.shooteeTeam
       const msg_mark = parseInt(in_data.mark, 10)
-      console.log(in_data)
       // 移动信息
 
       switch (msg_mark) {
         // Move Prompt
         case MsgType.Ping: {
-          const redata = convertObjToDddd(in_data)
+          const redata = convertObjToDddd(in_data as PingMsg) as PingMsg
+          const soldierId = redata.num
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === soldierId) {
@@ -597,6 +577,12 @@ export default {
         case MsgType.Hit: {
           // TODO  Prompt when someone get killed
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
+          const redata = in_data as HitMsg
+          const shooter = redata.shooterNum
+          const victim = redata.shooteeNum
+          const part_hit = redata.position
+          const shooter_team = redata.shooterTeam
+          const victim_team = redata.shooteeTeam
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
