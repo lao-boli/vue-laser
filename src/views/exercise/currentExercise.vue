@@ -190,11 +190,11 @@ interface MapDebug {
 
 // IDK what this active means, maybe it's Websocket active
 interface Active {
-  content?: string
-  timestamp?: string
-  size?: string
-  type?: string
-  icon?: string
+  content: string
+  timestamp: string
+  size: string
+  type: string
+  icon: string
   color?: string
 }
 
@@ -426,7 +426,7 @@ export default {
       try {
         // COMPLETE Rewrite this part to make it immutable
         // TODO Provide a type interface for res data
-        const modified:any[] = res.data.map(convertObjToDddd)
+        const modified: any[] = res.data.map(convertObjToDddd)
         modified.forEach((data) => {
           // team is a string
           // value is red or blue
@@ -500,10 +500,11 @@ export default {
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
-      console.log(redata)
+      // console.log(redata)
       this.parseRecvData(redata)
     },
     // COMPLETE Refactor this method
+    // TODO Write a method to tell whether this solider is dead
     // ! Refactor this function to reduce its Cognitive Complexity
     parseRecvData(in_data) {
       enum MsgType {
@@ -515,10 +516,18 @@ export default {
       const shooter = in_data.shooterNum
       const victim = in_data.shooteeNum
       const part_hit = in_data.position
+      const shooter_team = in_data.shooterTeam
       const victim_team = in_data.shooteeTeam
       const msg_mark = parseInt(in_data.mark, 10)
+      console.log(in_data)
       // 移动信息
-      // TODO Refactor
+      // TODO define a interface of redata
+
+      /*       lat: 24.563537
+            lng: 118.381233
+            mark: "1"
+            num: "123"
+            time: 1628773094161 */
       switch (msg_mark) {
         // Move Prompt
         case MsgType.Ping: {
@@ -526,13 +535,12 @@ export default {
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === soldierId) {
-                const active = () => {
+                const active = (() => {
                   if (solider.lastReportTime === null) {
                     const msrc = `${soldierId}号上线`
                       + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
                         3,
                       )})`
-                    this.$message.success(msrc)
                     return newActive(
                       msrc,
                       undefined,
@@ -545,7 +553,8 @@ export default {
                   )}, 
                     ${redata.lng.toFixed(3)})`
                   return newActive(msrc)
-                }
+                })()
+                this.$message.success(active.content)
                 this.activities.unshift(active)
                 this.getExerciseData()
               }
@@ -553,19 +562,30 @@ export default {
           })
           break
         }
+        /* {
+          "mark": "0",
+          "position": "右脚",
+          "shooteeNum": "456",
+          "shooteeTeam": "blue",
+          "shooterNum": "123",
+          "shooterTeam": "red",
+          "time": 1628774919894
+      } */
         case MsgType.Hit: {
           // TODO Kill Prompt
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
-          teams.forEach((shooter_team) => {
-            this.soldierlist[shooter_team].forEach((solider) => {
-              const msg_info = `${teamEnToZh(
-                shooter_team,
-              )}的${shooter}号击中了${victim_team}的${victim}号的${part_hit}`
+          teams.forEach((team) => {
+            this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
+                const msg_info = `${teamEnToZh(
+                  shooter_team,
+                )}的${shooter}号击中了${teamEnToZh(
+                  victim_team,
+                )}的${victim}号的${part_hit}`
                 this.$message.warning(msg_info)
+                this.activities.unshift(newActive(msg_info, "warning"))
+                this.getExerciseData()
               }
-              this.activities.unshift(newActive(msg_info, "warning"))
-              this.getExerciseData()
             })
           })
           break
