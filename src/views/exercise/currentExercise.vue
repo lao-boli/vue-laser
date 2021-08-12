@@ -190,11 +190,11 @@ interface MapDebug {
 
 // IDK what this active means, maybe it's Websocket active
 interface Active {
-  content?: string
-  timestamp?: string
-  size?: string
-  type?: string
-  icon?: string
+  content: string
+  timestamp: string
+  size: string
+  type: string
+  icon: string
   color?: string
 }
 
@@ -216,6 +216,10 @@ interface MapInfo {
   rightDownLng: number
   name: string
   path: string
+}
+
+enum Color {
+  CaribbeanGreen = "#0bbd87",
 }
 
 // ? This is a high Cyclomatic Complexity function
@@ -247,6 +251,44 @@ const teamEnToZh = (tean_name_en: string) => {
     return "蓝队"
   }
   return "队伍"
+}
+
+const newTime = (): string => {
+  const aData = new Date()
+  return `${aData.getFullYear()}-${
+    aData.getMonth() + 1
+  }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
+}
+
+const newActive = (
+  content = "",
+  type: "warning" | "primary" | "danger" = "primary",
+  icon = "el-icon-s-help",
+  color: string = undefined,
+): Active => ({
+  content,
+  timestamp: newTime(),
+  size: "large",
+  type,
+  icon,
+  color,
+})
+
+const convertObjToDddd = (data: {
+  lat: number
+  lng: number
+  [key: string]: unknown
+}): {
+  lat: number
+  lng: number
+  [key: string]: unknown
+} => {
+  const coord = new CoordSet(data.lat, data.lng)
+  // console.log("Recv Coord", coord)
+  if (isGCJ) {
+    return { ...data, lat: coord.gsj.lat, lng: coord.gsj.lng }
+  }
+  return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
 }
 
 export default {
@@ -345,7 +387,6 @@ export default {
       }
     } catch (err) {
       console.error(err)
-      // this.$message.error("Error. Check insecure origin. ")
       this.$message.error("错误，请检查浏览器是否设置正确。录屏功能将被禁用。")
       this.recordVisible = false
     }
@@ -383,20 +424,10 @@ export default {
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get("newvest/newlist")
       try {
-        //* Convert Coord for http api
-        res.data.forEach((data) => {
-          const coord = new CoordSet(data.lat, data.lng)
-          console.log("Recv Coord", coord)
-          if (isGCJ) {
-            data.lat = coord.gsj.lat
-            data.lng = coord.gsj.lng
-          } else {
-            data.lat = coord.wgs.lat
-            data.lng = coord.wgs.lng
-          }
-        })
-        //* End
-        res.data.forEach((data) => {
+        // COMPLETE Rewrite this part to make it immutable
+        // TODO Provide a type interface for res data
+        const modified: any[] = res.data.map(convertObjToDddd)
+        modified.forEach((data) => {
           // team is a string
           // value is red or blue
           const { team } = data
@@ -466,100 +497,107 @@ export default {
       // 连接建立失败重连
       this.initWebSocket()
     },
-    // TODO Refactor this method
-    // ! Refactor this function to reduce its Cognitive Complexity
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
-      console.log(redata)
-      const aData = new Date()
-      const time = `${aData.getFullYear()}-${
-        aData.getMonth() + 1
-      }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
-      let active: Active = {
-        content: "",
-        timestamp: "",
-        size: "large",
-        type: "",
-        icon: "",
-        color: "",
-      }
-      let msrc = ""
+      // console.log(redata)
+      this.parseRecvData(redata)
+    },
+    // COMPLETE Refactor this method
+    // TODO Write a method to tell whether this solider is dead
+    // ! Refactor this function to reduce its Cognitive Complexity
+    parseRecvData(in_data) {
       enum MsgType {
         Hit, // 0
         Ping, // 1
       }
-      const coord = new CoordSet(redata.lat, redata.lng)
       const teams = ["red", "blue"]
-      const shooter = redata.shooterNum
-      const victim = redata.shooteeNum
-      const part_hit = redata.position
-      const victim_team = redata.shooteeTeam
-      const msg_mark = parseInt(redata.mark, 10)
+      const soldierId = in_data.num
+      const shooter = in_data.shooterNum
+      const victim = in_data.shooteeNum
+      const part_hit = in_data.position
+      const shooter_team = in_data.shooterTeam
+      const victim_team = in_data.shooteeTeam
+      const msg_mark = parseInt(in_data.mark, 10)
+      console.log(in_data)
       // 移动信息
-      // TODO Refactor
+      // TODO define a interface of redata
+
+      /*       lat: 24.563537
+            lng: 118.381233
+            mark: "1"
+            num: "123"
+            time: 1628773094161 */
       switch (msg_mark) {
-        case MsgType.Ping:
-          console.log("Recv Coord", coord)
-          if (isGCJ) {
-            redata.lat = coord.gsj.lat
-            redata.lng = coord.gsj.lng
-          } else {
-            redata.lat = coord.wgs.lat
-            redata.lng = coord.wgs.lng
-          }
-          // Move Prompt
+        // Move Prompt
+        case MsgType.Ping: {
+          const redata = convertObjToDddd(in_data)
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
-              if (solider.id === redata.num) {
-                if (solider.lastReportTime === null) {
-                  msrc = `${redata.num}号上线`
-                    + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
-                      3,
-                    )})`
-                  this.$message.success(msrc)
-                  active.color = "#0bbd87"
-                  // console.log(active)
-                } else {
-                  msrc = `${redata.num} 号移动至 (${redata.lat.toFixed(3)}, 
-                  ${redata.lng.toFixed(3)})`
-                  this.$message(msrc)
-                  active.type = "primary"
-                }
-                active.content = msrc
-                active.timestamp = time
+              if (solider.id === soldierId) {
+                const active = (() => {
+                  if (solider.lastReportTime === null) {
+                    const msrc = `${soldierId}号上线`
+                      + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
+                        3,
+                      )})`
+                    return newActive(
+                      msrc,
+                      undefined,
+                      undefined,
+                      Color.CaribbeanGreen,
+                    )
+                  } // else / default
+                  const msrc = `${soldierId} 号移动至 (${redata.lat.toFixed(
+                    3,
+                  )}, 
+                    ${redata.lng.toFixed(3)})`
+                  return newActive(msrc)
+                })()
+                this.$message.success(active.content)
                 this.activities.unshift(active)
                 this.getExerciseData()
               }
             })
           })
           break
-        case MsgType.Hit:
+        }
+        /* {
+          "mark": "0",
+          "position": "右脚",
+          "shooteeNum": "456",
+          "shooteeTeam": "blue",
+          "shooterNum": "123",
+          "shooterTeam": "red",
+          "time": 1628774919894
+      } */
+        case MsgType.Hit: {
           // TODO Kill Prompt
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
-          teams.forEach((shooter_team) => {
-            this.soldierlist[shooter_team].forEach((solider) => {
-              const msg_info = `${teamEnToZh(
-                shooter_team,
-              )}的${shooter}号击中了${victim_team}的${victim}号的${part_hit}`
+          teams.forEach((team) => {
+            this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
-                this.$message.warning(msg_info)
+                const active = (() => {
+                  const msg_info = `${teamEnToZh(
+                    shooter_team,
+                  )}的${shooter}号击中了${teamEnToZh(
+                    victim_team,
+                  )}的${victim}号的${part_hit}`
+                  if (shooter_team === victim_team) {
+                    return newActive(`友伤 ${msg_info}`, "danger")
+                  }
+                  return newActive(msg_info, "warning")
+                })()
+
+                this.activities.unshift(active)
+                this.getExerciseData()
               }
-              active = {
-                content: msg_info,
-                timestamp: time,
-                size: "large",
-                type: "warning",
-                icon: "el-icon-s-help",
-              }
-              this.activities.unshift(active)
-              this.getExerciseData()
             })
           })
           break
+        }
         default:
           console.warn("MsgType Error")
-          break
       }
     },
     websocketsend(Data) {
