@@ -219,7 +219,7 @@ interface MapInfo {
 }
 
 enum Color {
-  CaribbeanGreen = "#0bbd87"
+  CaribbeanGreen = "#0bbd87",
 }
 
 // ? This is a high Cyclomatic Complexity function
@@ -264,7 +264,7 @@ const newActive = (
   content = "",
   type: "warning" | "primary" | "danger" = "primary",
   icon = "el-icon-s-help",
-  color:string = undefined,
+  color: string = undefined,
 ): Active => ({
   content,
   timestamp: newTime(),
@@ -274,20 +274,21 @@ const newActive = (
   color,
 })
 
-/* convert recvd data from ddmm to dddd */
-const convertCoord = (redata) => {
-  const coord = new CoordSet(redata.lat, redata.lng)
-  console.log("Recv Coord", coord)
-
-  const clone_data = { ...redata }
+const convertObjToDddd = (data: {
+  lat: number
+  lng: number
+  [key: string]: unknown
+}): {
+  lat: number
+  lng: number
+  [key: string]: unknown
+} => {
+  const coord = new CoordSet(data.lat, data.lng)
+  // console.log("Recv Coord", coord)
   if (isGCJ) {
-    clone_data.lat = coord.gsj.lat
-    clone_data.lng = coord.gsj.lng
-  } else {
-    clone_data.lat = coord.wgs.lat
-    clone_data.lng = coord.wgs.lng
+    return { ...data, lat: coord.gsj.lat, lng: coord.gsj.lng }
   }
-  return clone_data
+  return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
 }
 
 export default {
@@ -386,7 +387,6 @@ export default {
       }
     } catch (err) {
       console.error(err)
-      // this.$message.error("Error. Check insecure origin. ")
       this.$message.error("错误，请检查浏览器是否设置正确。录屏功能将被禁用。")
       this.recordVisible = false
     }
@@ -424,21 +424,10 @@ export default {
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get("newvest/newlist")
       try {
-        //* Convert Coord for http api
-        // TODO Rewrite this part to make it immutable
-        res.data.forEach((data) => {
-          const coord = new CoordSet(data.lat, data.lng)
-          console.log("Recv Coord", coord)
-          if (isGCJ) {
-            data.lat = coord.gsj.lat
-            data.lng = coord.gsj.lng
-          } else {
-            data.lat = coord.wgs.lat
-            data.lng = coord.wgs.lng
-          }
-        })
-        //* End
-        res.data.forEach((data) => {
+        // COMPLETE Rewrite this part to make it immutable
+        // TODO Provide a type interface for res data
+        const modified:any[] = res.data.map(convertObjToDddd)
+        modified.forEach((data) => {
           // team is a string
           // value is red or blue
           const { team } = data
@@ -508,45 +497,54 @@ export default {
       // 连接建立失败重连
       this.initWebSocket()
     },
-    // TODO Refactor this method
-    // ! Refactor this function to reduce its Cognitive Complexity
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
       console.log(redata)
-      this.parseRecvData(convertCoord(redata))
+      this.parseRecvData(redata)
     },
-    parseRecvData(redata) {
+    // COMPLETE Refactor this method
+    // ! Refactor this function to reduce its Cognitive Complexity
+    parseRecvData(in_data) {
       enum MsgType {
         Hit, // 0
         Ping, // 1
       }
       const teams = ["red", "blue"]
-      const shooter = redata.shooterNum
-      const victim = redata.shooteeNum
-      const part_hit = redata.position
-      const victim_team = redata.shooteeTeam
-      const msg_mark = parseInt(redata.mark, 10)
+      const soldierId = in_data.num
+      const shooter = in_data.shooterNum
+      const victim = in_data.shooteeNum
+      const part_hit = in_data.position
+      const victim_team = in_data.shooteeTeam
+      const msg_mark = parseInt(in_data.mark, 10)
       // 移动信息
       // TODO Refactor
       switch (msg_mark) {
-        case MsgType.Ping:
-          // Move Prompt
+        // Move Prompt
+        case MsgType.Ping: {
+          const redata = convertObjToDddd(in_data)
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
-              if (solider.id === redata.num) {
+              if (solider.id === soldierId) {
                 const active = () => {
                   if (solider.lastReportTime === null) {
-                    const msrc = `${redata.num}号上线`
+                    const msrc = `${soldierId}号上线`
                       + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
                         3,
                       )})`
                     this.$message.success(msrc)
-                    return newActive(msrc, undefined, undefined, Color.CaribbeanGreen)
-                  }
-                  const msrc = `${redata.num} 号移动至 (${redata.lat.toFixed(3)}, 
+                    return newActive(
+                      msrc,
+                      undefined,
+                      undefined,
+                      Color.CaribbeanGreen,
+                    )
+                  } // else / default
+                  const msrc = `${soldierId} 号移动至 (${redata.lat.toFixed(
+                    3,
+                  )}, 
                     ${redata.lng.toFixed(3)})`
-                    return newActive(msrc)
+                  return newActive(msrc)
                 }
                 this.activities.unshift(active)
                 this.getExerciseData()
@@ -554,7 +552,8 @@ export default {
             })
           })
           break
-        case MsgType.Hit:
+        }
+        case MsgType.Hit: {
           // TODO Kill Prompt
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
           teams.forEach((shooter_team) => {
@@ -565,18 +564,12 @@ export default {
               if (solider.id === victim) {
                 this.$message.warning(msg_info)
               }
-              active = {
-                content: msg_info,
-                timestamp: time,
-                size: "large",
-                type: "warning",
-                icon: "el-icon-s-help",
-              }
-              this.activities.unshift(active)
+              this.activities.unshift(newActive(msg_info, "warning"))
               this.getExerciseData()
             })
           })
           break
+        }
         default:
           console.warn("MsgType Error")
       }
