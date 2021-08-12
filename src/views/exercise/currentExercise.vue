@@ -218,6 +218,10 @@ interface MapInfo {
   path: string
 }
 
+enum Color {
+  CaribbeanGreen = "#0bbd87"
+}
+
 // ? This is a high Cyclomatic Complexity function
 // ? But I think this is a good code, better than for loop
 const testHp = (hp: number) => {
@@ -247,6 +251,43 @@ const teamEnToZh = (tean_name_en: string) => {
     return "蓝队"
   }
   return "队伍"
+}
+
+const newTime = (): string => {
+  const aData = new Date()
+  return `${aData.getFullYear()}-${
+    aData.getMonth() + 1
+  }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
+}
+
+const newActive = (
+  content = "",
+  type: "warning" | "primary" | "danger" = "primary",
+  icon = "el-icon-s-help",
+  color:string = undefined,
+): Active => ({
+  content,
+  timestamp: newTime(),
+  size: "large",
+  type,
+  icon,
+  color,
+})
+
+/* convert recvd data from ddmm to dddd */
+const convertCoord = (redata) => {
+  const coord = new CoordSet(redata.lat, redata.lng)
+  console.log("Recv Coord", coord)
+
+  const clone_data = { ...redata }
+  if (isGCJ) {
+    clone_data.lat = coord.gsj.lat
+    clone_data.lng = coord.gsj.lng
+  } else {
+    clone_data.lat = coord.wgs.lat
+    clone_data.lng = coord.wgs.lng
+  }
+  return clone_data
 }
 
 export default {
@@ -384,6 +425,7 @@ export default {
       const { data: res } = await this.$http.get("newvest/newlist")
       try {
         //* Convert Coord for http api
+        // TODO Rewrite this part to make it immutable
         res.data.forEach((data) => {
           const coord = new CoordSet(data.lat, data.lng)
           console.log("Recv Coord", coord)
@@ -472,24 +514,13 @@ export default {
       // 数据接收
       const redata = JSON.parse(e.data)
       console.log(redata)
-      const aData = new Date()
-      const time = `${aData.getFullYear()}-${
-        aData.getMonth() + 1
-      }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
-      let active: Active = {
-        content: "",
-        timestamp: "",
-        size: "large",
-        type: "",
-        icon: "",
-        color: "",
-      }
-      let msrc = ""
+      this.parseRecvData(convertCoord(redata))
+    },
+    parseRecvData(redata) {
       enum MsgType {
         Hit, // 0
         Ping, // 1
       }
-      const coord = new CoordSet(redata.lat, redata.lng)
       const teams = ["red", "blue"]
       const shooter = redata.shooterNum
       const victim = redata.shooteeNum
@@ -500,34 +531,23 @@ export default {
       // TODO Refactor
       switch (msg_mark) {
         case MsgType.Ping:
-          console.log("Recv Coord", coord)
-          if (isGCJ) {
-            redata.lat = coord.gsj.lat
-            redata.lng = coord.gsj.lng
-          } else {
-            redata.lat = coord.wgs.lat
-            redata.lng = coord.wgs.lng
-          }
           // Move Prompt
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === redata.num) {
-                if (solider.lastReportTime === null) {
-                  msrc = `${redata.num}号上线`
-                    + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
-                      3,
-                    )})`
-                  this.$message.success(msrc)
-                  active.color = "#0bbd87"
-                  // console.log(active)
-                } else {
-                  msrc = `${redata.num} 号移动至 (${redata.lat.toFixed(3)}, 
-                  ${redata.lng.toFixed(3)})`
-                  this.$message(msrc)
-                  active.type = "primary"
+                const active = () => {
+                  if (solider.lastReportTime === null) {
+                    const msrc = `${redata.num}号上线`
+                      + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
+                        3,
+                      )})`
+                    this.$message.success(msrc)
+                    return newActive(msrc, undefined, undefined, Color.CaribbeanGreen)
+                  }
+                  const msrc = `${redata.num} 号移动至 (${redata.lat.toFixed(3)}, 
+                    ${redata.lng.toFixed(3)})`
+                    return newActive(msrc)
                 }
-                active.content = msrc
-                active.timestamp = time
                 this.activities.unshift(active)
                 this.getExerciseData()
               }
@@ -559,7 +579,6 @@ export default {
           break
         default:
           console.warn("MsgType Error")
-          break
       }
     },
     websocketsend(Data) {
