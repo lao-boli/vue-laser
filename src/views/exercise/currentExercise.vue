@@ -1,3 +1,6 @@
+<!--FIXME 补充测试用例, 创建测试工具流程, 实现自动化测试
+ https://cn.vuejs.org/v2/guide/testing.html -->
+<!--COMPLETE 实装 ESLint 标准 -->
 <template>
   <div>
     <!--面包屑导航-->
@@ -171,22 +174,6 @@ import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
 import { Coord, CoordSet } from "@/plugins/coord-util"
 
-interface MapDebug {
-  left_top_lng: number
-  left_top_lat: number
-  right_down_lng: number
-  right_down_lat: number
-  target_lng: number
-  target_lat: number
-  width_map: number
-  height_map: number
-  height_diff: number
-  width_diff: number
-  ratio_width: number
-  ratio_width_mod: number
-  ratio_height: number
-}
-
 // Active display beside HealthStats
 interface Active {
   content: string
@@ -195,16 +182,6 @@ interface Active {
   type: string
   icon: string
   color?: string
-}
-
-interface HealthStatData {
-  full: number
-  normal: number
-  outline: number
-  minorWound: number
-  slander: number
-  seriousInjury: number
-  dead: number
 }
 
 interface MapInfo {
@@ -276,12 +253,7 @@ const newActive = (
 const convertObjToDddd = (data: {
   lat: number
   lng: number
-  [key: string]: unknown
-}): {
-  lat: number
-  lng: number
-  [key: string]: unknown
-} => {
+}) => {
   const coord = new CoordSet(data.lat, data.lng)
   // console.log("Recv Coord", coord)
   if (isGCJ) {
@@ -437,6 +409,7 @@ export default {
         dead: 0,
         full: 0,
       }
+      // TODO Provide type for soldierlist
       this.soldierlist.red = []
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get("newvest/newlist")
@@ -445,13 +418,9 @@ export default {
         // COMPLETE Provide a type interface for Ping and Msg
         // TODO Provide an interface for res
         const modified: Record<string, string | number>[] = res.data.map(convertObjToDddd)
+        console.log("Msg from HTTP API", modified)
         modified.forEach((data) => {
-          // team is a string
-          // value is red or blue
-          const { team } = data
-          // Type 'String' cannot be used as an index type.
-          // use small "string" and the compiler won't complaint
-          // Always use small type in typescript
+          const team = data as unknown as "red" | "blue"
           this.soldierlist[team].push(data)
           if (data.lastReportTime !== null) {
             this[team].normal++
@@ -467,7 +436,6 @@ export default {
     // 获取地图数据
     async getMapData() {
       const mapId = window.sessionStorage.getItem("mapId")
-      console.log(mapId)
       const { data: res } = await this.$http.get("map/get", {
         params: {
           id: mapId,
@@ -477,6 +445,7 @@ export default {
       if (res.code !== 200) {
         this.$message.error("获取地图信息失败")
       } else {
+        // COMMENT res.data as MapInfo
         this.mapinfo = res.data
         this.imgsrc = `${fullBaseURL}picture/${res.data.path}`
       }
@@ -518,12 +487,11 @@ export default {
     websocketonmessage(e) {
       // 数据接收
       const redata = JSON.parse(e.data)
-      // console.log(redata)
       this.parseRecvData(redata as PingMsg | HitMsg)
     },
     // TODO Refactor this method (again)
     // ! Refactor this function to reduce its Cognitive Complexity
-    parseRecvData(in_data: PingMsg | HitMsg) {
+    parseRecvData(in_data: PingMsg | HitMsg):void {
       enum MsgType {
         Hit, // 0
         Ping, // 1
@@ -535,6 +503,7 @@ export default {
       switch (msg_mark) {
         // Move Prompt
         case MsgType.Ping: {
+          // COMMENT I'm sure it will be a PingMsg.
           const redata = convertObjToDddd(in_data as PingMsg) as PingMsg
           const soldierId = redata.num
           teams.forEach((team) => {
@@ -586,7 +555,7 @@ export default {
           teams.forEach((team) => {
             this.soldierlist[team].forEach((solider) => {
               if (solider.id === victim) {
-                /* COMMENT It's not a pure function.
+                /* It's not a pure function.
                  * But it will return a Active instance
                  */
                 // TODO Make it pure and move it out of this method
@@ -854,7 +823,6 @@ export default {
     },
     // 演习结束自动停止录屏
     stopRecording() {
-      // this.endVisible = true
       this.recorder.stopRecording(this.stopRecordingCallback)
       console.log(this.video)
       console.log(this.recorder)
