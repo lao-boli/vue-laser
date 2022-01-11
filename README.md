@@ -1,8 +1,8 @@
 # vue-laser-ts
 
-!!!!important!!!!
+**!!!!important!!!!**
 
-rename src/globle.js.default to src/globle.js to run! 
+**rename `src/global.default.ts` to `src/global.ts`**
 
 ## Project setup
 ```
