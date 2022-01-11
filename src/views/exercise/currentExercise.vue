@@ -157,13 +157,14 @@
 </template>
 
 <script lang="ts">
+import * as $ from "jquery"
+import ReconnectingWebSocket from "reconnecting-websocket"
+import BMF from "browser-md5-file"
+import { getSeekableBlob } from "ebml"
 import RecordRTC from "recordrtc"
+import { Coord, CoordSet } from "@/plugins/coord-util"
 // import md5 from 'js-md5'
 // import
-import { getSeekableBlob } from "ebml"
-import BMF from "browser-md5-file"
-import ReconnectingWebSocket from "reconnecting-websocket"
-import * as $ from "jquery"
 import {
   basePort, baseURL, wsPath, fullBaseURL, isGCJ,
 } from "../../global"
@@ -172,7 +173,6 @@ import {
 import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
-import { Coord, CoordSet } from "@/plugins/coord-util"
 
 // Active display beside HealthStats
 interface Active {
@@ -250,10 +250,7 @@ const newActive = (
   color,
 })
 
-const convertObjToDddd = (data: {
-  lat: number
-  lng: number
-}) => {
+const convertObjToDddd = (data: { lat: number; lng: number }) => {
   const coord = new CoordSet(data.lat, data.lng)
   // console.log("Recv Coord", coord)
   if (isGCJ) {
@@ -491,7 +488,7 @@ export default {
     },
     // TODO Refactor this method (again)
     // ! Refactor this function to reduce its Cognitive Complexity
-    parseRecvData(in_data: PingMsg | HitMsg):void {
+    parseRecvData(in_data: PingMsg | HitMsg): void {
       enum MsgType {
         Hit, // 0
         Ping, // 1
