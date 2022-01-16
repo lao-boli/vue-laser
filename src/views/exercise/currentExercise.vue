@@ -277,6 +277,21 @@ type HitMsg = {
   time: number
 }
 
+interface Soldier {
+  age: number
+  ammo: number
+  equipment: string // DevEUI
+  gender: string
+  hp: number
+  id: string
+  lastReportTime: string
+  lat: number
+  lng: number
+  name: string
+  team: "red" | "blue"
+  unit: string
+}
+
 export default {
   components: {
     "scroll-tab": ScrollTab,
@@ -411,13 +426,10 @@ export default {
       this.soldierlist.blue = []
       const { data: res } = await this.$http.get("newvest/newlist")
       try {
-        // COMPLETE Rewrite this part to make it immutable
-        // COMPLETE Provide a type interface for Ping and Msg
-        // TODO Provide an interface for res
-        const modified: Record<string, string | number>[] = res.data.map(convertObjToDddd)
+        const modified: Soldier[] = res.data.map(convertObjToDddd)
         console.log("Msg from HTTP API", modified)
         modified.forEach((data) => {
-          const team = data as unknown as "red" | "blue"
+          const { team } = data
           this.soldierlist[team].push(data)
           if (data.lastReportTime !== null) {
             this[team].normal++
@@ -504,14 +516,14 @@ export default {
           const redata = convertObjToDddd(in_data as PingMsg) as PingMsg
           const soldierId = redata.num
           teams.forEach((team) => {
-            this.soldierlist[team].forEach((solider) => {
-              if (solider.id === soldierId) {
+            this.soldierlist[team].forEach((soldier) => {
+              if (soldier.id === soldierId) {
                 /* COMMENT It's not a pure function.
                  * But it will return a Active instance
                  */
                 // TODO Make it pure and move it out of this method
                 const active = (() => {
-                  if (solider.lastReportTime === null) {
+                  if (soldier.lastReportTime === null) {
                     const msrc = `${soldierId}号上线`
                       + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
                         3,
@@ -550,8 +562,8 @@ export default {
           const shooter_team = redata.shooterTeam
           const victim_team = redata.shooteeTeam
           teams.forEach((team) => {
-            this.soldierlist[team].forEach((solider) => {
-              if (solider.id === victim) {
+            this.soldierlist[team].forEach((soldier) => {
+              if (soldier.id === victim) {
                 /* It's not a pure function.
                  * But it will return a Active instance
                  */
