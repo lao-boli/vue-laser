@@ -5,7 +5,7 @@ dist
 
 # local env files
 src/global.js
-src/global.ts
+src/global.js
 .env
 .env.local
 .env.*.local

@@ -16,6 +16,7 @@ import "nprogress/nprogress.css"
 import "vue-happy-scroll/docs/happy-scroll.css"
 import App from "./App.vue"
 
+Vue.config.productionTip = false
 axios.defaults.baseURL = `http://${baseURL}:${basePort}/`
 // 在reques拦截器中展示进度条
 axios.interceptors.request.use((config) => {
