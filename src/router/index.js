@@ -9,6 +9,7 @@ import NewScheme from "../views/exercise/newScheme.vue"
 import SchemeManagement from "../views/exercise/schemeManagement.vue"
 import CurrentExercise from "../views/exercise/currentExercise.vue"
 import ExerciseReplay from "../views/exercise/exerciseReplay.vue"
+import DeviceTable from "../views/exercise/deviceTable.vue"
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,8 @@ const routes = [
         { path: "/schemeManagement", component: SchemeManagement },
         { path: "/currentExercise", component: CurrentExercise },
         { path: "/exerciseReplay", component: ExerciseReplay },
+        { path: "/deviceTable", component:  DeviceTable},
+
       ],
   },
 ]

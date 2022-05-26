@@ -78,6 +78,14 @@
               <span>演习回放</span>
             </template>
             </el-menu-item>
+            <el-menu-item index="/deviceTable" @click="saveNavState('/deviceTable')">
+              <template slot="title">
+                <!--图标-->
+                <i class="el-icon-refresh"></i>
+                <!--文本-->
+                <span>设备列表</span>
+              </template>
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
