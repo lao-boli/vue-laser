@@ -65,7 +65,18 @@
           </el-col>
           <el-col :span="4">
             <el-form-item label="设备编号：">
-              <el-input v-model="item.equipment"></el-input>
+              <el-select
+                  v-model="item.equipment"
+                  placeholder="请选择演习地图"
+                  popper-class="down"
+              >
+                <el-option
+                    :label="item"
+                    :value="item"
+                    v-for="item in devEUIList"
+                    :key="item"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -109,7 +120,18 @@
           </el-col>
           <el-col :span="4">
             <el-form-item label="设备编号：">
-              <el-input v-model="item.equipment"></el-input>
+              <el-select
+                  v-model="item.equipment"
+                  placeholder="请选择演习地图"
+                  popper-class="down"
+              >
+                <el-option
+                    :label="item"
+                    :value="item"
+                    v-for="item in devEUIList"
+                    :key="item"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -169,6 +191,7 @@ export default {
         { name: "万达广场" },
         { name: "万达广场" },
       ],
+      devEUIList:[],
       bluedata: [],
       reddata: [],
       // 表单验证规则
@@ -183,6 +206,7 @@ export default {
   },
   created() {
     this.getMapList()
+    this.getDevEUIList()
   },
   methods: {
     // 查询所有地图
@@ -194,6 +218,17 @@ export default {
       } else {
         this.mapList = res.data
         this.$message.success("获取地图列表成功")
+      }
+    },
+
+    async getDevEUIList() {
+      const { data: res } = await this.$http.get("/chirpStack/get-devEUI-list")
+      console.log(res)
+      if (res.code !== 200) {
+        this.$message.error("获取设备EUI失败")
+      } else {
+        this.devEUIList = res.data.devEUIList
+        this.$message.success("获取设备EUI成功")
       }
     },
     async onSubmit() {
