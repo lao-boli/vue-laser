@@ -29,11 +29,11 @@
         </el-col>
       </el-row>
       <el-table :data="deviceList" border stripe style="width: 80%">
-        <el-table-column prop="lastSeenAt" label="上次上线时间" width="180px">
+        <el-table-column prop="lastSeenAt" label="上次上线时间" >
         </el-table-column>
-        <el-table-column prop="name" label="设备名称" width="180px">
+        <el-table-column prop="name" label="设备名称" >
         </el-table-column>
-        <el-table-column prop="devEUI" label="设备编号" width="180px">
+        <el-table-column prop="devEUI" label="设备编号" >
         </el-table-column>
 
       </el-table>
@@ -83,6 +83,13 @@ export default {
         this.$message.error("获取设备列表失败")
       } else {
         this.deviceList = res.data.deviceList
+        //去除时间中的T和Z
+        this.deviceList.forEach(device => {
+          if (device.lastSeenAt != null){
+            device.lastSeenAt = device.lastSeenAt.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' ')
+          }
+
+        })
         this.total = parseInt(res.data.total)
         this.$message.success("获取设备列表成功")
       }
