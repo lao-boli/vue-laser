@@ -191,7 +191,7 @@ export default {
         { name: "万达广场" },
         { name: "万达广场" },
       ],
-      devEUIList:[],
+      devEUIList: [],
       bluedata: [],
       reddata: [],
       // 表单验证规则
@@ -222,7 +222,7 @@ export default {
     },
 
     async getDevEUIList() {
-      const { data: res } = await this.$http.get("/chirpStack/get-devEUI-list")
+      const { data: res } = await this.$http.get("/chirpStack/devEUI")
       console.log(res)
       if (res.code !== 200) {
         this.$message.error("获取设备EUI失败")
