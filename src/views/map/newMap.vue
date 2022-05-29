@@ -22,7 +22,7 @@
             :on-change="handleChange"
             :file-list="fileList"
             :auto-upload="false"
-            limit="1">
+            >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -103,7 +103,8 @@ export default {
       console.log(this.form)
       console.log(this.pic)
       const time2 = new Date()
-      this.form.time = `${time2.getFullYear()}-${time2.getMonth() + 1}-${time2.getDate()}`
+      const day = time2.getDate().toString().padStart(2, '0')
+      this.form.time = `${time2.getFullYear()}-${time2.getMonth() + 1}-${day}`
       const image = new FormData()
       image.append("CreateMapRequest", JSON.stringify(this.form))
       image.append("map", this.pic)
