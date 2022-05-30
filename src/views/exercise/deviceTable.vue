@@ -35,6 +35,14 @@
         </el-table-column>
         <el-table-column prop="devEUI" label="设备编号" >
         </el-table-column>
+        <el-table-column label="操作" >
+          <template slot-scope="scope">
+            <!--删除按钮-->
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteDeviceByEUI(scope.row.devEUI)">
+              删除设备
+            </el-button>
+          </template>
+        </el-table-column>
 
       </el-table>
       <!--分页区域-->
@@ -65,8 +73,8 @@ export default {
         // 当前每页条数
         pageSize: 5,
       },
-      deviceList:[],
-      total:0,
+      deviceList: [],
+      total: 0,
     }
   },
   created() {
@@ -75,23 +83,32 @@ export default {
   methods: {
     async getDeviceList() {
       const { data: res } = await this.$http.post(
-          "/chirpStack/get-devices",
-          this.queryInfo,
+        "/chirpStack/get-devices",
+        this.queryInfo,
       )
       console.log(res)
       if (res.code !== 200) {
         this.$message.error("获取设备列表失败")
       } else {
         this.deviceList = res.data.deviceList
-        //去除时间中的T和Z
-        this.deviceList.forEach(device => {
-          if (device.lastSeenAt != null){
+        // 去除时间中的T和Z
+        this.deviceList.forEach((device) => {
+          if (device.lastSeenAt != null) {
             device.lastSeenAt = device.lastSeenAt.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' ')
           }
-
         })
         this.total = parseInt(res.data.total)
         this.$message.success("获取设备列表成功")
+      }
+    },
+    async deleteDeviceByEUI(devEUI) {
+      const { data: res } = await this.$http.delete(
+        `/chirpStack/device/${devEUI}`,
+      )
+      if (res.code !== 200) {
+        this.$message.error(res.msg)
+      } else {
+        await this.getDeviceList()
       }
     },
     // 监听pagesize改变的事件
