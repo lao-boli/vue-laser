@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content">
     <!--面包屑导航-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
@@ -62,8 +62,27 @@
         :blueHealthStat="blue"
       ></scroll-tab>
 
-      <stat-tab :soldierListData="soldierlist.red" team="red"></stat-tab>
-      <stat-tab :soldierListData="soldierlist.blue" team="blue"></stat-tab>
+      <div class="battle-data">
+        <div class="option">
+          <el-button type="primary"  @click="startScheme"
+          >开始演习</el-button>
+
+          <el-button
+              type="danger"
+              @click="stopRecord"
+          >结束演习</el-button>
+
+          <el-button type="primary"  @click="singleChargeVisible = true"
+          >单兵装弹</el-button>
+
+          <el-button type="primary"  @click="fullChargeVisible = true"
+          >全体装弹</el-button>
+        </div>
+        <div class="battle-info">
+          <stat-tab :soldierListData="soldierlist.red" team="red"></stat-tab>
+          <stat-tab :soldierListData="soldierlist.blue" team="blue"></stat-tab>
+        </div>
+      </div>
 
       <h3 class="title">录屏</h3>
       <video
@@ -85,6 +104,57 @@
       </el-row>
     </el-card>
 
+    <el-dialog
+        class="charge-dialog"
+        title="单兵装弹"
+        :visible.sync="singleChargeVisible"
+        width="22%"
+        :before-close="handleClose"
+    >
+      <div class="item">
+        <span>士兵id: </span>
+        <el-input
+            v-model="soldierId"
+            style="width: 200px"
+        >
+        </el-input>
+      </div>
+
+      <div class="item">
+        <span>装弹数: </span>
+        <el-input
+            v-model="chargingNumber"
+            style="width: 200px"
+        >
+        </el-input>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="singleChargeVisible = false">取消</el-button>
+        <el-button type="primary" @click="singleCharging">确认</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+        class="charge-dialog"
+        title="全体装弹"
+        :visible.sync="fullChargeVisible"
+        width="22%"
+        :before-close="handleClose"
+    >
+      <div class="item">
+        <span>装弹数: </span>
+        <el-input
+            v-model="chargingNumber"
+            style="width: 200px"
+        >
+        </el-input>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="fullChargeVisible = false">取消</el-button>
+        <el-button type="primary" @click="fullCharging">确认</el-button>
+      </span>
+    </el-dialog>
     <!--演习结束对话框-->
     <el-dialog
       title="战场实况"
@@ -352,6 +422,13 @@ export default {
       // 判伤参数
       radio1: "轻伤",
       radio2: 0,
+      // 默认装弹数
+      chargingNumber: 10,
+      // 单兵装弹对话框
+      soldierId: 0,
+      singleChargeVisible: false,
+      // 全体装弹对话框
+      fullChargeVisible: false,
       // 充弹对话框
       Charging: 0,
       chargeVisible: false,
@@ -550,7 +627,7 @@ export default {
                   } // else / default
                   const msrc = `${soldierId} 号移动至 (${redata.lat.toFixed(
                     3,
-                  )}, 
+                  )},
                     ${redata.lng.toFixed(3)})`
                   return newActive(msrc)
                 })()
@@ -858,6 +935,60 @@ export default {
         document.body.removeChild(link)
       })
     },
+
+    // 全体装弹
+    async fullCharging() {
+      const { chargingNumber } = this
+      const { data: res } = await this.$http.get("newvest/newloadall", {
+        params: {
+          ammoNum: chargingNumber,
+        },
+      })
+      console.log(res)
+      if (res.code !== 200) {
+        this.$message.error("全体装弹失败")
+      } else {
+        this.getExerciseData()
+        this.$message.success("全体装弹成功")
+      }
+      this.fullChargeVisible = false
+    },
+    // 单个士兵装弹
+    async singleCharging() {
+      const { chargingNumber } = this
+      const { soldierId } = this
+      const { data: res } = await this.$http.get("newvest/newloadone", {
+        params: {
+          ammoNum: chargingNumber,
+          vestNum: soldierId,
+        },
+      })
+      console.log(res)
+      if (res.code !== 200) {
+        this.$message.error("单体装弹失败")
+      } else {
+        this.getExerciseData()
+        this.$message.success("单体装弹成功")
+      }
+      this.singleChargeVisible = false
+    },
+
+    // 开始演习
+    async startScheme() {
+      const schemeId = window.sessionStorage.getItem("schemeId")
+      const { data: res } = await this.$http.get("newbattle/newstart", {
+        params: {
+          id: schemeId,
+        },
+      })
+      console.log(res)
+      if (res.code !== 200) {
+        this.$message.error("开启对局失败")
+      } else {
+        this.getMapData()
+        this.getExerciseData()
+      }
+    },
     // 结束演习
     async clickEnd(): Promise<void> {
       const { data: res } = await this.$http.get("newbattle/newend")
@@ -890,6 +1021,9 @@ export default {
 </script>
 
 <style scoped>
+.el-button {
+  font-size: 20px;
+}
 .title {
   margin: 10px;
   border-bottom: 1px solid #606266;
@@ -906,6 +1040,43 @@ export default {
 .out {
   float: left;
 }
+.battle-data {
+  display: flex;
+}
+.battle-data .option {
+  width: 30%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+
+}
+.battle-data .option .el-button {
+  width: 35%;
+  margin: 40px 25px 40px 25px;
+  font-size: 30px;
+
+}
+.battle-data .battle-info {
+  width: 70%;
+}
+
+.charge-dialog  {
+  font-family: "Microsoft YaHei";
+  font-size: 30px;
+  font-weight: bold;
+}
+.charge-dialog .item {
+  display: inline-block;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 20px;
+
+}
+/deep/ .charge-dialog .el-input__inner{
+  height: 50px;
+  font-size: 30px;
+}
+
 .red {
   margin: 10px;
   padding: 15px;
