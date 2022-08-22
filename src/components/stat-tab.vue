@@ -24,7 +24,7 @@
     <el-table-column
       prop="equipment"
       label="设备编号"
-      width="90px">
+      width="120px">
     </el-table-column>
     <el-table-column
       prop="unit"
@@ -92,6 +92,9 @@ export default {
 </script>
 
 <style scoped>
+.el-table {
+  font-size: 20px;
+}
 .title{
   margin: 10px;
   border-bottom: 1px solid #606266;
