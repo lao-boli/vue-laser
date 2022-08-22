@@ -29,7 +29,7 @@ const routes = [
         { path: "/schemeManagement", component: SchemeManagement },
         { path: "/currentExercise", component: CurrentExercise },
         { path: "/exerciseReplay", component: ExerciseReplay },
-        { path: "/deviceTable", component:  DeviceTable},
+        { path: "/deviceTable", component: DeviceTable},
 
       ],
   },
