@@ -49,8 +49,8 @@
         <el-table-column label="操作" width="500px">
           <template slot-scope="scope">
             <!--显示按钮-->
-            <el-button type="primary" size="mini" @click="start(scope.row)"
-              >开始演习</el-button
+            <el-button type="primary" size="mini" @click="init_load(scope.row)"
+              >初始化演习</el-button
             >
             <el-button
               type="success"
@@ -154,6 +154,25 @@ export default {
       }
       // window.sessionStorage.setItem('activePath', '/currentExercise')
       // this.$router.push('/currentExercise')
+    },
+
+    async init_load(row) {
+      console.log(row.id)
+      console.log(row.mapId)
+      const { data: res } = await this.$http.get("newbattle/newinit", {
+        params: {
+          id: row.id,
+        },
+      })
+      console.log(res)
+      if (res.code !== 200) {
+        this.$message.error("开启对局失败")
+      } else {
+        window.sessionStorage.setItem("activePath", "/currentExercise")
+        window.sessionStorage.setItem("mapId", row.mapId)
+        window.sessionStorage.setItem("schemeId", row.id)
+        this.$router.push("/currentExercise")
+      }
     },
     async resume_load(row) {
       console.log(row.id)
