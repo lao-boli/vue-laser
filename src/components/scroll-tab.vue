@@ -1,7 +1,10 @@
 <template>
   <section class="scroll_continar">
-    <el-row :gutter="20">
+    <el-row class="content" :gutter="20">
       <el-col :span="7" :offset="5">
+        <div class="title">
+          战况
+        </div>
         <div
           style="
             height: 220px;
@@ -79,3 +82,16 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.content {
+  display: flex;
+  align-items: flex-end;
+}
+.title {
+  width: 400px;
+  display: flex;
+  justify-content: center;
+  font-size: 40px;
+}
+</style>
