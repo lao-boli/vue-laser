@@ -57,6 +57,8 @@
       </map-view>
 
       <div class="war-situation">
+        <!--占位-->
+        <div></div>
         <scroll-tab
             :activities="activities"
             :redHealthStat="red"
@@ -106,6 +108,7 @@
       </el-row>
     </el-card>
 
+    <!--单兵装弹对话框-->
     <el-dialog
         class="charge-dialog"
         title="单兵装弹"
@@ -136,6 +139,7 @@
         <el-button type="primary" @click="singleCharging">确认</el-button>
       </span>
     </el-dialog>
+    <!--全体装弹对话框-->
     <el-dialog
         class="charge-dialog"
         title="全体装弹"
@@ -1070,10 +1074,15 @@ export default {
   position: relative;
 }
 .war-situation {
-
+  display: flex;
 }
+.war-situation div {
+  width: 30%;
+}
+
 .scroll_continar {
   margin-top: 20px;
+  width: 70%;
 }
 .out {
   float: left;

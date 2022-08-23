@@ -1,12 +1,12 @@
 <template>
   <section class="scroll_continar">
-    <el-row class="content" :gutter="20">
-      <el-col :span="7" :offset="5">
+    <div class="content">
+      <div class="war">
         <div class="title">
           战况
         </div>
         <div
-          style="
+            style="
             height: 220px;
             width: 400px;
             background-color: #fff;
@@ -19,13 +19,13 @@
             <div class="con">
               <el-timeline>
                 <el-timeline-item
-                  v-for="(activity, index) in activities"
-                  :key="index"
-                  :icon="activity.icon"
-                  :type="activity.type"
-                  :color="activity.color"
-                  :size="activity.size"
-                  :timestamp="activity.timestamp"
+                    v-for="(activity, index) in activities"
+                    :key="index"
+                    :icon="activity.icon"
+                    :type="activity.type"
+                    :color="activity.color"
+                    :size="activity.size"
+                    :timestamp="activity.timestamp"
                 >
                   {{ activity.content }}
                 </el-timeline-item>
@@ -33,11 +33,15 @@
             </div>
           </happy-scroll>
         </div>
-      </el-col>
+      </div>
       <!-- colon (:) is short form of "v-bind:" -->
-      <health-stat team="red" v-bind:healthStat="redHealthStat"></health-stat>
-      <health-stat team="blue" v-bind:healthStat="blueHealthStat"></health-stat>
-    </el-row>
+      <div class="team-item">
+        <health-stat team="red" v-bind:healthStat="redHealthStat"></health-stat>
+      </div>
+      <div>
+        <health-stat team="blue" v-bind:healthStat="blueHealthStat"></health-stat>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -84,9 +88,15 @@ export default {
 </script>
 
 <style scoped>
+.scroll_continar {
+  display: flex;
+}
 .content {
+  width: 100%;
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
+  padding-right: 30px;
 }
 .title {
   width: 400px;
