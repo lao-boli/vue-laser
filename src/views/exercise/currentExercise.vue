@@ -56,11 +56,13 @@
       >
       </map-view>
 
-      <scroll-tab
-        :activities="activities"
-        :redHealthStat="red"
-        :blueHealthStat="blue"
-      ></scroll-tab>
+      <div class="war-situation">
+        <scroll-tab
+            :activities="activities"
+            :redHealthStat="red"
+            :blueHealthStat="blue"
+        ></scroll-tab>
+      </div>
 
       <div class="battle-data">
         <div class="option">
@@ -361,6 +363,9 @@ const convertObjToDddd = (data: {
   return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
 }
 
+const synth = window.speechSynthesis
+const msg = new SpeechSynthesisUtterance()
+
 export default {
   components: {
     "scroll-tab": ScrollTab,
@@ -633,6 +638,7 @@ export default {
                 })()
                 this.$message.success(active.content)
                 this.activities.unshift(active)
+                this.handleSpeak(active.content)
                 this.getExerciseData()
               }
             })
@@ -667,6 +673,7 @@ export default {
                 })()
 
                 this.activities.unshift(active)
+                this.handleSpeak(active.content)
                 this.getExerciseData()
               }
             })
@@ -936,6 +943,21 @@ export default {
       })
     },
 
+    // 语音播报
+    handleSpeak(text) {
+      msg.text = text
+      msg.lang = "zh-CN" // 使用的语言:中文
+      msg.volume = 1 // 声音音量：1
+      msg.rate = 1.2 // 语速：1
+      msg.pitch = 1 // 音高：1
+      synth.speak(msg) // 播放
+    },
+    // 语音停止
+    handleStop(e) {
+      msg.text = e
+      msg.lang = "zh-CN"
+      synth.cancel()
+    },
     // 全体装弹
     async fullCharging() {
       const { chargingNumber } = this
@@ -985,8 +1007,15 @@ export default {
       if (res.code !== 200) {
         this.$message.error("开启对局失败")
       } else {
+        this.$message.success("开启演习成功")
         this.getMapData()
         this.getExerciseData()
+        const active = (() => {
+          const msrc = '开始演习'
+          return newActive(msrc)
+        })()
+        this.activities.unshift(active)
+        this.handleSpeak(active.content)
       }
     },
     // 结束演习
@@ -1014,6 +1043,12 @@ export default {
         } else {
           this.stopRecording()
         }
+        const active = (() => {
+          const msrc = '结束演习'
+          return newActive(msrc)
+        })()
+        this.activities.unshift(active)
+        this.handleSpeak(active.content)
       }
     },
   },
@@ -1034,6 +1069,9 @@ export default {
   height: 600px;
   position: relative;
 }
+.war-situation {
+
+}
 .scroll_continar {
   margin-top: 20px;
 }
@@ -1052,7 +1090,7 @@ export default {
 }
 .battle-data .option .el-button {
   width: 35%;
-  margin: 40px 25px 40px 25px;
+  margin: 40px 25px 0px 25px;
   font-size: 30px;
 
 }
@@ -1078,12 +1116,14 @@ export default {
 }
 
 .red {
+  font-size: 25px;
   margin: 10px;
   padding: 15px;
   color: #f56c6c;
   border-bottom: 1px solid #f56c6c;
 }
 .blue {
+  font-size: 25px;
   margin: 10px;
   padding: 15px;
   color: #409eff;
@@ -1091,5 +1131,9 @@ export default {
 }
 .enddialog {
   height: 600px !important;
+}
+
+/deep/ .enddialog .el-table {
+  font-size: 25px;
 }
 </style>
