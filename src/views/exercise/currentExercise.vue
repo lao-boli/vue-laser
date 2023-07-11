@@ -642,7 +642,7 @@ export default {
                 })()
                 this.$message.success(active.content)
                 this.activities.unshift(active)
-                this.handleSpeak(active.content)
+                // this.handleSpeak(active.content)
                 this.getExerciseData()
               }
             })

@@ -4,8 +4,6 @@ dist
 .metals
 
 # local env files
-src/global.ts
-src/global.ts
 .env
 .env.local
 .env.*.local
