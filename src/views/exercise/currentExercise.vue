@@ -5,7 +5,8 @@
       <el-breadcrumb-item :to="{ path: '/home' }">主页</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/newScheme' }">演习</el-breadcrumb-item>
       <el-breadcrumb-item :to="{ path: '/schemeManagement' }"
-        >当前演习</el-breadcrumb-item
+      >当前演习
+      </el-breadcrumb-item
       >
     </el-breadcrumb>
     <!--卡片视图-->
@@ -16,43 +17,45 @@
         </el-col>
         <el-col :span="2">
           <el-button
-            type="danger"
-            v-if="videoStart === false"
-            size="mini"
-            style="
+              type="danger"
+              v-if="videoStart === false"
+              size="mini"
+              style="
               position: absolute;
               top: 50%;
               left: 50%;
               transform: translate(-50%, -50%);
             "
-            @click="recordStart"
-            >录屏未开启</el-button
+              @click="recordStart"
+          >录屏未开启
+          </el-button
           >
           <el-button
-            type="success"
-            icon="el-icon-video-camera"
-            v-else
-            size="mini"
-            style="
+              type="success"
+              icon="el-icon-video-camera"
+              v-else
+              size="mini"
+              style="
               position: absolute;
               top: 50%;
               left: 50%;
               transform: translate(-50%, -50%);
             "
-            >录屏中</el-button
+          >录屏中
+          </el-button
           >
         </el-col>
       </el-row>
       <map-view
-        v-if="mapinfo.leftTopLat !== null"
-        :leftTopLat="mapinfo.leftTopLat"
-        :leftTopLng="mapinfo.leftTopLng"
-        :rightDownLat="mapinfo.rightDownLat"
-        :rightDownLng="mapinfo.rightDownLng"
-        :mapUrl="imgsrc"
-        :redList="soldierlist.red"
-        :blueList="soldierlist.blue"
-        ref="mapViewInstance"
+          v-if="mapinfo.leftTopLat !== null"
+          :leftTopLat="mapinfo.leftTopLat"
+          :leftTopLng="mapinfo.leftTopLng"
+          :rightDownLat="mapinfo.rightDownLat"
+          :rightDownLng="mapinfo.rightDownLng"
+          :mapUrl="imgsrc"
+          :redList="soldierlist.red"
+          :blueList="soldierlist.blue"
+          ref="mapViewInstance"
       >
       </map-view>
 
@@ -68,19 +71,23 @@
 
       <div class="battle-data">
         <div class="option">
-          <el-button type="primary"  @click="startScheme"
-          >开始演习</el-button>
+          <el-button type="primary" @click="startScheme"
+          >开始演习
+          </el-button>
 
           <el-button
               type="danger"
               @click="stopRecord"
-          >结束演习</el-button>
+          >结束演习
+          </el-button>
 
-          <el-button type="primary"  @click="singleChargeVisible = true"
-          >单兵装弹</el-button>
+          <el-button type="primary" @click="singleChargeVisible = true"
+          >单兵装弹
+          </el-button>
 
-          <el-button type="primary"  @click="fullChargeVisible = true"
-          >全体装弹</el-button>
+          <el-button type="primary" @click="fullChargeVisible = true"
+          >全体装弹
+          </el-button>
         </div>
         <div class="battle-info">
           <stat-tab :soldierListData="soldierlist.red" team="red"></stat-tab>
@@ -90,20 +97,21 @@
 
       <h3 class="title">录屏</h3>
       <video
-        controls
-        autoplay
-        playsinline
-        ref="video"
-        width="400"
-        height="300"
+          controls
+          autoplay
+          playsinline
+          ref="video"
+          width="400"
+          height="300"
       ></video>
       <el-row>
         <el-button
-          type="primary"
-          plain
-          @click="stopRecord"
-          id="btn-stop-recording"
-          >演习结束</el-button
+            type="primary"
+            plain
+            @click="stopRecord"
+            id="btn-stop-recording"
+        >演习结束
+        </el-button
         >
       </el-row>
     </el-card>
@@ -163,23 +171,23 @@
     </el-dialog>
     <!--演习结束对话框-->
     <el-dialog
-      title="战场实况"
-      :visible.sync="endVisible"
-      width="50%"
-      :before-close="handleClose"
-      class="enddialog"
-      :close-on-click-modal="false"
+        title="战场实况"
+        :visible.sync="endVisible"
+        width="50%"
+        :before-close="handleClose"
+        class="enddialog"
+        :close-on-click-modal="false"
     >
       <h3 class="red">红方</h3>
       <el-table
-        :data="redTotalData"
-        style="width: 100%; margin-left: 10px; padding-left: 10px"
-        class="total-red"
-        stripe
+          :data="redTotalData"
+          style="width: 100%; margin-left: 10px; padding-left: 10px"
+          class="total-red"
+          stripe
       >
         <el-table-column prop="name" label="姓名" width="180">
         </el-table-column>
-        <el-table-column prop="id" label="id" width="180"> </el-table-column>
+        <el-table-column prop="id" label="id" width="180"></el-table-column>
         <el-table-column prop="shoot" label="击中数" width="180">
         </el-table-column>
         <el-table-column prop="beShooted" label="被击中数" width="180">
@@ -189,14 +197,14 @@
       </el-table>
       <h3 class="blue">蓝方</h3>
       <el-table
-        :data="blueTotalData"
-        style="width: 100%; margin-left: 10px; padding-left: 10px"
-        class="total-blue"
-        stripe
+          :data="blueTotalData"
+          style="width: 100%; margin-left: 10px; padding-left: 10px"
+          class="total-blue"
+          stripe
       >
         <el-table-column prop="name" label="姓名" width="180">
         </el-table-column>
-        <el-table-column prop="id" label="id" width="180"> </el-table-column>
+        <el-table-column prop="id" label="id" width="180"></el-table-column>
         <el-table-column prop="shoot" label="击中数" width="180">
         </el-table-column>
         <el-table-column prop="beShooted" label="被击中数" width="180">
@@ -208,16 +216,16 @@
         <el-button @click="endVisible = false">取消</el-button>
         <el-button type="success" @click="clickEnd">结束</el-button>
         <el-button type="primary" @click="onClickDownDaily()"
-          >结束并导出txt</el-button
+        >结束并导出txt</el-button
         >
       </span>
     </el-dialog>
     <!--是否开启录屏-->
     <el-dialog
-      title="是否开启录屏"
-      :visible.sync="recordVisible"
-      width="30%"
-      :before-close="handleClose"
+        title="是否开启录屏"
+        :visible.sync="recordVisible"
+        width="30%"
+        :before-close="handleClose"
     >
       <span> 开启录屏后可在演习回放界面回放录屏 </span>
       <span slot="footer" class="dialog-footer">
@@ -229,6 +237,7 @@
 </template>
 
 <script lang="ts">
+import '../../utils/audio-play-util.js'
 import RecordRTC from "recordrtc"
 // import md5 from 'js-md5'
 // import
@@ -236,6 +245,7 @@ import { getSeekableBlob } from "ebml"
 import BMF from "browser-md5-file"
 import ReconnectingWebSocket from "reconnecting-websocket"
 import * as $ from "jquery"
+import axios from "axios"
 import {
   basePort, baseURL, wsPath, fullBaseURL, isGCJ,
 } from "../../global"
@@ -245,6 +255,7 @@ import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
 import { Coord, CoordSet } from "@/plugins/coord-util"
+import { hitMap, hitPartMap } from "@/utils/audio-play-util"
 
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 
@@ -362,9 +373,17 @@ const convertObjToDddd = (data: {
   const coord = new CoordSet(data.lat, data.lng)
   // console.log("Recv Coord", coord)
   if (isGCJ) {
-    return { ...data, lat: coord.gsj.lat, lng: coord.gsj.lng }
+    return {
+      ...data,
+      lat: coord.gsj.lat,
+      lng: coord.gsj.lng,
+    }
   }
-  return { ...data, lat: coord.wgs.lat, lng: coord.wgs.lng }
+  return {
+    ...data,
+    lat: coord.wgs.lat,
+    lng: coord.wgs.lng,
+  }
 }
 
 const synth = window.speechSynthesis
@@ -462,10 +481,10 @@ export default {
     this.getMapData()
     try {
       if (
-        // @ts-ignore: We have the get DisplayMedia
+      // @ts-ignore: We have the get DisplayMedia
         !navigator.getDisplayMedia
-        // @ts-ignore: We have the get DisplayMedia
-        && !navigator.mediaDevices.getDisplayMedia
+          // @ts-ignore: We have the get DisplayMedia
+          && !navigator.mediaDevices.getDisplayMedia
       ) {
         throw new Error(
           "Your browser does NOT support the getDisplayMedia API.",
@@ -568,7 +587,8 @@ export default {
     initWebSocket() {
       // 初始化weosocket
 
-      const wsuri = `ws://${baseURL}:${basePort}/${wsPath}`
+      // const wsuri = `ws://${baseURL}:${basePort}/${wsPath}`
+      const wsuri = `ws://localhost:10250`
       this.websock = new ReconnectingWebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen
@@ -597,6 +617,7 @@ export default {
         Hit, // 0
         Ping, // 1
       }
+
       const teams = ["red", "blue"]
       const soldierId = in_data.num
       const shooter = in_data.shooterNum
@@ -624,9 +645,10 @@ export default {
                 const active = (() => {
                   if (solider.lastReportTime === null) {
                     const msrc = `${soldierId}号上线`
-                      + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
-                        3,
-                      )})`
+                        + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
+                          3,
+                        )})`
+                    this.speakOnline(soldierId,redata.lat.toFixed(3),redata.lng.toFixed(3))
                     return newActive(
                       msrc,
                       undefined,
@@ -638,6 +660,7 @@ export default {
                     3,
                   )},
                     ${redata.lng.toFixed(3)})`
+                  this.speakMove(soldierId,redata.lat.toFixed(3),redata.lng.toFixed(3))
                   return newActive(msrc)
                 })()
                 this.$message.success(active.content)
@@ -650,14 +673,14 @@ export default {
           break
         }
         /* {
-          "mark": "0",
-          "position": "右脚",
-          "shooteeNum": "456",
-          "shooteeTeam": "blue",
-          "shooterNum": "123",
-          "shooterTeam": "red",
-          "time": 1628774919894
-      } */
+            "mark": "0",
+            "position": "右脚",
+            "shooteeNum": "456",
+            "shooteeTeam": "blue",
+            "shooterNum": "123",
+            "shooterTeam": "red",
+            "time": 1628774919894
+        } */
         case MsgType.Hit: {
           // TODO Kill Prompt
           // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
@@ -671,13 +694,14 @@ export default {
                     victim_team,
                   )}的${victim}号的${part_hit}`
                   if (shooter_team === victim_team) {
+                    this.speakHit(teamEnToZh(shooter_team),shooter,teamEnToZh(victim_team),victim,part_hit,true)
                     return newActive(`友伤 ${msg_info}`, "danger")
                   }
+                  this.speakHit(teamEnToZh(shooter_team),shooter,teamEnToZh(victim_team),victim,part_hit,false)
                   return newActive(msg_info, "warning")
                 })()
 
                 this.activities.unshift(active)
-                this.handleSpeak(active.content)
                 this.getExerciseData()
               }
             })
@@ -755,13 +779,13 @@ export default {
       // @ts-ignore: We have the property
       if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices
-          // @ts-ignore: We have the property
+        // @ts-ignore: We have the property
           .getDisplayMedia(displaymediastreamconstraints)
           .then(success)
           .catch(error)
       } else {
         navigator
-          // @ts-ignore: We have the property
+        // @ts-ignore: We have the property
           .getDisplayMedia(displaymediastreamconstraints)
           .then(success)
           .catch(error)
@@ -802,24 +826,25 @@ export default {
         },
         false,
       )
-      stream.getTracks().forEach((track) => {
-        track.addEventListener(
-          "ended",
-          () => {
-            // Do nothing
-            // I don't know what this shit is doing though
-          },
-          false,
-        )
-        track.addEventListener(
-          "inactive",
-          () => {
-            // Do nothing
-            // I don't know what this shit is doing though
-          },
-          false,
-        )
-      })
+      stream.getTracks()
+        .forEach((track) => {
+          track.addEventListener(
+            "ended",
+            () => {
+              // Do nothing
+              // I don't know what this shit is doing though
+            },
+            false,
+          )
+          track.addEventListener(
+            "inactive",
+            () => {
+              // Do nothing
+              // I don't know what this shit is doing though
+            },
+            false,
+          )
+        })
     },
     startRecording() {
       this.recordVisible = false
@@ -949,12 +974,13 @@ export default {
 
     // 语音播报
     handleSpeak(text) {
-      msg.text = text
-      msg.lang = "zh-CN" // 使用的语言:中文
-      msg.volume = 1 // 声音音量：1
-      msg.rate = 1.2 // 语速：1
-      msg.pitch = 1 // 音高：1
-      synth.speak(msg) // 播放
+      // axios.get(`http://192.168.2.135:5000/${text}`)
+      // msg.text = text
+      // msg.lang = "zh-CN" // 使用的语言:中文
+      // msg.volume = 1 // 声音音量：1
+      // msg.rate = 1.2 // 语速：1
+      // msg.pitch = 1 // 音高：1
+      // synth.speak(msg) // 播放
     },
     // 语音停止
     handleStop(e) {
@@ -962,6 +988,111 @@ export default {
       msg.lang = "zh-CN"
       synth.cancel()
     },
+    // region audio
+    /**
+     * 拼接并播放语音报靶音频
+     * @param wavFiles
+     */
+    playAudio(wavFiles) {
+      // 创建用于顺序播放 WAV 文件的 Promise
+      const playNextAudio = (index) => {
+        if (index >= wavFiles.length) {
+          // 播放完毕，结束
+          return
+        }
+
+        // 创建 Audio 对象
+        const audio = new Audio(wavFiles[index])
+
+        // 当前音频播放完毕后，自动播放下一个音频
+        audio.addEventListener('ended', () => {
+          audio.pause() // 暂停当前音频
+          playNextAudio(index + 1) // 播放下一个音频
+        })
+
+        // 播放当前音频
+        audio.play()
+      }
+
+      // 开始播放第一个音频
+      playNextAudio(0)
+    },
+    speakOnline(shooterId,lat,lng) {
+      axios.get('http://192.168.2.135:5000/save/dynamics',{
+        params: {
+          input:shooterId,
+          filename:shooterId
+        }
+      })
+      let latArr = lat.toString().split('.')
+      let lngArr = lng.toString().split('.')
+      const wavFiles = [
+        `http://192.168.2.135:5000/audio/dynamics/${shooterId}.wav`,
+        require('@/assets/audio/common/haoshangxian.wav'),
+        require('@/assets/audio/common/zuobiaowei.wav'),
+        `http://192.168.2.135:5000/audio/latlng/${latArr[0]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/dian${latArr[1]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/${lngArr[0]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/dian${lngArr[1]}.wav`,
+        ]
+      console.log(wavFiles)
+      this.playAudio(wavFiles)
+
+    },
+    speakMove(shooterId,lat,lng) {
+      axios.get('http://192.168.2.135:5000/save/dynamics',{
+        params: {
+          input:shooterId,
+          filename:shooterId
+        }
+      })
+      let latArr = lat.toString().split('.')
+      let lngArr = lng.toString().split('.')
+      const wavFiles = [
+        `http://192.168.2.135:5000/audio/dynamics/${shooterId}.wav`,
+        require('@/assets/audio/common/hoayidongzhi.wav'),
+        `http://192.168.2.135:5000/audio/latlng/${latArr[0]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/dian${latArr[1]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/${lngArr[0]}.wav`,
+        `http://192.168.2.135:5000/audio/latlng/dian${lngArr[1]}.wav`,
+      ]
+      console.log(wavFiles)
+      this.playAudio(wavFiles)
+
+    },
+    speakHit(shooter_team,shooter,victim_team,victim,part_hit,isFriend) {
+      axios.get('http://192.168.2.135:5000/save/dynamics',{
+        params: {
+          input:shooter,
+          filename:shooter
+        }
+      })
+      axios.get('http://192.168.2.135:5000/save/dynamics',{
+        params: {
+          input:victim,
+          filename:victim
+        }
+      })
+      const wavFiles = [
+        hitMap[shooter_team],
+        require('@/assets/audio/common/de.wav'),
+        // require('@/assets/audio/common/haojizhongle.wav'),
+        `http://192.168.2.135:5000/audio/dynamics/${shooter}.wav`,
+        'http://192.168.2.135:5000/audio/regular/haojizhongle.wav',
+        hitMap[victim_team],
+        require('@/assets/audio/common/de.wav'),
+        `http://192.168.2.135:5000/audio/dynamics/${victim}.wav`,
+        require('@/assets/audio/common/haode.wav'),
+        hitPartMap[part_hit]]
+      console.log(wavFiles)
+      if(isFriend){
+        wavFiles.unshift(require('@/assets/audio/common/youshang.wav'))
+      }
+      this.playAudio(wavFiles)
+
+    },
+    // endregion
+
     // 全体装弹
     async fullCharging() {
       const { chargingNumber } = this
@@ -1019,7 +1150,7 @@ export default {
           return newActive(msrc)
         })()
         this.activities.unshift(active)
-        this.handleSpeak(active.content)
+        new Audio(require('@/assets/audio/common/kaishixunlian.wav')).play()
       }
     },
     // 结束演习
@@ -1052,7 +1183,7 @@ export default {
           return newActive(msrc)
         })()
         this.activities.unshift(active)
-        this.handleSpeak(active.content)
+        new Audio(require('@/assets/audio/common/jieshuxunlian.wav')).play()
       }
     },
   },
@@ -1063,19 +1194,23 @@ export default {
 .el-button {
   font-size: 20px;
 }
+
 .title {
   margin: 10px;
   border-bottom: 1px solid #606266;
 }
+
 .img_continar {
   display: flex;
   justify-content: center;
   height: 600px;
   position: relative;
 }
+
 .war-situation {
   display: flex;
 }
+
 .war-situation div {
   width: 30%;
 }
@@ -1084,12 +1219,15 @@ export default {
   margin-top: 20px;
   width: 70%;
 }
+
 .out {
   float: left;
 }
+
 .battle-data {
   display: flex;
 }
+
 .battle-data .option {
   width: 30%;
   display: flex;
@@ -1097,21 +1235,24 @@ export default {
   justify-content: center;
 
 }
+
 .battle-data .option .el-button {
   width: 35%;
   margin: 40px 25px 0px 25px;
   font-size: 30px;
 
 }
+
 .battle-data .battle-info {
   width: 70%;
 }
 
-.charge-dialog  {
+.charge-dialog {
   font-family: "Microsoft YaHei";
   font-size: 30px;
   font-weight: bold;
 }
+
 .charge-dialog .item {
   display: inline-block;
   font-size: 30px;
@@ -1119,7 +1260,8 @@ export default {
   margin: 20px;
 
 }
-/deep/ .charge-dialog .el-input__inner{
+
+/deep/ .charge-dialog .el-input__inner {
   height: 50px;
   font-size: 30px;
 }
@@ -1131,6 +1273,7 @@ export default {
   color: #f56c6c;
   border-bottom: 1px solid #f56c6c;
 }
+
 .blue {
   font-size: 25px;
   margin: 10px;
@@ -1138,6 +1281,7 @@ export default {
   color: #409eff;
   border-bottom: 1px solid #409eff;
 }
+
 .enddialog {
   height: 600px !important;
 }
