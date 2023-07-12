@@ -1,6 +1,6 @@
 export const hitMap = {
-  "红队": require('@/assets/audio/common/hongdui.wav'),
-  "蓝队": require('@/assets/audio/common/landui.wav'),
+  "红队": require('@/assets/audio/common/hongduide.wav'),
+  "蓝队": require('@/assets/audio/common/landuide.wav'),
 }
 export const hitPartMap = {
   "头部": require('@/assets/audio/common/toubu.wav'),

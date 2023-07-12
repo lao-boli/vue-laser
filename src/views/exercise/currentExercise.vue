@@ -247,7 +247,7 @@ import ReconnectingWebSocket from "reconnecting-websocket"
 import * as $ from "jquery"
 import axios from "axios"
 import {
-  basePort, baseURL, wsPath, fullBaseURL, isGCJ,
+  basePort, baseURL, wsPath, fullBaseURL, isGCJ, dynamicAudioURL, audioURL, latlngAudioURL,
 } from "../../global"
 // See stopRecordingCallback() method below
 // I don't think We need jQuery anymore but I'm lazy to fix it.
@@ -1027,13 +1027,13 @@ export default {
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
       const wavFiles = [
-        `http://192.168.2.135:5000/audio/dynamics/${shooterId}.wav`,
+        `${dynamicAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/haoshangxian.wav'),
         require('@/assets/audio/common/zuobiaowei.wav'),
-        `http://192.168.2.135:5000/audio/latlng/${latArr[0]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/dian${latArr[1]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/${lngArr[0]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/dian${lngArr[1]}.wav`,
+        `${latlngAudioURL}/${latArr[0]}.wav`,
+        `${latlngAudioURL}/dian${latArr[1]}.wav`,
+        `${latlngAudioURL}/${lngArr[0]}.wav`,
+        `${latlngAudioURL}/dian${lngArr[1]}.wav`,
         ]
       console.log(wavFiles)
       this.playAudio(wavFiles)
@@ -1049,14 +1049,13 @@ export default {
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
       const wavFiles = [
-        `http://192.168.2.135:5000/audio/dynamics/${shooterId}.wav`,
+        `${dynamicAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/hoayidongzhi.wav'),
-        `http://192.168.2.135:5000/audio/latlng/${latArr[0]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/dian${latArr[1]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/${lngArr[0]}.wav`,
-        `http://192.168.2.135:5000/audio/latlng/dian${lngArr[1]}.wav`,
+        `${latlngAudioURL}/${latArr[0]}.wav`,
+        `${latlngAudioURL}/dian${latArr[1]}.wav`,
+        `${latlngAudioURL}/${lngArr[0]}.wav`,
+        `${latlngAudioURL}/dian${lngArr[1]}.wav`,
       ]
-      console.log(wavFiles)
       this.playAudio(wavFiles)
 
     },
@@ -1075,16 +1074,12 @@ export default {
       })
       const wavFiles = [
         hitMap[shooter_team],
-        require('@/assets/audio/common/de.wav'),
-        // require('@/assets/audio/common/haojizhongle.wav'),
-        `http://192.168.2.135:5000/audio/dynamics/${shooter}.wav`,
-        'http://192.168.2.135:5000/audio/regular/haojizhongle.wav',
+        `${dynamicAudioURL}/${shooter}.wav`,
+        require('@/assets/audio/common/haojizhongle.wav'),
         hitMap[victim_team],
-        require('@/assets/audio/common/de.wav'),
-        `http://192.168.2.135:5000/audio/dynamics/${victim}.wav`,
+        `${dynamicAudioURL}/${victim}.wav`,
         require('@/assets/audio/common/haode.wav'),
         hitPartMap[part_hit]]
-      console.log(wavFiles)
       if(isFriend){
         wavFiles.unshift(require('@/assets/audio/common/youshang.wav'))
       }

@@ -17,8 +17,17 @@ const baseURL = document.location.hostname
 const basePort = 8010
 const wsPath = "shootwebsocket"
 const fullBaseURL = `http://${baseURL}:${basePort}/`
+
+const audioServerURL = `http://192.168.2.135:5000`
+
+const audioSaveURL = `${audioServerURL}/save`
+const audioURL = `${audioServerURL}/audio`
+const dynamicAudioURL = `${audioURL}/dynamics`
+const regularAudioURL = `${audioURL}/regular`
+
+const latlngAudioURL = `${audioURL}/latlng`
 const isGCJ = true
 
 export {
-  basePort, baseURL, wsPath, fullBaseURL, isGCJ,
+  basePort, baseURL,audioServerURL,audioSaveURL,audioURL,dynamicAudioURL,regularAudioURL,latlngAudioURL, wsPath, fullBaseURL, isGCJ,
 }
