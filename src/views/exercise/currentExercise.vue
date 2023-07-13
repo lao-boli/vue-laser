@@ -984,8 +984,8 @@ export default {
 
     // region audio
     /**
-     * 拼接并播放语音报靶音频
-     * @param wavFiles
+     * 播放语音音频
+     * @param wavFiles 音频文件数组
      */
     playAudio(wavFiles) {
       // 创建用于顺序播放 WAV 文件的 Promise
@@ -1011,6 +1011,13 @@ export default {
       // 开始播放第一个音频
       playNextAudio(0)
     },
+    /**
+     * 播放士兵上线语音 <br>
+     * e.g: 12345号上线,坐标为 24.936, 118.640
+     * @param shooterId 士兵编号
+     * @param lat 上线纬度
+     * @param lng 上线经度
+     */
     speakOnline(shooterId,lat,lng) {
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
@@ -1026,6 +1033,13 @@ export default {
       this.playAudio(wavFiles)
 
     },
+    /**
+     * 播放士兵移动语音 <br>
+     * e.g: 12345号移动至 24.936, 118.640
+     * @param shooterId 士兵编号
+     * @param lat 移动纬度
+     * @param lng 移动经度
+     */
     speakMove(shooterId,lat,lng) {
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
@@ -1040,6 +1054,16 @@ export default {
       this.playAudio(wavFiles)
 
     },
+    /**
+     * 播放击中语音 <br>
+     * e.g: 红队的11111号击中了蓝队的12345号的腹部
+     * @param shooter_team 射击队伍
+     * @param shooter 射击者编号
+     * @param victim_team 受击者队伍
+     * @param victim 受击者编号
+     * @param part_hit 受击部位
+     * @param isFriend 是否是友伤
+     */
     speakHit(shooter_team,shooter,victim_team,victim,part_hit,isFriend) {
       const wavFiles = [
         hitMap[shooter_team],
@@ -1055,6 +1079,10 @@ export default {
       this.playAudio(wavFiles)
 
     },
+    /**
+     * 在每次对局开始时,在服务器上生成本次对局士兵编号的音频数据
+     * @param id 士兵编号
+     */
     initNumberAudio(id){
       axios.get(`${audioSaveURL}/number`,{
         params: {
