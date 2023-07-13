@@ -23,11 +23,12 @@ const audioServerURL = `http://192.168.2.135:5000`
 const audioSaveURL = `${audioServerURL}/save`
 const audioURL = `${audioServerURL}/audio`
 const dynamicAudioURL = `${audioURL}/dynamics`
+const numberAudioURL = `${audioURL}/number`
 const regularAudioURL = `${audioURL}/regular`
 
 const latlngAudioURL = `${audioURL}/latlng`
 const isGCJ = true
 
 export {
-  basePort, baseURL,audioServerURL,audioSaveURL,audioURL,dynamicAudioURL,regularAudioURL,latlngAudioURL, wsPath, fullBaseURL, isGCJ,
+  basePort, baseURL,audioServerURL,audioSaveURL,audioURL,numberAudioURL,dynamicAudioURL,regularAudioURL,latlngAudioURL, wsPath, fullBaseURL, isGCJ,
 }

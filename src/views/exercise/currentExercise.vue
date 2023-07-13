@@ -247,7 +247,16 @@ import ReconnectingWebSocket from "reconnecting-websocket"
 import * as $ from "jquery"
 import axios from "axios"
 import {
-  basePort, baseURL, wsPath, fullBaseURL, isGCJ, dynamicAudioURL, audioURL, latlngAudioURL, audioSaveURL,
+  basePort,
+  baseURL,
+  wsPath,
+  fullBaseURL,
+  isGCJ,
+  dynamicAudioURL,
+  audioURL,
+  latlngAudioURL,
+  audioSaveURL,
+  numberAudioURL,
 } from "../../global"
 // See stopRecordingCallback() method below
 // I don't think We need jQuery anymore but I'm lazy to fix it.
@@ -533,6 +542,7 @@ export default {
         // TODO Provide a type interface for res data
         const modified: any[] = res.data.map(convertObjToDddd)
         modified.forEach((data) => {
+          this.initNumberAudio(data.id)
           // team is a string
           // value is red or blue
           const { team } = data
@@ -630,7 +640,7 @@ export default {
       // 移动信息
       // TODO define a interface of redata
 
-      /*       lat: 24.563537
+      /*    lat: 24.563537
             lng: 118.381233
             mark: "1"
             num: "123"
@@ -1002,16 +1012,10 @@ export default {
       playNextAudio(0)
     },
     speakOnline(shooterId,lat,lng) {
-      axios.get(`${audioSaveURL}/dynamics`,{
-        params: {
-          input:shooterId,
-          filename:shooterId
-        }
-      })
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
       const wavFiles = [
-        `${dynamicAudioURL}/${shooterId}.wav`,
+        `${numberAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/haoshangxian.wav'),
         require('@/assets/audio/common/zuobiaowei.wav'),
         `${latlngAudioURL}/${latArr[0]}.wav`,
@@ -1023,16 +1027,10 @@ export default {
 
     },
     speakMove(shooterId,lat,lng) {
-      axios.get(`${audioSaveURL}/dynamics`,{
-        params: {
-          input:shooterId,
-          filename:shooterId
-        }
-      })
       let latArr = lat.toString().split('.')
       let lngArr = lng.toString().split('.')
       const wavFiles = [
-        `${dynamicAudioURL}/${shooterId}.wav`,
+        `${numberAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/hoayidongzhi.wav'),
         `${latlngAudioURL}/${latArr[0]}.wav`,
         `${latlngAudioURL}/dian${latArr[1]}.wav`,
@@ -1043,24 +1041,12 @@ export default {
 
     },
     speakHit(shooter_team,shooter,victim_team,victim,part_hit,isFriend) {
-      axios.get(`${audioSaveURL}/dynamics`,{
-        params: {
-          input:shooter,
-          filename:shooter
-        }
-      })
-      axios.get(`${audioSaveURL}/dynamics`,{
-        params: {
-          input:victim,
-          filename:victim
-        }
-      })
       const wavFiles = [
         hitMap[shooter_team],
-        `${dynamicAudioURL}/${shooter}.wav`,
+        `${numberAudioURL}/${shooter}.wav`,
         require('@/assets/audio/common/haojizhongle.wav'),
         hitMap[victim_team],
-        `${dynamicAudioURL}/${victim}.wav`,
+        `${numberAudioURL}/${victim}.wav`,
         require('@/assets/audio/common/haode.wav'),
         hitPartMap[part_hit]]
       if(isFriend){
@@ -1068,6 +1054,14 @@ export default {
       }
       this.playAudio(wavFiles)
 
+    },
+    initNumberAudio(id){
+      axios.get(`${audioSaveURL}/number`,{
+        params: {
+          input: id,
+          filename:id
+        }
+      })
     },
     // endregion
 
@@ -1122,7 +1116,8 @@ export default {
       } else {
         this.$message.success("开启演习成功")
         this.getMapData()
-        this.getExerciseData()
+        await this.getExerciseData()
+        console.log(this.soldierlist)
         const active = (() => {
           const msrc = '开始演习'
           return newActive(msrc)
