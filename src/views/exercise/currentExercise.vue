@@ -247,7 +247,7 @@ import ReconnectingWebSocket from "reconnecting-websocket"
 import * as $ from "jquery"
 import axios from "axios"
 import {
-  basePort, baseURL, wsPath, fullBaseURL, isGCJ, dynamicAudioURL, audioURL, latlngAudioURL,
+  basePort, baseURL, wsPath, fullBaseURL, isGCJ, dynamicAudioURL, audioURL, latlngAudioURL, audioSaveURL,
 } from "../../global"
 // See stopRecordingCallback() method below
 // I don't think We need jQuery anymore but I'm lazy to fix it.
@@ -972,22 +972,6 @@ export default {
       })
     },
 
-    // 语音播报
-    handleSpeak(text) {
-      // axios.get(`http://192.168.2.135:5000/${text}`)
-      // msg.text = text
-      // msg.lang = "zh-CN" // 使用的语言:中文
-      // msg.volume = 1 // 声音音量：1
-      // msg.rate = 1.2 // 语速：1
-      // msg.pitch = 1 // 音高：1
-      // synth.speak(msg) // 播放
-    },
-    // 语音停止
-    handleStop(e) {
-      msg.text = e
-      msg.lang = "zh-CN"
-      synth.cancel()
-    },
     // region audio
     /**
      * 拼接并播放语音报靶音频
@@ -1018,7 +1002,7 @@ export default {
       playNextAudio(0)
     },
     speakOnline(shooterId,lat,lng) {
-      axios.get('http://192.168.2.135:5000/save/dynamics',{
+      axios.get(`${audioSaveURL}/dynamics`,{
         params: {
           input:shooterId,
           filename:shooterId
@@ -1035,12 +1019,11 @@ export default {
         `${latlngAudioURL}/${lngArr[0]}.wav`,
         `${latlngAudioURL}/dian${lngArr[1]}.wav`,
         ]
-      console.log(wavFiles)
       this.playAudio(wavFiles)
 
     },
     speakMove(shooterId,lat,lng) {
-      axios.get('http://192.168.2.135:5000/save/dynamics',{
+      axios.get(`${audioSaveURL}/dynamics`,{
         params: {
           input:shooterId,
           filename:shooterId
@@ -1060,13 +1043,13 @@ export default {
 
     },
     speakHit(shooter_team,shooter,victim_team,victim,part_hit,isFriend) {
-      axios.get('http://192.168.2.135:5000/save/dynamics',{
+      axios.get(`${audioSaveURL}/dynamics`,{
         params: {
           input:shooter,
           filename:shooter
         }
       })
-      axios.get('http://192.168.2.135:5000/save/dynamics',{
+      axios.get(`${audioSaveURL}/dynamics`,{
         params: {
           input:victim,
           filename:victim
