@@ -49,8 +49,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="人员编号:">
-              <el-input v-model="item.id"></el-input>
+            <el-form-item label="人员编号:" prop="id">
+              <el-input v-model.number="item.id"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -104,8 +104,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="人员编号：">
-              <el-input v-model="item.id"></el-input>
+            <el-form-item label="人员编号：" prop="id">
+              <el-input v-model.number="item.id"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="4">
