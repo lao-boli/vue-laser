@@ -264,7 +264,7 @@ import ScrollTab from "../../components/scroll-tab.vue"
 import StatTab from "../../components/stat-tab.vue"
 import MapView from "../../components/map-view.vue"
 import { Coord, CoordSet } from "@/plugins/coord-util"
-import { hitMap, hitPartMap } from "@/utils/audio-play-util"
+import { hitMap, hitPartMap, synthesizeAndPlay } from "../../utils/audio-play-util.js"
 
 // Code from https://github.com/hiwanz/wgs2mars.js/blob/master/lib/wgs2mars.js
 
@@ -984,34 +984,6 @@ export default {
 
     // region audio
     /**
-     * 播放语音音频
-     * @param wavFiles 音频文件数组
-     */
-    playAudio(wavFiles) {
-      // 创建用于顺序播放 WAV 文件的 Promise
-      const playNextAudio = (index) => {
-        if (index >= wavFiles.length) {
-          // 播放完毕，结束
-          return
-        }
-
-        // 创建 Audio 对象
-        const audio = new Audio(wavFiles[index])
-
-        // 当前音频播放完毕后，自动播放下一个音频
-        audio.addEventListener('ended', () => {
-          audio.pause() // 暂停当前音频
-          playNextAudio(index + 1) // 播放下一个音频
-        })
-
-        // 播放当前音频
-        audio.play()
-      }
-
-      // 开始播放第一个音频
-      playNextAudio(0)
-    },
-    /**
      * 播放士兵上线语音 <br>
      * e.g: 12345号上线,坐标为 24.936, 118.640
      * @param shooterId 士兵编号
@@ -1030,7 +1002,7 @@ export default {
         `${latlngAudioURL}/${lngArr[0]}.wav`,
         `${latlngAudioURL}/dian${lngArr[1]}.wav`,
         ]
-      this.playAudio(wavFiles)
+      synthesizeAndPlay(wavFiles)
 
     },
     /**
@@ -1051,7 +1023,7 @@ export default {
         `${latlngAudioURL}/${lngArr[0]}.wav`,
         `${latlngAudioURL}/dian${lngArr[1]}.wav`,
       ]
-      this.playAudio(wavFiles)
+      synthesizeAndPlay(wavFiles)
 
     },
     /**
@@ -1076,7 +1048,7 @@ export default {
       if(isFriend){
         wavFiles.unshift(require('@/assets/audio/common/youshang.wav'))
       }
-      this.playAudio(wavFiles)
+      synthesizeAndPlay(wavFiles)
 
     },
     /**

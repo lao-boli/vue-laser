@@ -18,7 +18,7 @@ const basePort = 8010
 const wsPath = "shootwebsocket"
 const fullBaseURL = `http://${baseURL}:${basePort}/`
 
-const audioServerURL = `http://192.168.2.135:5000`
+const audioServerURL = `http://localhost:5000`
 
 const audioSaveURL = `${audioServerURL}/save`
 const audioURL = `${audioServerURL}/audio`
