@@ -27,8 +27,17 @@ const numberAudioURL = `${audioURL}/number`
 const regularAudioURL = `${audioURL}/regular`
 
 const latlngAudioURL = `${audioURL}/latlng`
+
+const audioPath = `/home/pi/audio`
+const dynamicAudioPath = `${audioPath}/dynamics`
+const numberAudioPath = `${audioPath}/number`
+const regularAudioPath = `${audioPath}/regular`
+const latlngAudioPath = `${audioPath}/latlng`
 const isGCJ = true
 
 export {
-  basePort, baseURL,audioServerURL,audioSaveURL,audioURL,numberAudioURL,dynamicAudioURL,regularAudioURL,latlngAudioURL, wsPath, fullBaseURL, isGCJ,
+  basePort, baseURL,audioServerURL,audioSaveURL,
+  audioURL,numberAudioURL,dynamicAudioURL,regularAudioURL,latlngAudioURL,
+  audioPath,numberAudioPath,dynamicAudioPath,regularAudioPath,latlngAudioPath,
+  wsPath, fullBaseURL, isGCJ,
 }
