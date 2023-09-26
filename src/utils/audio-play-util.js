@@ -11,6 +11,7 @@ export const hitPartMap = {
   "右脚": require('@/assets/audio/common/youjiao.wav'),
   "前甲": require('@/assets/audio/common/qianjia.wav'),
   "背甲": require('@/assets/audio/common/beijia.wav'),
+  "后甲": require('@/assets/audio/common/beijia.wav'),
 }
 export function getHitMap(){
   return hitMap
