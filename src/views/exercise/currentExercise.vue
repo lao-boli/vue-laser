@@ -352,15 +352,15 @@ const teamEnToZh = (tean_name_en: string) => {
 const newTime = (): string => {
   const aData = new Date()
   return `${aData.getFullYear()}-${
-    aData.getMonth() + 1
+      aData.getMonth() + 1
   }-${aData.getDate()}-${aData.getHours()}:${aData.getMinutes()}:${aData.getSeconds()}`
 }
 
 const newActive = (
-  content = "",
-  type: "warning" | "primary" | "danger" = "primary",
-  icon = "el-icon-s-help",
-  color: string = undefined,
+    content = "",
+    type: "warning" | "primary" | "danger" = "primary",
+    icon = "el-icon-s-help",
+    color: string = undefined,
 ): Active => ({
   content,
   timestamp: newTime(),
@@ -394,9 +394,6 @@ const convertObjToDddd = (data: {
     lng: coord.wgs.lng,
   }
 }
-
-const synth = window.speechSynthesis
-const msg = new SpeechSynthesisUtterance()
 
 export default {
   components: {
@@ -490,13 +487,13 @@ export default {
     this.getMapData()
     try {
       if (
-      // @ts-ignore: We have the get DisplayMedia
-        !navigator.getDisplayMedia
+          // @ts-ignore: We have the get DisplayMedia
+          !navigator.getDisplayMedia
           // @ts-ignore: We have the get DisplayMedia
           && !navigator.mediaDevices.getDisplayMedia
       ) {
         throw new Error(
-          "Your browser does NOT support the getDisplayMedia API.",
+            "Your browser does NOT support the getDisplayMedia API.",
         )
       }
     } catch (err) {
@@ -619,103 +616,107 @@ export default {
       // console.log(redata)
       this.parseRecvData(redata)
     },
-    // COMPLETE Refactor this method
+    /**
+     *
+     * @example
+     * {
+     *   lat: 24.563537
+     *   lng: 118.381233
+     *   mark: "1"
+     *   num: "123"
+     *   time: 1628773094161
+     * }
+     * @param in_data res_data
+     */
+    handlePingData(in_data) {
+      const soldierId = in_data.num
+      const redata = convertObjToDddd(in_data)
+      for (const team in this.soldierlist) {
+        this.soldierlist[team].forEach(solider => {
+          if (solider.id === soldierId) {
+            const active = (() => {
+              let lat = redata.lat.toFixed(3)
+              let lng = redata.lng.toFixed(3)
+              if (solider.lastReportTime === null) {
+                const msrc = `${soldierId}号上线,坐标为 (${lat}, ${lng})`
+                this.speakOnline(soldierId, lat, lng)
+                return newActive(msrc, undefined, undefined, Color.CaribbeanGreen)
+              } // else / default
+              const msrc = `${soldierId} 号移动至 (${lat}, ${lng})`
+              this.speakMove(soldierId, lat, lng)
+              return newActive(msrc)
+            })()
+            this.$message.success(active.content)
+            this.activities.unshift(active)
+            // this.handleSpeak(active.content)
+            this.getExerciseData()
+          }
+        })
+      }
+    },
+
+    /**
+     *
+     * @example
+     * {
+     *   "mark": "0",
+     *   "position": "右脚",
+     *   "shooteeNum": "456",
+     *   "shooteeTeam": "blue",
+     *   "shooterNum": "123",
+     *   "shooterTeam": "red",
+     *   "time": 1628774919894
+     * }
+     * @param in_data res data
+     */
+    handleHitData(in_data) {
+
+      const shooter = in_data.shooterNum
+      const victim = in_data.shooteeNum
+      const part_hit = in_data.position
+      const shooter_team = in_data.shooterTeam
+      const victim_team = in_data.shooteeTeam
+      // TODO Kill Prompt
+      for (const team in this.soldierlist) {
+        this.soldierlist[team].forEach((solider) => {
+          if (solider.id === victim) {
+            const active = (() => {
+              let victimTeam = teamEnToZh(victim_team)
+              let shooterTeam = teamEnToZh(shooter_team)
+              const msg_info = `${shooterTeam}的${shooter}号击中了${victimTeam}的${victim}号的${part_hit}`
+
+              let isFriend = shooter_team === victim_team
+              this.speakHit(shooterTeam, shooter, victimTeam, victim, part_hit, isFriend)
+              if (isFriend) {
+                return newActive(`友伤 ${msg_info}`, "danger")
+              }
+              return newActive(msg_info, "warning")
+            })()
+
+            this.activities.unshift(active)
+            this.getExerciseData()
+          }
+        })
+      }
+    },
+
     // TODO Write a method to tell whether this solider is dead
-    // ! Refactor this function to reduce its Cognitive Complexity
     parseRecvData(in_data) {
       enum MsgType {
         Hit, // 0
         Ping, // 1
       }
 
-      const teams = ["red", "blue"]
-      const soldierId = in_data.num
-      const shooter = in_data.shooterNum
-      const victim = in_data.shooteeNum
-      const part_hit = in_data.position
-      const shooter_team = in_data.shooterTeam
-      const victim_team = in_data.shooteeTeam
       const msg_mark = parseInt(in_data.mark, 10)
       console.log(in_data)
-      // 移动信息
       // TODO define a interface of redata
-
-      /*    lat: 24.563537
-            lng: 118.381233
-            mark: "1"
-            num: "123"
-            time: 1628773094161 */
       switch (msg_mark) {
-        // Move Prompt
         case MsgType.Ping: {
-          const redata = convertObjToDddd(in_data)
-          teams.forEach((team) => {
-            this.soldierlist[team].forEach((solider) => {
-              if (solider.id === soldierId) {
-                const active = (() => {
-                  if (solider.lastReportTime === null) {
-                    const msrc = `${soldierId}号上线`
-                        + `坐标为 (${redata.lat.toFixed(3)}, ${redata.lng.toFixed(
-                          3,
-                        )})`
-                    this.speakOnline(soldierId,redata.lat.toFixed(3),redata.lng.toFixed(3))
-                    return newActive(
-                      msrc,
-                      undefined,
-                      undefined,
-                      Color.CaribbeanGreen,
-                    )
-                  } // else / default
-                  const msrc = `${soldierId} 号移动至 (${redata.lat.toFixed(
-                    3,
-                  )},
-                    ${redata.lng.toFixed(3)})`
-                  this.speakMove(soldierId,redata.lat.toFixed(3),redata.lng.toFixed(3))
-                  return newActive(msrc)
-                })()
-                this.$message.success(active.content)
-                this.activities.unshift(active)
-                // this.handleSpeak(active.content)
-                this.getExerciseData()
-              }
-            })
-          })
+          this.handlePingData(in_data)
           break
         }
-        /* {
-            "mark": "0",
-            "position": "右脚",
-            "shooteeNum": "456",
-            "shooteeTeam": "blue",
-            "shooterNum": "123",
-            "shooterTeam": "red",
-            "time": 1628774919894
-        } */
         case MsgType.Hit: {
-          // TODO Kill Prompt
-          // Expected a `for-of` loop instead of a `for` loop with this simple iteration.
-          teams.forEach((team) => {
-            this.soldierlist[team].forEach((solider) => {
-              if (solider.id === victim) {
-                const active = (() => {
-                  const msg_info = `${teamEnToZh(
-                    shooter_team,
-                  )}的${shooter}号击中了${teamEnToZh(
-                    victim_team,
-                  )}的${victim}号的${part_hit}`
-                  if (shooter_team === victim_team) {
-                    this.speakHit(teamEnToZh(shooter_team),shooter,teamEnToZh(victim_team),victim,part_hit,true)
-                    return newActive(`友伤 ${msg_info}`, "danger")
-                  }
-                  this.speakHit(teamEnToZh(shooter_team),shooter,teamEnToZh(victim_team),victim,part_hit,false)
-                  return newActive(msg_info, "warning")
-                })()
-
-                this.activities.unshift(active)
-                this.getExerciseData()
-              }
-            })
-          })
+          this.handleHitData(in_data)
           break
         }
         default:
@@ -750,28 +751,28 @@ export default {
     fakeClick(obj) {
       const ev = document.createEvent("MouseEvents")
       ev.initMouseEvent(
-        "click",
-        true,
-        false,
-        window,
-        0,
-        0,
-        0,
-        0,
-        0,
-        false,
-        false,
-        false,
-        false,
-        0,
-        null,
+          "click",
+          true,
+          false,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null,
       )
       obj.dispatchEvent(ev)
     },
     toPosition() {
       this.$refs.mapViewInstance.updateMarkers(
-        this.soldierlist.red,
-        this.soldierlist.blue,
+          this.soldierlist.red,
+          this.soldierlist.blue,
       )
     },
     // 打开录屏提示框
@@ -789,30 +790,30 @@ export default {
       // @ts-ignore: We have the property
       if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices
-        // @ts-ignore: We have the property
-          .getDisplayMedia(displaymediastreamconstraints)
-          .then(success)
-          .catch(error)
+            // @ts-ignore: We have the property
+            .getDisplayMedia(displaymediastreamconstraints)
+            .then(success)
+            .catch(error)
       } else {
         navigator
-        // @ts-ignore: We have the property
-          .getDisplayMedia(displaymediastreamconstraints)
-          .then(success)
-          .catch(error)
+            // @ts-ignore: We have the property
+            .getDisplayMedia(displaymediastreamconstraints)
+            .then(success)
+            .catch(error)
       }
     },
     captureScreen(callback) {
       try {
         this.invokeGetDisplayMedia(
-          (screen) => {
-            this.addStreamStopListener(screen, () => {
-              //
-            })
-            callback(screen)
-          },
-          (error) => {
-            console.error(error)
-          },
+            (screen) => {
+              this.addStreamStopListener(screen, () => {
+                //
+              })
+              callback(screen)
+            },
+            (error) => {
+              console.error(error)
+            },
         )
       } catch (err) {
         console.error(err)
@@ -821,40 +822,40 @@ export default {
     },
     addStreamStopListener(stream, callback) {
       stream.addEventListener(
-        "ended",
-        () => {
-          // Do nothing
-          // I don't know what this shit is doing though
-        },
-        false,
+          "ended",
+          () => {
+            // Do nothing
+            // I don't know what this shit is doing though
+          },
+          false,
       )
       stream.addEventListener(
-        "inactive",
-        () => {
-          // Do nothing
-          // I don't know what this shit is doing though
-        },
-        false,
+          "inactive",
+          () => {
+            // Do nothing
+            // I don't know what this shit is doing though
+          },
+          false,
       )
       stream.getTracks()
-        .forEach((track) => {
-          track.addEventListener(
-            "ended",
-            () => {
-              // Do nothing
-              // I don't know what this shit is doing though
-            },
-            false,
-          )
-          track.addEventListener(
-            "inactive",
-            () => {
-              // Do nothing
-              // I don't know what this shit is doing though
-            },
-            false,
-          )
-        })
+          .forEach((track) => {
+            track.addEventListener(
+                "ended",
+                () => {
+                  // Do nothing
+                  // I don't know what this shit is doing though
+                },
+                false,
+            )
+            track.addEventListener(
+                "inactive",
+                () => {
+                  // Do nothing
+                  // I don't know what this shit is doing though
+                },
+                false,
+            )
+          })
     },
     startRecording() {
       this.recordVisible = false
@@ -905,16 +906,16 @@ export default {
         const videoData = new FormData()
         videoData.append("file", chunk)
         bmf.md5(
-          blob,
-          (err, md5) => {
-            console.log("err:", err)
-            console.log("md5 string:", md5) // 97027eb624f85892c69c4bcec8ab0f11
-            this.my_md5 = md5
-            console.log(this.my_md5)
-          },
-          (progress) => {
-            console.log("progress number:", progress)
-          },
+            blob,
+            (err, md5) => {
+              console.log("err:", err)
+              console.log("md5 string:", md5) // 97027eb624f85892c69c4bcec8ab0f11
+              this.my_md5 = md5
+              console.log(this.my_md5)
+            },
+            (progress) => {
+              console.log("progress number:", progress)
+            },
         )
         videoData.append("md5", this.my_md5)
         // console.log(this.$md5(blob))
@@ -990,9 +991,11 @@ export default {
      * @param lat 上线纬度
      * @param lng 上线经度
      */
-    speakOnline(shooterId,lat,lng) {
-      let latArr = lat.toString().split('.')
-      let lngArr = lng.toString().split('.')
+    speakOnline(shooterId, lat, lng) {
+      let latArr = lat.toString()
+          .split('.')
+      let lngArr = lng.toString()
+          .split('.')
       const wavFiles = [
         `${numberAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/haoshangxian.wav'),
@@ -1001,7 +1004,7 @@ export default {
         `${latlngAudioURL}/dian${latArr[1]}.wav`,
         `${latlngAudioURL}/${lngArr[0]}.wav`,
         `${latlngAudioURL}/dian${lngArr[1]}.wav`,
-        ]
+      ]
       synthesizeAndPlay(wavFiles)
 
     },
@@ -1012,9 +1015,11 @@ export default {
      * @param lat 移动纬度
      * @param lng 移动经度
      */
-    speakMove(shooterId,lat,lng) {
-      let latArr = lat.toString().split('.')
-      let lngArr = lng.toString().split('.')
+    speakMove(shooterId, lat, lng) {
+      let latArr = lat.toString()
+          .split('.')
+      let lngArr = lng.toString()
+          .split('.')
       const wavFiles = [
         `${numberAudioURL}/${shooterId}.wav`,
         require('@/assets/audio/common/hoayidongzhi.wav'),
@@ -1036,7 +1041,7 @@ export default {
      * @param part_hit 受击部位
      * @param isFriend 是否是友伤
      */
-    speakHit(shooter_team,shooter,victim_team,victim,part_hit,isFriend) {
+    speakHit(shooter_team, shooter, victim_team, victim, part_hit, isFriend) {
       const wavFiles = [
         hitMap[shooter_team],
         `${numberAudioURL}/${shooter}.wav`,
@@ -1045,7 +1050,7 @@ export default {
         `${numberAudioURL}/${victim}.wav`,
         require('@/assets/audio/common/haode.wav'),
         hitPartMap[part_hit]]
-      if(isFriend){
+      if (isFriend) {
         wavFiles.unshift(require('@/assets/audio/common/youshang.wav'))
       }
       synthesizeAndPlay(wavFiles)
@@ -1055,11 +1060,11 @@ export default {
      * 在每次对局开始时,在服务器上生成本次对局士兵编号的音频数据
      * @param id 士兵编号
      */
-    initNumberAudio(id){
-      axios.get(`${audioSaveURL}/number`,{
+    initNumberAudio(id) {
+      axios.get(`${audioSaveURL}/number`, {
         params: {
           input: id,
-          filename:id
+          filename: id
         }
       })
     },
@@ -1159,7 +1164,8 @@ export default {
         new Audio(require('@/assets/audio/common/jieshuxunlian.wav')).play()
       }
     },
-  },
+  }
+  ,
 }
 </script>
 
