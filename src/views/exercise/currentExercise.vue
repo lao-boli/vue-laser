@@ -597,8 +597,8 @@ export default {
     initWebSocket() {
       // 初始化weosocket
 
-      // const wsuri = `ws://${baseURL}:${basePort}/${wsPath}`
-      const wsuri = `ws://localhost:10250`
+      const wsuri = `ws://${baseURL}:${basePort}/${wsPath}`
+      // const wsuri = `ws://localhost:10250`
       this.websock = new ReconnectingWebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen
